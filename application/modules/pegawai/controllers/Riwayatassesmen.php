@@ -41,7 +41,7 @@ class Riwayatassesmen extends Admin_Controller
         $tahun = $this->input->get("tahun");
         $this->vw_rwt_assesmen_pegawai_model->where("TAHUN",$tahun);
         $this->db->group_start();
-        $this->vw_rwt_assesmen_pegawai_model->where("SATKER_ID",$satker_id)->or_where("UNOR_PEGAWAI",$unor_id)->or_where("UNOR_INDUK_PEGAWAI",$unor_id); 
+        $this->vw_rwt_assesmen_pegawai_model->where("SATKER_ID",$satker_id)->or_where("UNOR_PEGAWAI",$unor_id)->or_where("UNOR_PEGAWAI",$unor_induk_id)->or_where("UNOR_INDUK_PEGAWAI",$unor_id); 
         //$this->riwayat_assesmen_model->where("UNIT_ORG_ID",$satker_id)->or_where("SATKER_ID",$unor_id); 
         
 		$this->db->group_end();

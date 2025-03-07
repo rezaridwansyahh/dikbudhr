@@ -299,7 +299,7 @@
                    <div class="control-group <?php echo form_error('NO_BEBAS_NARKOBA') ? ' error' : ''; ?> col-sm-6">
                        <?php echo form_label("NO SURAT BEBAS NARKOBA", 'NO_BEBAS_NARKOBA', array('class' => 'control-label')); ?>
                        <div class='controls'>
-                           <input id='NO_BEBAS_NARKOBA' type='text' class="form-control" name='NO_BEBAS_NARKOBA' maxlength='25' value="<?php echo set_value('NO_BEBAS_NARKOBA', isset($pegawai->NO_BEBAS_NARKOBA) ? trim($pegawai->NO_BEBAS_NARKOBA) : ''); ?>" />
+                           <input id='NO_BEBAS_NARKOBA' type='text' class="form-control" name='NO_BEBAS_NARKOBA' maxlength='100' value="<?php echo set_value('NO_BEBAS_NARKOBA', isset($pegawai->NO_BEBAS_NARKOBA) ? trim($pegawai->NO_BEBAS_NARKOBA) : ''); ?>" />
                            <span class='help-inline'> (CPNS)</span>
                        </div>
                    </div>
@@ -532,6 +532,8 @@
                 }
                 else {
                     $(".messages").empty().append(data.msg);
+                    $("#btnsaveprofile").val('Simpan Perubahan').attr('disabled', false).addClass('bt-hud').unbind('click');
+                    swal("Pemberitahuan!", data.msg, "error");
                 }
 			}});
 		return false; 

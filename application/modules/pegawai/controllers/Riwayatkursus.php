@@ -20,6 +20,7 @@ class Riwayatkursus extends Admin_Controller
         parent::__construct();
         $this->load->model('pegawai/riwayat_kursus_model');
         $this->load->model('pegawai/pegawai_model');
+        $this->load->library('Api_bkn');
     }
     public function ajax_list(){
         $this->load->library('convert');
@@ -92,6 +93,10 @@ class Riwayatkursus extends Admin_Controller
                 $btn_actions = array();
                 if($record->KETERANGAN_BERKAS != ""){
                     $btn_actions  [] = "<a href='".base_url()."pegawai/riwayatkursus/viewdoc/".$record->ID."' data-toggle='tooltip' title='Lihat Dokumen' tooltip='Lihat Dokumen ".$record->NOMOR."' class='btn btn-sm btn-info show-modal'><i class='glyphicon glyphicon-eye-open'></i> </a>";
+                }
+
+                if($record->SIASN_ID==""){
+                    $btn_actions [] = "<button kode='$record->ID' class='btn btn-primary btn-kirim-siasn btn-sm' data-toggle='tooltip' title='Kirim data ke SIASN' tootltip='Kirim data ke SIASN'><i class='fa fa-share'></i> </button>";
                 }
                  
                  
@@ -196,7 +201,7 @@ class Riwayatkursus extends Admin_Controller
             $data_base64 = file_get_contents($file_tmp);
             $base64 = 'data:' . $type . ';base64,' . base64_encode($data_base64);
 
-            if(in_array(end($file_ext),$allowed_ext) === false)
+            if(in_array(strtolower(end($file_ext)),$allowed_ext) === false)
             {
                 $errors[]='Extension not allowed';
                 $response['msg'] = "
@@ -239,8 +244,11 @@ class Riwayatkursus extends Admin_Controller
         $data["PNS_NIP"]    = $pegawai_data->NIP_BARU;
         $data["PNS_ID"]     = $pegawai_data->PNS_ID;
         
-        if(empty($data["SK_TANGGAL"])){
-            unset($data["SK_TANGGAL"]);
+        if(empty($data["LAMA_KURSUS"])){
+            unset($data["LAMA_KURSUS"]);
+        }
+        if(empty($data["TANGGAL_KURSUS"])){
+            unset($data["TANGGAL_KURSUS"]);
         }
         
         $id_data = $this->input->post("ID");
@@ -255,10 +263,14 @@ class Riwayatkursus extends Admin_Controller
     }
     public function delete($record_id){
         $this->auth->restrict($this->permissionDelete);
-		if ($this->riwayat_kursus_model->delete($record_id)) {
-			 log_activity($this->auth->user_id(), 'delete data Riwayat Kursus : ' . $record_id . ' : ' . $this->input->ip_address(), 'pegawai');
-			 Template::set_message("Sukses Hapus data", 'success');
-			 echo "Sukses";
+		$kursus = $this->riwayat_kursus_model->find($record_id);
+        if ($this->riwayat_kursus_model->delete($record_id)) {
+            if($kursus['SIASN_ID']!=null || $kursus['SIASN_ID']!=""){
+                $APIBKN->deleteKursus($kursus['SIASN_ID']);
+            }
+			log_activity($this->auth->user_id(), 'delete data Riwayat Kursus : ' . $record_id . ' : ' . $this->input->ip_address(), 'pegawai');
+			Template::set_message("Sukses Hapus data", 'success');
+			echo "Sukses";
 		}else{
 			echo "Gagal";
 		}
@@ -280,5 +292,64 @@ class Riwayatkursus extends Admin_Controller
         $FILE_BASE64 = $datadetil->FILE_BASE64;
         echo '<embed src="'.$FILE_BASE64.'" width="100%" height="700" alt="pdf">';
         die();
+    }
+
+    public function send_siasn(){
+        $APIBKN = new Api_bkn;
+        $id = (int)$this->input->post('id');
+
+        $response ['success']= false;
+        $response ['msg']= "gagal";
+
+        $kursus = $this->riwayat_kursus_model->find($id); 
+
+        $mapped = $this->mapDiklatToKursus($kursus);
+        $response = $APIBKN->uploadKursus($mapped);
+        $idSiasn =  $response['mapData']['rwKursusId'];
+
+        
+        if($idSiasn!=null){
+            $kursus->SIASN_ID = $idSiasn;
+            $status =  $this->riwayat_kursus_model->update($id,$kursus);
+        }
+        $response['request']=$kursus;
+        $response['mapped']=$mapped;
+
+        echo json_encode($response);
+
+    }
+
+    private function mapDiklatToKursus($diklat){
+        $diklat = (array) $diklat;
+        //$diklat = $this->convertNullsToDash($diklat);
+        $kursus = array(
+            "jumlahJam"=>(int)$diklat['LAMA_KURSUS'],
+            "namaKursus"=>$diklat['NAMA_KURSUS'],
+            "nomorSertipikat"=>$diklat['NO_SERTIFIKAT'],
+            "instansiId"=>"",
+            "institusiPenyelenggara"=>$diklat['INSTITUSI_PENYELENGGARA'],
+            "tanggalKursus"=> date_format(date_create($diklat['TANGGAL_KURSUS']),'d-m-Y'),
+            "tanggalSelesaiKursus" => date_format(date_create($diklat['TANGGAL_KURSUS']),'d-m-Y'),
+            "tahunKursus"=> (int)date_format(date_create($diklat['TANGGAL_KURSUS']),'Y'),
+            "pnsOrangId"=> $diklat['PNS_ID'],
+            "jenisDiklatId"=> '3',
+            "jenisKursusSertipikat" => 'Sertipikat',
+            "lokasiId"=>"Indonesia",
+            "jenisKursus"=>'T',
+            "diklatFunsgionalId"=>1,
+            "path"=>array(),
+            "id"=>null,
+        );
+
+        return $kursus;
+    }
+
+    private function convertNullsToDash($data) {
+        foreach ($data as $key => $value) {
+            if (is_null($value)) {
+                $data[$key] = "-";
+            }
+        }
+        return $data;
     }
 }

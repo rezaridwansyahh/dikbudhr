@@ -31,7 +31,7 @@ if ($can_delete) {
 			<table class="filter_pegawai" sborder=0 width='100%' cellpadding="10">
 				 
 				<tr>
-					<td width="100px"><label for="example-text-input" class="col-form-label">NAMA</label></td>
+					<td width="150px"><label for="example-text-input" class="col-form-label">NAMA</label></td>
 					<td colspan=2><input class="form-control" type="text" name="nama_key" value="" ></td>
 				</tr>
 				<tr>
@@ -51,6 +51,16 @@ if ($can_delete) {
 							<?php
 							}
                             ?> 
+                        </select>
+					</td>
+				</tr>
+				<tr>
+					<td><label for="example-text-input" class="col-form-label">Kirim eKehadiran</label></td>
+					<td colspan=2>
+						<select name="status_kirim" class="form-control">
+                            <option value="">Silahkan Pilih</option>
+                            <option value="1">Sudah kirim</option>
+                            <option value="-">Blm Kirim</option>
                         </select>
 					</td>
 				</tr>
@@ -131,8 +141,6 @@ $("#form_search_pegawai").submit(function(){
 	$table.ajax.reload(null,true);
 	return false;
 });
-
-
 $('body').on('click','.btn-hapus',function () { 
 	var kode =$(this).attr("kode");
 	swal({
@@ -170,7 +178,49 @@ $('body').on('click','.btn-hapus',function () {
 			});        
 			
 		} else {
-			swal("Batal", "", "error");
+			swal("Batal", "Aksi dibatalkan", "error");
+		}
+	});
+});
+$('body').on('click','.send-kehadiran',function () { 
+	var kode =$(this).attr("kode");
+	swal({
+		title: "Anda Yakin?",
+		text: "Kirim data ke e-kehadiran!",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonClass: 'btn-success',
+		confirmButtonText: 'Ya, Kirimkan!',
+		cancelButtonText: "Tidak, Batalkan!",
+		closeOnConfirm: false,
+		showLoaderOnConfirm: true,
+		closeOnCancel: false
+	},
+	function (isConfirm) {
+		if (isConfirm) {
+			var post_data = "kode="+kode;
+			$.ajax({
+					url: "<?php echo base_url() ?>admin/izin/izin_pegawai/resendekehadiran",
+					type:"POST",
+					data: post_data,
+					dataType: "json",
+					timeout:180000,
+					success: function (result) {
+						 if(result.success){
+							swal("Success!", result.msg, "success");
+						 	$table.ajax.reload(null,true);	
+						}else{
+							swal("Perhatian!", result.msg, "error");
+						 	$table.ajax.reload(null,true);	
+						}
+				},
+				error : function(error) {
+					swal("Error", error, "error");
+				} 
+			});        
+			
+		} else {
+			swal("Batal", "Aksi dibatalkan", "error");
 		}
 	});
 });

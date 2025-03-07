@@ -42,7 +42,7 @@ class Riwayat_kursus_model extends BF_Model
 		array(
 			'field' => 'PNS_ID',
 			'label' => 'PNS ID',
-			'rules' => 'max_length[32]',
+			'rules' => 'max_length[255]',
 		),
 		array(
 			'field' => 'TIPE_KURSUS',
@@ -52,6 +52,11 @@ class Riwayat_kursus_model extends BF_Model
 		array(
 			'field' => 'NAMA_KURSUS',
 			'label' => 'NAMA KURSUS',
+			'rules' => 'required',
+		),
+		array(
+			'field' => 'LAMA_KURSUS',
+			'label' => 'LAMA KURSUS',
 			'rules' => 'required',
 		)
 	);

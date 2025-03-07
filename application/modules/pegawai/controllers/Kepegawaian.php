@@ -45,6 +45,7 @@ class Kepegawaian extends Admin_Controller
 		$this->load->model('pegawai/riwayat_pendidikan_model');
 		$this->load->model('pegawai/riwayat_kepangkatan_model');
         $this->lang->load('pegawai');
+		
         
         Assets::add_css('flick/jquery-ui-1.8.13.custom.css');
         Assets::add_js('jquery-ui-1.8.13.min.js');
@@ -80,7 +81,7 @@ class Kepegawaian extends Admin_Controller
 		Template::set('kpkns', $kpkns);
 		$this->load->model('ref_jabatan/jabatan_model');
 		/*
-		$this->load->model('ref_jabatan/ref_jabatan_model');
+		
         $jabatans = $this->ref_jabatan_model->find_all();
 		Template::set('jabatans', $jabatans);
 		
@@ -94,6 +95,10 @@ class Kepegawaian extends Admin_Controller
 		$this->load->model('pegawai/jenis_kawin_model');
         $jenis_kawins = $this->jenis_kawin_model->find_all();
 		Template::set('jenis_kawins', $jenis_kawins);
+
+		// $this->load->model('ref_jabatan/ref_jabatan_model');
+		// $jabatans = $this->ref_jabatan_model->find_all();
+		// Template::set('list_jabatan', $jabatans);
 
 		$this->load->model('pegawai/pendidikan_model');
 		
@@ -160,8 +165,10 @@ class Kepegawaian extends Admin_Controller
 		$NIP = $this->input->post('PNS_NIP');
 		$id = "";
 		$namafile = "";
+		//$this->settings_lib->item('site.urlphoto')
 		if (isset($_FILES['userfile']) && is_array($_FILES['userfile']) && $_FILES['userfile']['error'] != 4)
 		 {
+			//$namafile=$this->settings_lib->item('site.urlphoto');
 		 	$pegawaiData = $this->pegawai_model->find_by("PNS_ID",$id_log);
 			$PHOTO = ISSET($pegawaiData->PHOTO) ? trim($pegawaiData->PHOTO) : "";
 			//die($this->settings_lib->item('site.urlphoto').$PHOTO);
@@ -171,12 +178,12 @@ class Kepegawaian extends Admin_Controller
 
 			$tmp_name 	= pathinfo($_FILES['userfile']['name'], PATHINFO_FILENAME);
 			$uploadData = handle_upload('userfile',trim($this->settings_lib->item('site.urlphoto')),$NIP);
-			//print_r($uploadData);
 			 if (isset($uploadData['error']) && !empty($uploadData['error']))
 			 {
 			 	$tipefile=$_FILES['userfile']['type'];
 			 	//$tipefile = $_FILES['userfile']['name'];
 				 $upload = false;
+				 $namafile="error";
 				//$uploadData = handle_upload('userfile',trim($this->settings_lib->item('site.urlphoto')));
 				 log_activity($this->auth->user_id(), 'Gagal : '.$uploadData['error'].trim($this->settings_lib->item('site.urlphoto')).$tipefile.$this->input->ip_address(), 'pegawai');
 			 }else{
@@ -418,11 +425,25 @@ class Kepegawaian extends Admin_Controller
 			$data['PENDIDIKAN']	= $recpendidikan->NAMA;
 			
 			$data['PNS_ID']	= $this->input->post('PNS_ID');
+			$data['NIP_BARU']	= $this->input->post('PNS_ID');
 	        $data['AGAMA_ID']	= $this->input->post('AGAMA_ID') ? $this->input->post('AGAMA_ID') : null;
 			$data['TGL_LAHIR']	= $this->input->post('TGL_LAHIR') ? $this->input->post('TGL_LAHIR') : null;
 			$data['TGL_NPWP']	= $this->input->post('TGL_NPWP') ? $this->input->post('TGL_NPWP') : null;
 			$data['terminated_date']	= $this->input->post('terminated_date') ? $this->input->post('terminated_date') : null;
-			
+			if($this->input->post("JENIS_JABATAN_ID") != ""){
+				$rec_jenis = $this->jenis_jabatan_model->find($this->input->post("JENIS_JABATAN_ID"));
+				$data["JENIS_JABATAN_NAMA"] = $rec_jenis->NAMA;
+			}
+
+			$recjabatan = $this->jabatan_model->find_by("KODE_JABATAN",$this->input->post('JABATAN_INSTANSI_ID'));
+			$data['JABATAN_INSTANSI_NAMA']	= $recjabatan->NAMA_JABATAN;
+	        $data['JENIS_JABATAN_ID']	= $this->input->post('JENIS_JABATAN_ID') ? $this->input->post('JENIS_JABATAN_ID') : null;
+	        
+			// jabatan
+			$data['TMT_JABATAN']	= $this->input->post('TMT_JABATAN') ? $this->input->post('TMT_JABATAN') : null;
+			$data['JABATAN_INSTANSI_ID']	= $this->input->post('JABATAN_INSTANSI_ID') ? $this->input->post('JABATAN_INSTANSI_ID') : null;
+			$data['JABATAN_ID']	= $this->input->post('JABATAN_INSTANSI_ID') ? $this->input->post('JABATAN_INSTANSI_ID') : null;
+			$data['JABATAN_INSTANSI_REAL_ID']	= $this->input->post('JABATAN_INSTANSI_REAL_ID') ? $this->input->post('JABATAN_INSTANSI_REAL_ID') : null;
 	        $return = false;
 	        //die($id." ini");
 	        if ($id == '') {
@@ -610,7 +631,11 @@ class Kepegawaian extends Admin_Controller
         }
         //die($pegawaiData->JABATAN_INSTANSI_ID);
         Template::set('selectedPendidikanID',$this->pendidikan_model->find(trim($pegawaiData->PENDIDIKAN_ID)));
+        $datajabatan = $this->jabatan_model->find_by("KODE_JABATAN",trim($pegawaiData->JABATAN_INSTANSI_ID));
+        Template::set('selectedJabatanInstansiID',$datajabatan);
 
+        $datajabatan_real = $this->jabatan_model->find_by("KODE_JABATAN",trim($pegawaiData->JABATAN_INSTANSI_REAL_ID));
+        Template::set('selectedJabatanInstansiRealID',$datajabatan_real);
         if($pegawaiData->JENIS_JABATAN_ID != ""){
         	//$jabataninstansis = $this->jabatan_model->find_select(trim($pegawaiData->JENIS_JABATAN_ID));
 			//Template::set('jabataninstansis', $jabataninstansis);
@@ -635,6 +660,15 @@ class Kepegawaian extends Admin_Controller
             'msg'=>'Unknown error'
         );
         $id_data = $this->input->post('ID');
+        $pegawai = $this->pegawai_model->find_by("NIP_BARU",trim($this->auth->username()));
+		$id = isset($pegawai->ID) ? $pegawai->ID : "";
+		if($id != $id_data){
+ 	       	$response ['success']= false;
+    		$response ['msg']= "Anda tidak berhak";
+	        // echo json_encode($response);  
+	        log_activity($this->auth->user_id(), "Update data mandiri oleh orang lain ".$this->input->ip_address(), 'pegawai');
+	        // exit();
+        }
         // GET DATA PEGAWAI 
         $datasekarang = $this->pegawai_model->find($id_data);
         $PNS_ID = $datasekarang->PNS_ID;
@@ -884,6 +918,7 @@ class Kepegawaian extends Admin_Controller
         if($result){
  	       	$response ['success']= true;
     		$response ['msg']= "Update berhasil";
+    		log_activity($this->auth->user_id(), "Update data mandiri dari ".$this->input->ip_address().json_encode($data), 'pegawai');
     	}
         echo json_encode($response);    
 
@@ -1085,8 +1120,11 @@ class Kepegawaian extends Admin_Controller
     public function profilen($id='')
     {	
     	$id = (int)base64_decode(urldecode($id));
-    	$this->load->model('pegawai/Pns_aktif_model');
+    	
+		$this->load->model('pegawai/Pns_aktif_model');
     	$this->load->model('pegawai/Riwayat_pns_cpns_model');
+		
+
     	$model = $this->uri->segment(6);
     	$this->load->library('convert');
     	Template::set('collapse', true);
@@ -1135,14 +1173,16 @@ class Kepegawaian extends Admin_Controller
         
 		if($gol_id != ""){
 			$recgolongan = $this->golongan_model->find(trim($gol_id));
-			Template::set('GOLONGAN_AKHIR', $recgolongan->NAMA);
+			$namagolongan = $pegawai->KEDUDUKAN_HUKUM_ID == 71 ? $recgolongan->GOL_PPPK : $recgolongan->NAMA;
+			Template::set('GOLONGAN_AKHIR', $namagolongan);
 			Template::set('NAMA_PANGKAT', $recgolongan->NAMA_PANGKAT);
 			
 		}
 		$gol_awal_id = $pegawai->GOL_AWAL_ID;
 		if($gol_awal_id != ""){
 			$recgolongan = $this->golongan_model->find($gol_awal_id);
-			Template::set('GOLONGAN_AWAL', $recgolongan->NAMA);
+			$namagolongan = $pegawai->KEDUDUKAN_HUKUM_ID == 71 ? $recgolongan->GOL_PPPK : $recgolongan->NAMA;
+			Template::set('GOLONGAN_AWAL', $namagolongan);
 		}
 		
 		$JABATAN_ID = $pegawai->JABATAN_INSTANSI_ID;
@@ -1168,7 +1208,7 @@ class Kepegawaian extends Admin_Controller
 		$unor = $this->unitkerja_model->find_by("ID",trim($pegawai->UNOR_ID));
 		$pemimpin_pns_id = isset($unor->PEMIMPIN_PNS_ID) ? $unor->PEMIMPIN_PNS_ID : "";
 		$nama_jabatan_struktural = isset($unor->NAMA_JABATAN) ? $unor->NAMA_JABATAN : "";
-		if($pemimpin_pns_id == $pegawai->PNS_ID or $pegawai->JENIS_JABATAN_ID == "1")
+		if($pemimpin_pns_id == $pegawai->PNS_ID && $pegawai->JENIS_JABATAN_ID == "1")
 		{
 			Template::set('NAMA_JABATAN_REAL', $nama_jabatan_struktural);
 			Template::set('JENIS_JABATAN', "Struktural");
@@ -1190,6 +1230,14 @@ class Kepegawaian extends Admin_Controller
 		Template::set('back_button_label',"<< Kembali ke Daftar Pegawai");
 		Template::set('back_button_url',base_url("admin/kepegawaian/pegawai"));
 
+
+		/**
+		 * REZA WAS HERE
+		 */
+		
+		Template::set('jenis_diklat_siasn', '[{"id":"1","jenis_diklat":"Diklat Struktural"},{"id":"2","jenis_diklat":"Diklat Fungsional"},{"id":"3","jenis_diklat":"Diklat Teknis"},{"id":"4","jenis_diklat":"Workshop"},{"id":"5","jenis_diklat":"Pelatihan Manajerial"},{"id":"6","jenis_diklat":"Pelatihan Sosial Kultural"},{"id":"7","jenis_diklat":"Sosialisasi"},{"id":"8","jenis_diklat":"Bimbingan Teknis"},{"id":"9","jenis_diklat":"Seminar"},{"id":"10","jenis_diklat":"Magang"},{"id":"11","jenis_diklat":"Kursus"},{"id":"12","jenis_diklat":"Penataran"},{"id":"13","jenis_diklat":"Pengembangan Kompetensi Dalam Bentuk Pelatihan klasikal lainnya"},{"id":"14","jenis_diklat":"Coaching"},{"id":"15","jenis_diklat":"Mentoring"},{"id":"16","jenis_diklat":"E-Learning"},{"id":"17","jenis_diklat":"Pelatihan Jarak Jauh"},{"id":"18","jenis_diklat":"Detasering (Secondment)"},{"id":"19","jenis_diklat":"Pembelajaran Alam Terbuka (Outbond)"},{"id":"20","jenis_diklat":"Patok Banding (Benchmarking)"},{"id":"21","jenis_diklat":"Pertukaran Antara Pns Dengan Pegawai Swasta/Badan Usaha Milik Negara/ Badan Usaha Milik Daerah"},{"id":"22","jenis_diklat":"Belajar Mandiri (Self Development)"},{"id":"23","jenis_diklat":"Komunitas Belajar (Community Of Practices)"},{"id":"24","jenis_diklat":"Bimbingan Di Tempat Kerja"},{"id":"25","jenis_diklat":"Pengembangan Kompetensi Dalam Bentuk Pelatihan Nonklasikal Lainnya"}]');
+		Template::set('rumpun_diklat','[{"id":"0609db7b-7a0b-4107-b8e1-ffde1a4ed30e","nama":"TENAGA KEPENDIDIKAN LAINNYA","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"7baee56d-33e5-42e1-901f-29eade75008f","keterangan":""},{"id":"0b69a9bc-9ba8-4fab-8a06-2d051faa40f8","nama":"KEAGAMAAN DAN PENDIDIKAN","urusan":"PILIHAN","pelayanan_dasar":"true","peraturan_id":"a16ea752-772c-43d1-b914-2772fc46f85f","keterangan":""},{"id":"0e34d390-28c3-402c-b615-547fdfc114f3","nama":"PENDIDIKAN TINGKAT TAMAN KANAK-KANAK, DASAR, LANJUTAN, DAN SEKOLAH KHUSUS","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"f09048f0-68b7-4bd7-beda-9b6fdc17c32f","keterangan":""},{"id":"12916fd6-2a22-43bd-b5eb-6769dc51378d","nama":"KEBUDAYAAN","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"12efe78f-a4fc-4594-b935-62662038fb58","nama":"HUKUM DAN PERADILAN","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"2dcd6120-ba4a-438a-a65a-266997edd627","keterangan":""},{"id":"16c86621-a4ce-433c-b42e-be16883f79e3","nama":"PENDIDIKAN LAINNYA","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"e092a867-729d-457a-b3df-4e7b8232184d","keterangan":""},{"id":"1e4cf7c1-5198-43d3-8075-42ad94916290","nama":"KEKOMPUTERAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"04cd530f-619b-4f6a-a356-fa509d0c3aa6","keterangan":""},{"id":"22f155e1-8ff0-4c17-aef3-365aca514c62","nama":"ARSITEK, INSINYUR DAN YANG BERKAITAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"c01884ac-4656-4ea8-bccd-5f6fa17c626d","keterangan":""},{"id":"23480eea-3ebd-4659-92c1-e42916b00a35","nama":"ADMINISTRASI KEPENDUDUKAN DAN PENCATATAN SIPIL","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"23861db6-f6fc-4008-b83d-53e45399710a","nama":"KEARSIPAN","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"25b6cafa-6a6d-475a-b391-b5fb485c384e","nama":"PENDIDIKAN","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"260eacd9-4435-457d-9763-853727783577","nama":"AKUNTAN DAN ANGGARAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"972c0df1-270a-478d-a159-8877dc03a86b","keterangan":""},{"id":"265b5554-2210-4760-a1da-27ac19f116e3","nama":"PENANAMAN MODAL","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"2a87fb94-662e-44a3-b7d9-a169f9214e6f","nama":"TENAGA KERJA","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"2e4f85c0-e028-4b0b-80c6-1ed3a7fecb2e","nama":"IMIGRASI, PAJAK, DAN ASISTEN PROFESIONAL YANG BERKAITAN ","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"713c7a31-0058-4c37-b3da-d74514bd82cd","keterangan":""},{"id":"2eea7480-2c18-4619-a27c-c3f831b4867d","nama":"PENERANGAN DAN SENI BUDAYA","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"d2b34b0f-8984-4e74-84a5-736f9489dd62","keterangan":""},{"id":"346c4008-bc44-4e81-abaf-f79b205dbc10","nama":"Ekonomi dan Keuangan","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"83567f4d-6fea-4418-b6d7-97fe87db9791","keterangan":""},{"id":"37d048a6-c73f-4aa7-998c-831bd3d0b0c4","nama":"MATEMATIKA, STATISTIKA, DAN YANG BERKAITAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"8ae629ea-775c-424a-a18a-4d0cd1a11c71","keterangan":""},{"id":"3ed8b5dd-6ea9-467f-8e45-37f5e82cd6b0","nama":"Sains dan Lingkungan","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"83567f4d-6fea-4418-b6d7-97fe87db9791","keterangan":""},{"id":"40dd32df-8e79-4637-ad2e-e8fe408de9fa","nama":"MANAJEMEN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"ae31c6d7-ac1d-4fbf-a1bf-f5a756d1fca9","keterangan":""},{"id":"41391837-9ea0-422f-a957-1bafa4c0f761","nama":"PARIWISATA","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"49b2de6d-f04e-4818-9017-9ae2bb8d7254","nama":"PERINDUSTRIAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"4af45dce-a4e0-46d1-b6af-ebe10de3af4b","nama":"KEPEMUDAAN DAN OLAHRAGA","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"555d45e6-8061-41cf-aca8-ab4e1d148f2b","nama":"Administrasi","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"83567f4d-6fea-4418-b6d7-97fe87db9791","keterangan":""},{"id":"59d0253f-bfd9-4167-a5b0-a2fed482dbe8","nama":"FISIKA, KIMIA DAN YANG BERKAITAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"2d5914bc-7ebe-477b-b968-9da853880062","keterangan":""},{"id":"67a7c89b-4e09-4320-86fc-837ed44d5fce","nama":"STATISTIK","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"682d9658-a1ff-4db7-8f3a-a123c2daaa16","nama":"PROFESIONAL BIDANG PENDIDIKAN LAINNYA","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"670494fe-ae71-4554-bda9-99c9d1f7a523","keterangan":""},{"id":"68c4919f-b5f6-4fce-b9ab-00b370e567c5","nama":"KOMUNIKASI DAN INFORMATIKA","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"6e0d3bd1-4885-4130-9b37-1e8592e6deaf","nama":"ENERGI DAN SUMBER DAYA MINERAL","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"73e44ee6-7f95-4b69-8871-f6690e3f71bf","nama":"KOPERASI USAHA KECIL DAN MENENGAH","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"76880bfc-80bb-4a81-8e12-c1b6e8f9f676","nama":"Penelitian","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"83567f4d-6fea-4418-b6d7-97fe87db9791","keterangan":""},{"id":"896be0aa-610f-4729-8434-3707d030761e","nama":"PEKERJAAN UMUM DAN PENATAAN RUANG","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"8a69e81b-a767-4ea3-9e40-f647896963d0","nama":"PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"9069160f-184b-41d8-9ac3-4e3c0d81d817","nama":"ARSIPARIS, PUSTAKAWAN, DAN YANG BERKAITAN ","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"5e8d9d2b-a020-408d-85fd-c597e5c4ac8d","keterangan":""},{"id":"937dcd82-c431-4022-b248-4d1ae80de871","nama":"PENGAWAS KUALITAS DAN KEAMANAN","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"eab89aa2-f7b7-4647-981f-e905f02f14e6","keterangan":""},{"id":"95f10610-289d-44b3-8cce-9a69717c05a4","nama":"KEAGAMAAN","urusan":"PILIHAN","pelayanan_dasar":"true","peraturan_id":"f861a47f-4d15-4c18-b6dc-4fd2a5154e49","keterangan":""},{"id":"96cda2c7-6e75-4e3e-9dbb-2dbbe6c36ac5","nama":"KEHUTANAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"9b2ee7d9-d94d-42d7-be94-ab5d3d95d549","nama":"PANGAN","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"9fe3de73-08cb-4347-87d0-ee0b93c87571","nama":"PENELITIAN DAN PEREKAYASAAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"d63926ae-3135-4bfd-b04c-8cc8b6f1b41d","keterangan":""},{"id":"a2635ed8-950d-463b-8c91-880b8da1c7a0","nama":"KELAUTAN DAN PERIKANAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"a2c77fd3-7b7c-45b2-a31c-07b191941a6a","nama":"KESEHATAN","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"aa4c2c50-8175-4e99-a888-105073559583","nama":"ASISTEN PROFESIONAL YANG BERHUBUNGAN DENGAN KEUANGAN DAN PENJUALAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"e2b90ed1-3e53-4362-8eb5-83f7bf181aa6","keterangan":""},{"id":"ac5b7383-f3a2-4f6d-a421-283b861294a5","nama":"HAK CIPTA, PATEN, DAN MEREK","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"1442b964-8c10-455e-9b31-df53ad2bc363","keterangan":""},{"id":"ae754c26-6269-4201-81f1-e60c5beaa15e","nama":"ILMU SOSIAL DAN YANG BERKAITAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"c5ed4868-87c1-43ec-bad6-b7c953cbf186","keterangan":""},{"id":"bba1c348-51d7-4a8c-882f-f1c618f38f43","nama":"Hukum, Politik dan Pemerintahan","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"83567f4d-6fea-4418-b6d7-97fe87db9791","keterangan":""},{"id":"bef48dad-8a72-4fbb-94e2-0a4a8c9e4849","nama":"KETENTERAMAN DAN KETERTIBAN UMUM SERTA PERLINDUNGAN MASYARAKAT","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"c01c266d-f10c-4c77-a46b-516819cdeaac","nama":"PERDAGANGAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"c10abe3d-8b51-403e-bfd2-54d10032a7b3","nama":"PERTANAHAN","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"c216b512-adff-4054-935d-4ab2af4ed93f","nama":"PEMBERDAYAAN MASYARAKAT DAN DESA","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"c60badce-ff96-4336-9e87-5682c10bc03f","nama":"DETEKTIF DAN PENYIDIK","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"ae779299-80fe-47c7-9149-f9e8d4c31e80","keterangan":""},{"id":"c8ded619-9e79-44b6-8953-ff348b4b1802","nama":"KESEHATAN DAN/ATAU ILMU SOSIAL","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"54be4e8e-cacb-4fb0-8b0f-79aa518870f3","keterangan":""},{"id":"ca27614c-53ce-4b1a-952d-4dc887a12bda","nama":"PERPUSTAKAAN","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"cbe243ce-b520-4c42-a4d2-42f67bbe1233","nama":"PERTANIAN","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"d349a48b-d178-42b7-936d-4816a1cc21c6","nama":"SDM","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"83567f4d-6fea-4418-b6d7-97fe87db9791","keterangan":""},{"id":"df549366-1ec4-4c42-88fb-fdff28771e3a","nama":"PERHUBUNGAN","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"e97ed59f-0bfb-4009-8aae-0eb48c356400","nama":"PENGENDALIAN PENDUDUK DAN KELUARGA BERENCANA","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"ead81498-b4b6-4c33-9f55-c81efa79780c","nama":"PERSANDIAN","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"f2af6cad-9a28-44ae-9916-4366a6cb27b6","nama":"PERUMAHAN RAKYAT DAN KAWASAN PEMUKIMAN","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"f59cc9533488412b9946207c29ab15c6","nama":"ILMU HAYAT","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"5bb8fbf6-2c35-4f2e-aa33-63afc21f0604","keterangan":""},{"id":"f879075c-293b-4b36-845c-5c03a3db4374","nama":"TRANSMIGRASI","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"fb195e55-d090-4c17-9cb3-c2208fb6b628","nama":"SOSIAL","urusan":"WAJIB","pelayanan_dasar":"true","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"fd95453d-0b75-4117-9eda-c37a560fee31","nama":"LINGKUNGAN HIDUP","urusan":"WAJIB","pelayanan_dasar":"false","peraturan_id":"091ac43f-bf8e-4345-b090-dbcd8bf8da23","keterangan":""},{"id":"ff94ac2b-5ac5-447f-81fc-871413390589","nama":"POLITIK DAN HUBUNGAN LUAR NEGERI","urusan":"PILIHAN","pelayanan_dasar":"false","peraturan_id":"4d52dc90-f80f-4b92-bb17-0559025162ff","keterangan":""}]');
+		Template::set('diklat_struktural', '[{"id":"1","nama":"SEPADA","eselon_level":"5","ncsistime":"2011-06-19T03:40:50Z","struktural_pns":"1"},{"id":"2","nama":"SEPALA/ADUM/DIKLAT PIM TK.IV","eselon_level":"4","ncsistime":"2011-06-19T03:40:50Z","struktural_pns":"1"},{"id":"3","nama":"SEPADYA/SPAMA/DIKLAT PIM TK. III","eselon_level":"3","ncsistime":"2011-06-19T03:40:50Z","struktural_pns":"1"},{"id":"4","nama":"SPAMEN/SESPA/SESPANAS/DIKLAT PIM TK. II","eselon_level":"2","ncsistime":"2011-06-19T03:40:50Z","struktural_pns":"1"},{"id":"5","nama":"SEPATI/DIKLAT PIM TK. I","eselon_level":"1","ncsistime":"2011-06-19T03:40:50Z","struktural_pns":"1"},{"id":"6","nama":"SESPIM","eselon_level":"","ncsistime":"2019-04-04T10:00:08Z","struktural_pns":""},{"id":"7","nama":"SESPATI","eselon_level":"","ncsistime":"2019-04-04T10:00:16Z","struktural_pns":""},{"id":"8","nama":"Diklat Struktural Lainnya","eselon_level":"","ncsistime":"2019-04-04T18:39:23Z","struktural_pns":""}]');
 		$tahun = (int)date("Y");
 		// get data dari server SKP
 		// $this->generateskp(TRIM($pegawai->NIP_BARU),$tahun-1);
@@ -1556,7 +1604,8 @@ class Kepegawaian extends Admin_Controller
 				$this->db->or_where('vw."ESELON_1"',$filters['unit_id_key']);	
 				$this->db->or_where('vw."ESELON_2"',$filters['unit_id_key']);	
 				$this->db->or_where('vw."ESELON_3"',$filters['unit_id_key']);	
-				$this->db->or_where('vw."ESELON_4"',$filters['unit_id_key']);	
+				$this->db->or_where('vw."ESELON_4"',$filters['unit_id_key']);
+				$this->db->or_where("UNOR_INDUK_ID",$filters['unit_id_key']);	
 				$this->db->group_end();
 			}
 			if($filters['nama_cb']){
@@ -1642,13 +1691,20 @@ class Kepegawaian extends Admin_Controller
 		
 		$this->db->flush_cache();
 		$nomor_urut=$start+1;
+		$status_pppk = array(71,72,73);
 		if(isset($records) && is_array($records) && count($records)):
 			foreach ($records as $record) {
                 $row = array();
                 $row []  = $nomor_urut.".";
                 $row []  = $record->NIP_BARU;
+
                 $row []  = $record->NAMA;
-                $row []  = $record->NAMA_PANGKAT."/".$record->NAMA_GOLONGAN;
+                if(in_array($record->KEDUDUKAN_HUKUM_ID,$status_pppk)){ 
+					$row []  = $record->GOL_PPPK;
+				}else{
+					$row []  = $record->NAMA_PANGKAT."/".$record->NAMA_GOLONGAN." ";
+				}
+				
                 $row []  = $record->NAMA_UNOR_FULL;
                 //$row []  = $record->KATEGORI_JABATAN;
                 
@@ -1661,7 +1717,7 @@ class Kepegawaian extends Admin_Controller
 					   	</a>
                 ";/*add by bana 04_02_2019*/
 				$btn_actions  [] = "
-                    <a class='show-modal-custom' href='".base_url()."admin/kepegawaian/pegawai/resume/".$record->NIP_BARU."'  data-toggle='tooltip' title='Lihat Resume'><span class='fa-stack'>
+                    <a class='show-modal-custom' target='_blank' href='".base_url()."admin/kepegawaian/pegawai/resume/".$record->NIP_BARU."'  data-toggle='tooltip' title='Lihat Resume'><span class='fa-stack'>
 					   <i class='fa fa-square fa-stack-2x'></i>
 					   	<i class='fa fa-book fa-stack-1x fa-inverse'></i>
 					   	</span>
@@ -1748,7 +1804,7 @@ class Kepegawaian extends Admin_Controller
 
 				if($this->auth->has_permission($this->permissionUpdatePensiun)){
 					$btn_actions  [] = "
-						<a class='setpensiunmeninggal' kode='$record->NIP_BARU' href='#".$record->NIP_BARU."' data-toggle='tooltip' title='Set Pensiun/Meninggal'>
+						<a class='setpensiunmeninggal' kode='$record->NIP_BARU' href='#".$record->NIP_BARU."' data-toggle='tooltip' title='Set Pensiun/Meninggal/Berhenti'>
 							<span class='fa-stack'>
 							   <i class='fa fa-square fa-stack-2x'></i>
 							   <i class='fa fa-remove fa-stack-1x fa-inverse'></i>
@@ -2361,6 +2417,16 @@ class Kepegawaian extends Admin_Controller
 					   	</a>
                 ";
                 }
+                if($this->auth->has_permission($this->permissionCreateUser)){
+	                $btn_actions  [] = "
+	                    <a class='generate_user' kode='$record->NIP_BARU' href='#".$record->NIP_BARU."' data-toggle='tooltip' title='Buat User Akun'>
+	                    	<span class='fa-stack'>
+						   	<i class='fa fa-square fa-stack-2x'></i>
+						   	<i class='fa fa-user fa-stack-1x fa-inverse'></i>
+						   	</span>
+						   	</a>
+	                ";
+                }
                 if($this->auth->has_permission("Pegawai.Kepegawaian.Deleteppnpn")){
                 $btn_actions  [] = "
                         <a href='#' kode='$record->ID' class='btn-hapus' data-toggle='tooltip' title='Hapus data' >
@@ -2613,8 +2679,12 @@ class Kepegawaian extends Admin_Controller
 				$kedudukan_hukum = $filters['kedudukan_hukum'];
 			}
 		}
-		
-		$datapegwai=$this->pegawai_model->find_download($this->UNOR_ID);
+		if($this->auth->has_permission($this->UnitkerjaTerbatas)){
+			$asatkers = json_decode($this->auth->get_satkers());
+			$datapegwai=$this->pegawai_model->find_download($asatkers,false,$kedudukan_hukum);
+		}else{
+			$datapegwai=$this->pegawai_model->find_download($this->UNOR_ID,false,$kedudukan_hukum);
+		}
         $this->load->library('LibOpenTbs');
         $template_name = trim($this->settings_lib->item('site.pathuploaded')).'templatenominatif.xlsx';
         $TBS = $this->libopentbs->TBS;
@@ -2911,7 +2981,7 @@ class Kepegawaian extends Admin_Controller
 		}else{
 			$this->form_validation->set_rules('PNS_ID','KODE','required|max_length[30]|unique[pegawai.PNS_ID' . $extra_unique_rule . ']');
 		}
-        $this->form_validation->set_rules('PNS_ID','PNS ID','required|max_length[32]|unique[pegawai.PNS_ID' . $extra_unique_rule . ']');
+        $this->form_validation->set_rules('PNS_ID','PNS ID','required|max_length[36]|unique[pegawai.PNS_ID' . $extra_unique_rule . ']');
         $response = array(
             'success'=>false,
             'msg'=>'Unknown error'
@@ -3720,7 +3790,7 @@ class Kepegawaian extends Admin_Controller
 				$data["GELAR_BELAKANG"]	=	isset($pegawai->gelarBelakang)	?	$pegawai->gelarBelakang : 	"";
 
 			if(isset($pegawai_lokal->GELAR_DEPAN) and $pegawai_lokal->GELAR_DEPAN == "") 
-				$data["GELAR_DEPAN"]	=	isset($pegawai->gelarDepan)	?	$pegawai->gelarDepan : 	"";
+				$data["GELAR_DEPAN"]	=	isset($pegawai->gelarDepan) && $pegawai->getlarDepan!="-"	?	$pegawai->gelarDepan : 	"";
 			if(isset($pegawai_lokal->GOL_AWAL_ID) and $pegawai_lokal->GOL_AWAL_ID == "") 
 				$data["GOL_AWAL_ID"]	=	isset($pegawai->golRuangAwalId)	?	$pegawai->golRuangAwalId : 	"";
 			if($pegawai->golRuangAkhirId>$pegawai_lokal->GOL_ID) 
@@ -3733,7 +3803,10 @@ class Kepegawaian extends Admin_Controller
 				$data["INSTANSI_KERJA_ID"]	=	isset($pegawai->instansiKerjaId)	?	$pegawai->instansiKerjaId : 	"";
 			if(isset($pegawai_lokal->INSTANSI_KERJA_NAMA) and $pegawai_lokal->INSTANSI_KERJA_NAMA == "") 
 				$data["INSTANSI_KERJA_NAMA"]	=	isset($pegawai->instansiKerjaNama)	?	$pegawai->instansiKerjaNama : 	"";
+			//if(isset($pegawai_lokal->JABATAN_ID) and $pegawai_lokal->JABATAN_ID == "") 
 			if(isset($pegawai_lokal->JABATAN_ID) and $pegawai_lokal->JABATAN_ID == "") 
+				
+				
 				$data["JABATAN_ID"]	=	isset($pegawai->jabatanStrukturalId)	?	$pegawai->jabatanStrukturalId : 	"";
 			
 			if(isset($pegawai->jenisJabatanId)) 
@@ -3843,8 +3916,23 @@ class Kepegawaian extends Admin_Controller
 				$data["UNOR_ID"]	=	isset($pegawai->unorId)	?	$pegawai->unorId : 	"";
 			if(isset($pegawai_lokal->UNOR_INDUK_ID) and $pegawai_lokal->UNOR_INDUK_ID == "") 
 				$data["UNOR_INDUK_ID"]	=	isset($pegawai->unorIndukId)	?	$pegawai->unorIndukId : 	"";
+			
 
 			//var_dump($pegawai_lokal);
+
+			$jabatanId = "";
+			if($pegawai->jabatanStrukturalId!=""){
+				$jabatanId = $pegawai->jabatanStrukturalId;
+			}else if($pegawai->jabatanFungsionalUmumId!=""){
+				$jabatanId = $pegawai->jabatanFungsionalUmumId;
+			}else if($pegawai->jabatanFungsionalId!=""){
+				$jabatanId = $pegawai->jabatanFungsionalId;
+			}
+
+			$data["JABATAN_ID"]	=	$jabatanId;
+			$data["JABATAN_IDx"]	=	$jabatanId;
+
+
 			if(isset($pegawai_lokal->NIP_BARU)){
 				if(isset($pegawai->id) and $pegawai->id != "") {
 					if($this->pegawai_model->update_where("NIP_BARU",trim($pegawai_lokal->NIP_BARU), $data))
@@ -4361,9 +4449,15 @@ class Kepegawaian extends Admin_Controller
 	public function updatepensiun(){
 		$nip_baru 	= $this->input->post('nip');
 		$status_pensiun = $this->input->post('status_pensiun');
-		$dataupdate["TMT_PENSIUN"] = $this->input->post('tmt_pensiun');
-		$dataupdate["KEDUDUKAN_HUKUM_ID"] = 99;
-		$dataupdate["STATUS_HIDUP"] =  $status_pensiun == "pensiun" ? true : false;
+		if($status_pensiun!=null){
+			$dataupdate["TMT_PENSIUN"] = $this->input->post('tmt_pensiun');
+		}
+
+		$dataupdate["STATUS_HIDUP"] =  $status_pensiun != "99x" ? true : false;
+		$status_pensiun = $status_pensiun == "99x" ? "99" : $status_pensiun;
+		$dataupdate["KEDUDUKAN_HUKUM_ID"] = $status_pensiun;
+		
+		
 		
 		$this->pegawai_model->update_where("NIP_BARU", $nip_baru, $dataupdate);
 

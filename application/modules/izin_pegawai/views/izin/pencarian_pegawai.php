@@ -136,6 +136,8 @@ $("#form_search_pegawai_lain").submit(function(){
 	$table.ajax.reload(null,true);
 	return false;
 });
-
+$('.datepicker').datepicker({
+  autoclose: true,format: 'yyyy-mm-dd'
+});
 </script>
 </div>

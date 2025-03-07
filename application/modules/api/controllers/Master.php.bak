@@ -1,0 +1,36 @@
+<?php 
+require APPPATH . '/libraries/LIPIAPI_REST_Controller.php';
+class Master extends  LIPIAPI_REST_Controller {
+    public function __construct(){
+        parent::__construct();
+        $this->load->library('form_validation');	  
+    }
+
+   
+
+    function list_agama_get() {
+        $this->load->model('pegawai/agama_model');
+        
+        $data = $this->agama_model->find_all();
+        $output = array(
+            'success' => true,
+            'data'=>$data
+        );
+        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+        
+        
+    }
+
+    function list_golongan_get() {
+        $this->load->model('pegawai/golongan_model');
+        
+        $data = $this->golongan_model->find_all();
+        $output = array(
+            'success' => true,
+            'data'=>$data
+        );
+        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+        
+        
+    }
+}

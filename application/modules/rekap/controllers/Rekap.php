@@ -9,6 +9,7 @@ class rekap extends Admin_Controller
 	//--------------------------------------------------------------------
 	protected $permissionFiltersatker   = 'Pegawai.Kepegawaian.Filtersatker';
 	protected $permissionEselon1   = 'Pegawai.Kepegawaian.permissionEselon1';
+	protected $permissionViewSkp   = 'RiwayatPrestasiKerja.Kepegawaian.Rekap';
 	public $satker_id= null;
 	/**
 	 * Constructor
@@ -19,6 +20,7 @@ class rekap extends Admin_Controller
 	{
 		parent::__construct();
 		$this->load->model('pegawai/pegawai_model', null, true);
+		$this->load->model('pegawai/Vw_skp_model', null, true);
 		$this->load->model('golongan/golongan_model', null, true);
 		$this->load->model('pegawai/unitkerja_model');
 		Template::set_block('sub_nav', 'reports/_sub_nav');
@@ -411,4 +413,201 @@ class rekap extends Admin_Controller
 			Template::render();
 		}
 	} 	
+	public function skp(){
+		Template::set_view('rekap/skp');
+		Template::render();
+		
+	}
+
+	public function getdataskp(){
+    	$this->auth->restrict($this->permissionViewSkp);
+    	if (!$this->input->is_ajax_request()) {
+   			Template::set_message("Hanya request ajax", 'error');
+            redirect(SITE_AREA . '/kepegawaian/pegawai');
+		}
+		$draw = $this->input->post('draw');
+		$iSortCol = $this->input->post('iSortCol_1');
+		$sSortCol = $this->input->post('sSortDir_1');
+		
+		$length= $this->input->post('length') != "" ? $this->input->post('length') : 10;
+		$start= $this->input->post('start') != "" ? $this->input->post('start') : 0;
+
+		$search = isset($_REQUEST['search']["value"]) ? $_REQUEST['search']["value"] : "";
+		$searchKey = isset($_REQUEST['search']["key"]) ? $_REQUEST['search']["key"] : "";
+
+		$selectedUnors = array();
+		$advanced_search_filters  = $this->input->post("search[advanced_search_filters]");
+		if($advanced_search_filters){
+			$filters = array();
+			foreach($advanced_search_filters as  $filter){
+				$filters[$filter['name']] = $filter["value"];
+			}
+			
+		}
+		$kedudukan_hukum = "";
+		$this->db->start_cache();
+		
+		/*Jika $search mengandung nilai, berarti user sedang telah 
+		memasukan keyword didalam filed pencarian*/
+		$advanced_search_filters  = $this->input->post("search[advanced_search_filters]");
+		if($advanced_search_filters){
+			$filters = array();
+			foreach($advanced_search_filters as  $filter){
+				$filters[$filter['name']] = $filter["value"];
+			}
+			if($filters['unit_id_cb']){
+				$this->db->group_start();
+				$this->db->where('vw."ID"',$filters['unit_id_key']);	
+				$this->db->or_where('vw."ESELON_1"',$filters['unit_id_key']);	
+				$this->db->or_where('vw."ESELON_2"',$filters['unit_id_key']);	
+				$this->db->or_where('vw."ESELON_3"',$filters['unit_id_key']);	
+				$this->db->or_where('vw."ESELON_4"',$filters['unit_id_key']);	
+				$this->db->group_end();
+			}
+			if($filters['dari_tanggal']){
+				$this->db->group_start();
+					$this->pegawai_model->where('created_date >=',$filters['dari_tanggal']);	
+					$this->pegawai_model->where('created_date <=',$filters['sampai_tanggal']);	
+				$this->db->group_end();
+			}
+
+			if($filters['nip']){
+				$this->pegawai_model->where('PNS_NIP =',$filters['nip']);
+			}
+		}
+		
+		$this->db->stop_cache();
+		$output=array();
+		$output['draw']=$draw;
+		$asatkers = null;
+		if($this->auth->has_permission($this->UnitkerjaTerbatas)){
+			$asatkers = json_decode($this->auth->get_satkers());
+			$total= $this->Vw_skp_model->count_all($asatkers);
+		}else{
+			$total= $this->Vw_skp_model->count_all($this->satker_id);
+		}
+		
+		$orders = $this->input->post('order');
+		foreach($orders as $order){
+			if($order['column']==1){
+				$this->vw_skp_model->order_by("NIP_BARU",$order['dir']);
+			}
+			if($order['column']==2){
+				$this->vw_skp_model->order_by("pegawai.NAMA",$order['dir']);
+			}
+			if($order['column']==3){
+				$this->vw_skp_model->order_by("NAMA_PANGKAT",$order['dir']);
+			}
+			if($order['column']==4){
+				$this->vw_skp_model->order_by("NAMA_UNOR",$order['dir']);
+			}
+		}
+		$output['recordsTotal']= $output['recordsFiltered']=$total;
+		$output['data']=array();
+		
+		$this->Vw_skp_model->limit($length,$start);
+		if($this->auth->has_permission($this->UnitkerjaTerbatas)){
+			$asatkers = json_decode($this->auth->get_satkers());
+			$records=$this->Vw_skp_model->find_all($asatkers);
+		}else{
+			$records=$this->Vw_skp_model->find_all($this->satker_id);
+		}
+		
+		
+		$this->db->flush_cache();
+		$nomor_urut=$start+1;
+		if(isset($records) && is_array($records) && count($records)):
+			foreach ($records as $record) {
+                $row = array();
+                $row []  = $nomor_urut.".";
+                $row []  = "<b>".$record->PNS_NIP."</b><br>".$record->PNS_NAMA;
+                $row []  = $record->TAHUN;
+                $row []  = $record->NILAI_SKP;
+                $row []  = $record->NILAI_PPK;
+                $row []  = $record->nama_atasan;
+                $row []  = $record->a_nama_atasan;
+                $output['data'][] = $row;
+				$nomor_urut++;
+			}
+		endif;
+		echo json_encode($output);
+		
+	}
+	public function download_skp(){
+    	$this->auth->restrict($this->permissionViewSkp);
+    	$this->load->library('Convert');
+        $convert = new Convert;
+    	$this->load->library('Excel');
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel = PHPExcel_IOFactory::load(FCPATH.'assets/templates/formatrekonppkp2021.xls');
+
+		$objPHPExcel->setActiveSheetIndex(0);
+		$itemfield = $this->db->list_fields('pegawai');
+		$row = 2;
+		$asatkers = null;
+		$dari_tanggal = $this->input->get('dari_tanggal');
+		$sampai_tanggal = $this->input->get('sampai_tanggal');
+		if($sampai_tanggal != ""){
+			$this->db->group_start();
+				$this->pegawai_model->where('created_date >=',$dari_tanggal);	
+				$this->pegawai_model->where('created_date <=',$sampai_tanggal);	
+			$this->db->group_end();
+		}
+		if($this->auth->has_permission($this->UnitkerjaTerbatas)){
+			$asatkers = json_decode($this->auth->get_satkers());
+			$records=$this->Vw_skp_model->find_all($asatkers);
+		}else{
+			$records=$this->Vw_skp_model->find_all($this->satker_id);
+		}
+		if (isset($records) && is_array($records) && count($records)) :
+			foreach ($records as $record) :
+				$status_atasan = $record->status_pns_atasan == "1" ? "ASN" : "NON ASN";
+				$status_atasan_atasan = $record->status_pns_atasan_atasan == "1" ? "ASN" : "NON ASN";
+				$nama_unor_atasan = $record->nama_unor_atasan != "" ? $record->nama_unor_atasan : "Kementerian Pendidikan, Kebudayaan, Riset dan Teknologi";
+				$nama_unor_atasan_atasan = $record->nama_unor_atasan_atasan != "" ? $record->nama_unor_atasan_atasan : "Kementerian Pendidikan, Kebudayaan, Riset dan Teknologi";
+				$golongan_atasan = $record->golongan_atasan != "" ? $record->golongan_atasan : "45";
+				$golongan_atasan_atasan = $record->golongan_atasan_atasan != "" ? $record->golongan_atasan_atasan : "45";
+				$col = 0;
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->a_pns_id_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->pns_id_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->PNS_ID,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->TAHUN,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+				$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->NILAI_SKP, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->PERILAKU_ORIENTASI_PELAYANAN, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->PERILAKU_INTEGRITAS, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->PERILAKU_KOMITMEN, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->PERILAKU_DISIPLIN, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->PERILAKU_KERJASAMA, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->PERILAKU_KEPEMIMPINAN, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->ATASAN_ATASAN_LANGSUNG_PNS_JABATAN,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->ATASAN_LANGSUNG_PNS_JABATAN,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$golongan_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$golongan_atasan_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$convert->fmtDate($record->tmt_golongan_atasan,"dd/mm/yyyy"),PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$convert->fmtDate($record->tmt_golongan_atasan_atasan,"dd/mm/yyyy"),PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$nama_unor_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$nama_unor_atasan_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->ATASAN_LANGSUNG_PNS_NAMA,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->ATASAN_ATASAN_LANGSUNG_PNS_NAMA,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->ATASAN_LANGSUNG_PNS_NIP, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->getCellByColumnAndRow($col, $row)->setValueExplicit($record->ATASAN_ATASAN_LANGSUNG_PNS_NIP, PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$status_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$status_atasan_atasan,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->JENIS_JABATAN_ID,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->PERATURAN,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+			   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row,$record->PERILAKU_INISIATIF_KERJA,PHPExcel_Cell_DataType::TYPE_STRING);$col++;
+				$row++;
+			endforeach;
+		endif;
+		  
+		$filename = "skp".mt_rand(1,100000).'.xls'; //just some random filename
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="'.$filename.'"');
+		header('Cache-Control: max-age=0');
+
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');  //downloadable file is in Excel 2003 format (.xls)
+		//$objWriter = PHPExcel_IOFactory::createWriter($objTpl, 'Excel2007'); 
+		$objWriter->save('php://output');  //send it to user, of course you can save it to disk also!
+		exit; //done.. exiting!
+    }
 }

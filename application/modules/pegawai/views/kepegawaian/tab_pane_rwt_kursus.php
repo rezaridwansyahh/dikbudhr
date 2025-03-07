@@ -18,13 +18,13 @@
             <thead>
                 <tr>
                     <th width='20px' >No</th>
-                    <th>Tipe Kursus</th>
-                    <th>Jenis Kursus</th>
-                    <th width='100px' >Nama Kursus</th>
-                    <th width='100px' >Lama Kursus</th>
-					<th width='100px' >Tgl Kursus</th>
-					<th width='100px' >no_sertifikat</th>
-                    <th width='100px' align="center">AKSI</th>
+                    <th>Tipe Diklat</th>
+                    <th>Jenis Diklat</th>
+                    <th width='100px' >Nama Diklat</th>
+                    <th width='100px' >Jumlah Jam</th>
+					<th width='100px' >Tanggal Diklat</th>
+					<th width='100px' >No Sertifikat</th>
+                    <th width='100px' align="center">Aksi</th>
                 </tr>
             </thead>
             <tfoot>
@@ -73,6 +73,33 @@
 		});
 		//$container.on('click','.show-modal',showModalX);
 
+		$container.on('click','.btn-kirim-siasn',function(event){
+			event.preventDefault();
+			var kode =$(this).attr("kode");
+			
+			swal({
+					title: "Anda Yakin?",
+					text: "Mengirim data ke SIASN!",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonClass: 'btn-success',
+					confirmButtonText: 'Ya, Kirim!',
+					cancelButtonText: "Tidak, Batalkan!",
+					closeOnConfirm: false,
+					closeOnCancel: false,
+					showLoaderOnConfirm: true
+				},
+				function (isConfirm) {
+					if (isConfirm) {
+						sendToSIASN(kode);     
+						
+					} else {
+						swal("Batal", "", "error");
+					}
+				});
+			
+		});
+
 		$container.on('click','.btn-hapus',function(event){
 			event.preventDefault();
 			var kode =$(this).attr("kode");
@@ -108,6 +135,34 @@
 					}
 				});
 		});
+
+		function sendToSIASN(id) {
+			var formData = new FormData();
+			formData.append("id", id);
+			var json_url = "<?php echo base_url() ?>pegawai/Riwayatkursus/send_siasn";
+			
+
+			$.ajax({
+				type: "POST",
+				url: json_url,
+				data: formData,
+				dataType: "json",
+				processData: false, // tell jQuery not to process the data
+				contentType: false, // tell jQuery not to set contentType
+				success: function (data) {
+					console.log(data);
+					swal({
+						title: "Sukses!",
+						text: data.msg,
+						type: "success",
+						timer: 4000,
+						showConfirmButton: true
+					}, function () {
+						grid_daftar.ajax.reload();
+					});
+				}
+			});
+		}
 				
 	})(jQuery);
 </script>

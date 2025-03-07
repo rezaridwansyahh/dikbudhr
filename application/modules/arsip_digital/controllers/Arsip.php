@@ -105,7 +105,7 @@ class Arsip extends Admin_Controller
     public function validasi()
     {
         $id = $this->uri->segment(5);
-        $this->auth->restrict($this->permissionValidasi);
+        //$this->auth->restrict($this->permissionValidasi);
         if (empty($id)) {
             Template::set_message(lang('arsip_digital_invalid_id'), 'error');
 
@@ -166,7 +166,30 @@ class Arsip extends Admin_Controller
 
         exit; 
     }
-
+    public function viewbkn($id){
+        $datadetil = $this->arsip_digital_model->find($id);
+        $file   = urlencode($datadetil->location);
+        // die($file);
+        if($file != ""){
+            $response   = $this->getDokumen($datadetil->location);
+            if($response != ""){
+                header('Content-Disposition: inline; filename="example.pdf"');
+                header('Content-Type: application/pdf');
+                echo $response;
+            }
+        }
+    }
+    private function getDokumen($file){
+        $api_bkn = new Api_bkn;
+        $response = $api_bkn->downloadDokumen($file);
+        return $response;
+    }
+    private function saveArsip($file,$response){
+        $filename = end((explode("/", $file)));
+        if($response != "")
+            file_put_contents($this->settings_lib->item('site.urluploaded').$filename, $response);
+        return $filename;
+    }
     //--------------------------------------------------------------------------
     // !PRIVATE METHODS
     //--------------------------------------------------------------------------
@@ -383,19 +406,22 @@ class Arsip extends Admin_Controller
         $nomor_urut=$start+1;
         if(isset($records) && is_array($records) && count($records)):
             foreach ($records as $record) {
-                $isvalid = "<small class='label bg-red'>Blm Valid</small>";
+                $isvalid = "<small class='label bg-blue'>Arsip Tersimpan</small>";
                 if($record->ISVALID == "1"){
-                    $isvalid = "<small class='label  bg-green'>Valid</small>";
+                    $isvalid = "<small class='label  bg-green'>Sudah Divalidasi</small>";
                 }
                 $row = array();
                 $row []  = $nomor_urut.".";
                 $row []  = "<b>".$record->NAMA_JENIS."</b>";
-                $row []  = $record->KETERANGAN."<br><i>".$record->JENIS_FILE." ".$this->formatSizeUnits($record->FILE_SIZE)."</i>"; 
+                $row []  = $record->KETERANGAN."<br><i>".$record->JENIS_FILE."</i>"; 
                 $row []  = $isvalid;
                 $btn_actions = array();
                 $btn_actions2 = array();
-                $btn_actions  [] = "<a href='".base_url()."admin/arsip/arsip_digital/viewdoc/".$record->ID."' data-toggle='tooltip' title='Lihat Dokumen' tooltip='".$record->NAMA_JENIS." - ".$record->KETERANGAN."' class='btn btn-sm btn-info modal-custom-global'><i class='glyphicon glyphicon-eye-open'></i> </a>";
-
+                if($record->location != ""){
+                    $btn_actions  [] = "<a href='".base_url()."admin/arsip/arsip_digital/viewbkn/".$record->ID."/?file=".$record->location."' data-toggle='tooltip' title='Lihat Dokumen' tooltip='".$record->NAMA_JENIS." - ".$record->KETERANGAN."' target='_blank' class='btn btn-sm btn-info'><i class='glyphicon glyphicon-eye-open'></i> </a>";
+                }else{
+                    $btn_actions  [] = "<a href='".base_url()."admin/arsip/arsip_digital/viewdoc/".$record->ID."' data-toggle='tooltip' title='Lihat Dokumen' tooltip='".$record->NAMA_JENIS." - ".$record->KETERANGAN."' class='btn btn-sm btn-info modal-custom-global'><i class='glyphicon glyphicon-eye-open'></i> </a>";
+                }
                 $btn_actions  [] = "<a href='".base_url()."admin/arsip/arsip_digital/download/".$record->ID."' data-toggle='tooltip' title='Download Dokumen' class='btn btn-sm btn-warning'><i class='glyphicon glyphicon-download'></i> </a>";
                 if($this->auth->has_permission($this->permissionEdit))
                 {    
@@ -482,7 +508,7 @@ class Arsip extends Admin_Controller
         if (isset($_FILES['file_dokumen']) && $_FILES['file_dokumen']['name']) 
         {
             $errors=array();
-            $allowed_ext = array('jpg','jpeg','png','gif','bpm','tiff','tif','pdf','doc','xls','xlsx','ppt','pptx','docx','zip','rar');
+            $allowed_ext = array('jpg','jpeg','png','gif','bpm','tiff','tif','pdf','PDF','doc','xls','xlsx','ppt','pptx','docx','zip','rar');
             $file_name =$_FILES['file_dokumen']['name'];
             // $file_name =$_FILES['image']['tmp_name'];
             $file_ext   = explode('.',$file_name);

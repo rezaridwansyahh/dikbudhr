@@ -74,7 +74,7 @@
                     <a href="javascript:void(0)" id="istri" class="sowhide">
                         <i class="fa fa-plus-square">&nbsp;&nbsp;</i>
                     </a>
-                    <span style="text-transform: uppercase;" class="font-blue"><b>Istri</b></span>
+                    <span style="text-transform: uppercase;" class="font-blue"><b>Pasangan</b></span>
                 <td>    
             </tr>
             <?php

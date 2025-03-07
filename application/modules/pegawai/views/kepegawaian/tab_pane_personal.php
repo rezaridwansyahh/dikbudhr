@@ -187,6 +187,8 @@
                                 Lokasi Kerja
                             </div>
                             <div class="form-group col-sm-4">
+                              
+                                <b><?php echo isset($selectedLokasiPegawai->NAMA) ? $selectedLokasiPegawai->NAMA  : ""; ?></b>
                                 <b><?php echo isset($pegawai->LOKASI_KERJA) ? $pegawai->LOKASI_KERJA  : ""; ?></b>
                             </div>
                         </div>
@@ -259,7 +261,7 @@
        <div class="control-group col-sm-6">
            <div class="row">
                <div class="form-group col-sm-8">
-                   TMT CPNS
+                   TMT ASN
                </div>
                <div class="form-group col-sm-4">
                       <b><?php echo isset($pegawai->TMT_CPNS) ? $convert->fmtDate($pegawai->TMT_CPNS ,"dd month yyyy") : ""; ?></b>
@@ -269,23 +271,45 @@
        <div class="control-group col-sm-6">
            <div class="row">
                <div class="form-group col-sm-4">
-                   SK CPNS
+                   SK ASN
                </div>
                <div class="form-group  col-sm-8">
                       <b><?php echo isset($pegawai->NOMOR_SK_CPNS) ? $pegawai->NOMOR_SK_CPNS != "" ? $pegawai->NOMOR_SK_CPNS : "" : ''; ?></b>
                </div>
            </div>
        </div>
+        
+        
+
+        <?php 
+        $status_pppk = array(71,72,73);
+        if(in_array($pegawai->KEDUDUKAN_HUKUM_ID,$status_pppk)){ ?>
+            <div class="form-group col-sm-12">
+                <div class="row">
+                    <div class="col-sm-4">
+                        Status ASN
+                    </div>
+                    <div class="col-sm-8">
+                        <b><?php echo $pegawai->KEDUDUKAN_HUKUM;?></b>
+                    </div>
+                </div>
+            </div>
+
+        <?php    }else{ ?>
+
         <div class="form-group col-sm-12">
             <div class="row">
                 <div class="col-sm-4">
-                    Status Kepegawaian
+                    Status PNS
                 </div>
                 <div class="col-sm-8">
-                    <b><?php echo isset($pegawai->STATUS_CPNS_PNS) ? $pegawai->STATUS_CPNS_PNS == "P" ? "PNS" : "" : ''; ?>   (<?php echo $this->convert->fmtDate($pegawai->TMT_PNS,"dd month yyyy"); ?>)</b>
+                    <b><?php echo isset($pegawai->STATUS_CPNS_PNS) ? $pegawai->STATUS_CPNS_PNS == "P" || "PNS" ? "PNS" : "" : ''; ?>   (<?php echo $pegawai->TMT_PNS != null ? $this->convert->fmtDate($pegawai->TMT_PNS,"dd month yyyy") : 'TMT PNS KOSONG'; ?>)</b>
                 </div>
             </div>
         </div>
+
+        <?php } ?>
+        
         <div class="form-group col-sm-12">
             <div class="row">
                 <div class="col-sm-4">
@@ -316,13 +340,13 @@
 
         </fieldset>
             <fieldset>
-                <legend>Data Pendukung</legend>
+                <legend>Data Lainnya</legend>
                    
                         
                     <div class="control-group col-sm-6">
                          <div class="row">
                              <div class="form-group col-sm-8">
-                                 No Surat Keterangan Dokter (CPNS)
+                                 No Surat Keterangan Dokter 
                              </div>
                              <div class="form-group col-sm-4">
                                     <b><?php echo set_value('NO_SURAT_DOKTER', isset($pegawai->NO_SURAT_DOKTER) ? trim($pegawai->NO_SURAT_DOKTER) : '-'); ?></b>
@@ -343,7 +367,7 @@
                      <div class="control-group col-sm-6">
                          <div class="row">
                              <div class="form-group col-sm-8">
-                                 No Surat Bebas Narkoba (CPNS)
+                                 No Surat Bebas Narkoba 
                              </div>
                              <div class="form-group col-sm-4">
                                     <b><?php echo set_value('NO_BEBAS_NARKOBA', isset($pegawai->NO_BEBAS_NARKOBA) ? trim($pegawai->NO_BEBAS_NARKOBA) : ''); ?></b>

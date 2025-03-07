@@ -85,7 +85,7 @@ class Unitkerja_model extends BF_Model
 			$this->select($this->table_name . '.*');
 		}
 		if ($satker != "") {
-			$this->unitkerja_model->where('UNOR_INDUK', $satker);
+			$this->unitkerja_model->where('UNOR_INDUK', trim($satker));
 		}
 		return parent::find_all();
 	}
@@ -96,7 +96,7 @@ class Unitkerja_model extends BF_Model
 			$this->select($this->table_name . '.*');
 		}
 		if ($satker != "") {
-			$this->unitkerja_model->where('UNOR_INDUK', $satker);
+			$this->unitkerja_model->where('UNOR_INDUK', trim($satker));
 		}
 		$this->unitkerja_model->where('EXPIRED_DATE IS NULL');
 		return parent::find_all();
@@ -108,7 +108,7 @@ class Unitkerja_model extends BF_Model
 			$this->select('"KODE_INTERNAL",unitkerja."ID","NAMA_UNOR","ESELON_ID","NAMA_JABATAN","GELAR_DEPAN","NAMA","GELAR_BELAKANG",NIP_BARU,WAKTU,JENIS_SATKER,EXPIRED_DATE');
 		}
 		if ($satker != "") {
-			$this->unitkerja_model->where('UNOR_INDUK', $satker);
+			$this->unitkerja_model->where('UNOR_INDUK', trim($satker));
 		}
 		if(!$non_aktif)
 			$this->unitkerja_model->where('EXPIRED_DATE IS NULL');
@@ -123,7 +123,7 @@ class Unitkerja_model extends BF_Model
 			$this->select('"KODE_INTERNAL",unitkerja."ID","NAMA_UNOR","ESELON_ID","NAMA_JABATAN","GELAR_DEPAN","NAMA","GELAR_BELAKANG",NIP_BARU,WAKTU');
 		}
 		if ($satker != "") {
-			$this->unitkerja_model->where('UNOR_INDUK', $satker);
+			$this->unitkerja_model->where('UNOR_INDUK', trim($satker));
 		}
 		if(!$non_aktif)
 			$this->unitkerja_model->where('EXPIRED_DATE IS NULL');
@@ -396,7 +396,10 @@ class Unitkerja_model extends BF_Model
 			$this->db->or_where("ESELON_2", $id);
 			$this->db->group_end();
 		}
+		$this->db->group_start();
 		$this->unitkerja_model->where('"ID" in (select "UNOR_INDUK" from hris.unitkerja)');
+		$this->unitkerja_model->or_where('IS_SATKER', 1);
+		$this->db->group_end();
 		$this->unitkerja_model->where('EXPIRED_DATE IS NULL');
 		return parent::find_all();
 	}
@@ -425,7 +428,7 @@ class Unitkerja_model extends BF_Model
 		$this->db->SELECT('ID,NAMA_UNOR,NAMA_JABATAN,NAMA_UNOR_FULL,EXPIRED_DATE');
 		$this->db->from('vw_unit_list vw');
 		$this->db->like('lower(vw."NAMA_UNOR")', strtolower($key), "BOTH");
-		if ($id != '') {
+		if ($id != '' && count($asatkers) <= 0) {
 			$this->db->group_start();
 			$this->db->where('vw."ID"', $id);
 			$this->db->or_where('vw."ESELON_1"', $id);
@@ -445,7 +448,7 @@ class Unitkerja_model extends BF_Model
 		}
 		$this->db->where('vw."NAMA_UNOR_FULL" != \'\' ', FALSE, FALSE);
 		$this->db->order_by('vw."NAMA_UNOR_FULL"', "ASC");
-		$this->db->limit(100);
+		$this->db->limit(10000);
 		return $this->db->get()->result();
 	}
 	public function count_satker($unor_id = '')
@@ -579,7 +582,7 @@ class Unitkerja_model extends BF_Model
 		}
 		$this->db->join("pegawai p", "unitkerja.ID=p.UNOR_ID", "LEFT");
 		$this->db->where('"unitkerja.ID" in (select "UNOR_INDUK" from hris.unitkerja)');
-		// $this->db->where("IS_SATKER",1);
+		$this->db->where("IS_SATKER",1);
 		$this->db->where('EXPIRED_DATE IS NULL');
 		$this->db->group_by("UNOR_INDUK");
 		$this->db->group_by("NAMA_UNOR");
@@ -591,8 +594,9 @@ class Unitkerja_model extends BF_Model
 			$this->select($this->table_name . '.ID,NAMA_UNOR,UNOR_INDUK');
 		}
 		$this->db->where('"unitkerja.ID" in (select "UNOR_INDUK" from hris.unitkerja)');
-		// $this->db->where("IS_SATKER",1);
+		$this->db->where("IS_SATKER",1);
 		$this->db->where('EXPIRED_DATE IS NULL');
+		
 		return parent::count_all();
 	}
 	public function find_unitkerja($diatasan_id = "")

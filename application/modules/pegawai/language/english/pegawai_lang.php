@@ -74,6 +74,7 @@ $lang['pegawai_field_JENIS_PEGAWAI_ID'] = 'Jenis Pegawai ID';
 $lang['pegawai_field_KEDUDUKAN_HUKUM_ID'] = 'Kedudukan Hukum ID';
 $lang['pegawai_field_STATUS_CPNS_PNS'] = 'Status CPNS PNS';
 $lang['pegawai_field_KARTU_PEGAWAI'] = 'Kartu Pegawai';
+$lang['pegawai_field_KARTU_ASN'] = 'Kartu ASN';
 $lang['pegawai_field_NOMOR_SK_CPNS'] = 'Nomor SK CPNS';
 $lang['pegawai_field_TGL_SK_CPNS'] = 'Tgl SK CPNS';
 $lang['pegawai_field_TMT_CPNS'] = 'TMT CPNS';

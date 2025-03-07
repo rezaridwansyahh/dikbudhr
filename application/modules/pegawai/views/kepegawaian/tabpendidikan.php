@@ -5,6 +5,7 @@
     $tab_pane_diklat_struktural_id = "tab_pane_diklat_struktural";//uniqid("tab_pane_diklat_struktural");
     $tab_pane_diklat_fungsional_id = "tab_pane_diklat_fungsional";//uniqid("tab_pane_diklat_fungsional");
     $tab_pane_rwt_kursus = "tab_pane_rwt_kursus";
+    $tab_pane_rwt_diklat = "tab_pane_rwt_diklat";
 ?>
 
  
@@ -21,13 +22,16 @@ $PNS_ID = isset($pegawai->PNS_ID) ? $pegawai->PNS_ID : '';
                         <a href="#<?php echo $tab_pane_pendidikan_id; ?>" data-toggle="tab" aria-expanded="false"> Pendidikan Formal </a>
                     </li>
                      <li class="">
-                        <a href="#<?php echo $tab_pane_diklat_struktural_id;?>" data-toggle="tab" aria-expanded="false"> Diklat Struktural </a>
+                        <a href="#<?php echo $tab_pane_diklat_struktural_id;?>" data-toggle="tab" aria-expanded="false"> Pelatihan Struktural </a>
                     </li>
                     <li class="">
-                        <a href="#<?php echo $tab_pane_diklat_fungsional_id;?>" data-toggle="tab" aria-expanded="false"> Diklat Fungsional </a>
+                        <a href="#<?php echo $tab_pane_diklat_fungsional_id;?>" data-toggle="tab" aria-expanded="false"> Pelatihan Fungsional </a>
                     </li>
                     <li class="">
-                        <a href="#<?php echo $tab_pane_rwt_kursus;?>" data-toggle="tab" aria-expanded="false"> Kursus </a>
+                        <a href="#<?php echo $tab_pane_rwt_kursus;?>" data-toggle="tab" aria-expanded="false"> Pelatihan Teknis/Seminar/Workshop/Kursus </a>
+                    </li>
+                    <li class="">
+                        <a href="#<?php echo $tab_pane_rwt_diklat;?>" data-toggle="tab" aria-expanded="false"> Pelatihan SIASN </a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -36,6 +40,7 @@ $PNS_ID = isset($pegawai->PNS_ID) ? $pegawai->PNS_ID : '';
                         $this->load->view('kepegawaian/tab_pane_riwayat_diklat_struktural',array('TAB_ID'=>$tab_pane_diklat_struktural_id));
                         $this->load->view('kepegawaian/tab_pane_riwayat_diklat_fungsional',array('TAB_ID'=>$tab_pane_diklat_fungsional_id));
                         $this->load->view('kepegawaian/tab_pane_rwt_kursus',array('TAB_ID'=>$tab_pane_rwt_kursus));
+                        $this->load->view('kepegawaian/tab_pane_riwayat_diklat',array('TAB_ID'=>$tab_pane_rwt_diklat));
                     ?>
                 </div>
             </div>

@@ -42,7 +42,7 @@ class Istri_model extends BF_Model
 		array(
 			'field' => 'PNS_ID',
 			'label' => 'PNS ID',
-			'rules' => 'max_length[32]|required',
+			'rules' => 'max_length[36]|required',
 		),
 		array(
 			'field' => 'NAMA',
@@ -79,6 +79,7 @@ class Istri_model extends BF_Model
 	public function find_first_row(){
 		return $this->db->get($this->db->schema.".".$this->table_name)->first_row();
 	}
+	
 	public function find_all($NIP ="")
 	{
 		if(empty($this->selects))

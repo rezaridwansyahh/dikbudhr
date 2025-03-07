@@ -179,7 +179,11 @@
     });
 </script>
 <script>
-	 $(".select2").select2();
+	 $(".select2").select2({
+        width: '100%',
+        dropdownParent: $("#modal-custom-global")
+     });
+    $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 </script>
 <script>
 	$("#btnsave").click(function(){

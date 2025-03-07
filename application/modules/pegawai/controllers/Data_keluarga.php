@@ -505,6 +505,8 @@ class Data_keluarga extends Admin_Controller
     public function saveistri(){
          // Validate the data
         $this->form_validation->set_rules($this->istri_model->get_validation_rules());
+        $msg = "";
+        $status = false;
         $response = array(
             'success'=>false,
             'msg'=>'Unknown error'
@@ -541,9 +543,17 @@ class Data_keluarga extends Admin_Controller
         if(isset($id_data) && !empty($id_data)){
             $this->istri_model->update($id_data,$data);
         }
-        else $this->istri_model->insert($data);
-        $response ['success']= true;
-        $response ['msg']= "berhasil";
+        else{
+            $result = $this->istri_model->insert($data);  
+            if($result){
+                $msg = "Berhasil";
+                $status = true;
+            }else{
+                $msg = "Gagal ".$this->istri_model->error;
+            }
+        } 
+        $response ['success']= $status;
+        $response ['msg']= $msg;
         echo json_encode($response);    
 
     }
@@ -573,7 +583,7 @@ class Data_keluarga extends Admin_Controller
         
         $data["NIP"] = $pegawai_data->NIP_BARU;
         $data['TANGGAL_LAHIR']  = $this->input->post('TANGGAL_LAHIR') ? $this->input->post('TANGGAL_LAHIR') : null;
-         
+        $data['PASANGAN']  = $this->input->post('PASANGAN') ? $this->input->post('PASANGAN') : null;
         $id_data = $this->input->post("id_data");
         if(isset($id_data) && !empty($id_data)){
             $this->anak_model->update($id_data,$data);

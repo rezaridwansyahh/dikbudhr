@@ -78,12 +78,15 @@ class Sisa_cuti_model extends BF_Model
 		if(empty($this->selects))
 		{
 			$this->select($this->table_name .'.ID,PNS_NIP,
-				pegawai.NAMA,SISA_N,SISA_N_1,SISA_N_2,SISA,SUDAH_DIAMBIL,TAHUN');
+				SUDAH_DIAMBIL,
+				v.jumlah_hari "V_SUDAH_DIAMBIL",
+				pegawai.NAMA,SISA_N,SISA_N_1,SISA_N_2,SISA,v.jumlah_hari "V_SUDAH_DIAMBIL",sisa_cuti.TAHUN');
 		}
 		if($satker_id != "")
 			$this->sisa_cuti_model->where("UNOR_INDUK_ID",$satker_id);
 		$this->sisa_cuti_model->join('pegawai', 'pegawai.NIP_BARU = sisa_cuti.PNS_NIP', 'left');
-		$this->sisa_cuti_model->order_by("TAHUN","desc");
+		$this->db->join('vw_cuti_tahunan v', 'v.NIP_PNS = sisa_cuti.PNS_NIP and v.TAHUN = sisa_cuti.TAHUN', 'left');
+		$this->sisa_cuti_model->order_by("sisa_cuti.TAHUN","desc");
 		$this->sisa_cuti_model->order_by("pegawai.NAMA","desc");
 		$this->sisa_cuti_model->order_by("ID","desc");
 		return parent::find_all();
@@ -100,5 +103,17 @@ class Sisa_cuti_model extends BF_Model
 		$this->sisa_cuti_model->join('pegawai', 'pegawai.NIP_BARU = sisa_cuti.PNS_NIP', 'left');
 		
 		return parent::count_all();
+	}
+	public function find_by($kolom,$value)
+	{
+		
+		if(empty($this->selects))
+		{
+			$this->select($this->table_name .'.ID,PNS_NIP,SUDAH_DIAMBIL,
+				pegawai.NAMA,SISA_N,SISA_N_1,SISA_N_2,SISA,v.jumlah_hari "V_SUDAH_DIAMBIL",sisa_cuti.TAHUN');
+		}
+		$this->sisa_cuti_model->join('pegawai', 'pegawai.NIP_BARU = sisa_cuti.PNS_NIP', 'left');
+		$this->db->join('vw_cuti_tahunan v', 'v.NIP_PNS = sisa_cuti.PNS_NIP and v.TAHUN = sisa_cuti.TAHUN', 'left');
+		return parent::find_by($kolom,$value);
 	}
 }

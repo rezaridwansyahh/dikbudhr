@@ -12,6 +12,12 @@ $modal_id = uniqid("modal_");
     </style>
 <div class="row">
     <div class="col-md-12">     
+        <center>
+            <strong class=''>
+                <h3><code>Perhatian</code></h3>
+                <code>Pastikan Pengajuan BDR sesuai dengan kondisi level PPKM</code>
+            </strong>
+        </center>
         <div class='box box-warning'>
             <div class="box-body">
                 <div class='col-md-6'>

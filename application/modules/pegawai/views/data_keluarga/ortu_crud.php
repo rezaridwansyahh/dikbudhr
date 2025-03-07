@@ -89,6 +89,8 @@
                 <div class='controls'>
                     <select name="JENIS_DOKUMEN_ID" id="JENIS_DOKUMEN_ID" class="form-control">
                         <option value="">-- Silahkan Pilih --</option>
+                        <option value="KTP">KTP</option>
+                        <option value="PASPOR">PASPOR</option>
                         <?php if (isset($JENIS_DOKUMEN_IDs) && is_array($JENIS_DOKUMEN_IDs) && count($JENIS_DOKUMEN_IDs)):?>
                         <?php foreach($JENIS_DOKUMEN_IDs as $record):?>
                             <option value="<?php echo $record->ID?>" <?php if(isset($detail_riwayat->JENIS_DOKUMEN_ID))  echo  ($detail_riwayat->JENIS_DOKUMEN_ID==$record->ID) ? "selected" : ""; ?>><?php echo $record->NAMA; ?></option>

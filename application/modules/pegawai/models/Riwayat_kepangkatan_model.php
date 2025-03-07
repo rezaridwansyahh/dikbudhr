@@ -119,4 +119,18 @@ class Riwayat_kepangkatan_model extends BF_Model
 		$row = $query->first_row();
 		return $row->jml;
 	}
+	public function find_aktif($PNS_NIP = "")
+	{
+
+		if (empty($this->selects)) {
+			$this->select(
+				'ID_GOLONGAN,
+				PANGKAT,SK_NOMOR,PNS_NIP,TMT_GOLONGAN'
+			);
+			//$this->select($this->table_name .'.STATUS_SATKER');
+		}
+		$this->db->where('PNS_NIP', $PNS_NIP);
+		$this->db->order_by("TMT_GOLONGAN","DESC");
+		return parent::find_all();
+	}
 }

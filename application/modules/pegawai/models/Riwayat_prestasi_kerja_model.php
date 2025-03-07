@@ -87,7 +87,7 @@ class Riwayat_prestasi_kerja_model extends BF_Model
 		array(
 			'field' => 'NILAI_SKP',
 			'label' => 'NILAI SKP',
-			'rules' => 'numeric|required|greater_than_equal_to[0]|less_than_equal_to[100]',
+			'rules' => 'numeric|required',
 		),
 		array(
 			'field' => 'TAHUN',
@@ -97,32 +97,32 @@ class Riwayat_prestasi_kerja_model extends BF_Model
 		array(
 			'field' => 'PERILAKU_DISIPLIN',
 			'label' => 'PERILAKU DISIPLIN',
-			'rules' => 'numeric|required|greater_than_equal_to[0]|less_than_equal_to[100]',
+			'rules' => 'numeric|required',
 		),
 		array(
 			'field' => 'PERILAKU_INTEGRITAS',
 			'label' => 'PERILAKU INTEGRITAS',
-			'rules' => 'numeric|required|greater_than_equal_to[0]|less_than_equal_to[100]',
+			'rules' => 'numeric|required',
 		),
 		array(
 			'field' => 'PERILAKU_KEPEMIMPINAN',
 			'label' => 'PERILAKU KEPEMIMPINAN',
-			'rules' => 'numeric|required|greater_than_equal_to[0]|less_than_equal_to[100]',
+			'rules' => 'numeric|required',
 		),
 		array(
 			'field' => 'PERILAKU_KERJASAMA',
 			'label' => 'PERILAKU KERJASAMA',
-			'rules' => 'numeric|required|greater_than_equal_to[0]|less_than_equal_to[100]',
+			'rules' => 'numeric|required',
 		),
 		array(
 			'field' => 'PERILAKU_KOMITMEN',
 			'label' => 'PERILAKU KOMITMEN',
-			'rules' => 'numeric|required|greater_than_equal_to[0]|less_than_equal_to[100]',
+			'rules' => 'numeric|required',
 		),
 		array(
 			'field' => 'PERILAKU_ORIENTASI_PELAYANAN',
 			'label' => 'PERILAKU ORIENTASI PELAYANAN',
-			'rules' => 'numeric|required|greater_than_equal_to[0]|less_than_equal_to[100]',
+			'rules' => 'numeric|required',
 		),
 	);
 	protected $insert_validation_rules  = array();

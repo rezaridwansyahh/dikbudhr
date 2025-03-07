@@ -12,28 +12,28 @@
         </div>
     <?php echo form_open($this->uri->uri_string(), 'id="frmkursus"'); ?>
     <fieldset>
-            <input id='ID' type='hidden' class="form-control" name='ID' maxlength='32' value="<?php echo set_value('ID', isset($detail_riwayat->ID) ? trim($detail_riwayat->ID) : ''); ?>" />
-            <input id='PNS_ID' type='hidden' class="form-control" name='PNS_ID' maxlength='32' value="<?php echo set_value('PNS_ID', isset($PNS_ID) ? trim($PNS_ID) : ''); ?>" />
+            <input id='ID' type='hidden' class="form-control" name='ID' value="<?php echo set_value('ID', isset($detail_riwayat->ID) ? trim($detail_riwayat->ID) : ''); ?>" />
+            <input id='PNS_ID' type='hidden' class="form-control" name='PNS_ID' value="<?php echo set_value('PNS_ID', isset($PNS_ID) ? trim($PNS_ID) : ''); ?>" />
         	<div class="control-group<?php echo form_error('tipe_kursus') ? ' error' : ''; ?> col-sm-12">
-                <?php echo form_label('Tipe Kursus', 'Jenis ', array('class' => 'control-label')); ?>
+                <?php echo form_label('TIPE PELATIHAN', 'Jenis ', array('class' => 'control-label')); ?>
                 <div class='controls'>
                 	<select name="TIPE_KURSUS" id="TIPE_KURSUS" class="form-control">
 						<option value="">-- Silahkan Pilih --</option>
-						<option value="Kursus" <?php if(isset($detail_riwayat->TIPE_KURSUS))  echo  (TRIM($detail_riwayat->TIPE_KURSUS)=="Kursus") ? "selected" : ""; ?> >Kursus</option>
+						<option value="Kursus" <?php if(isset($detail_riwayat->TIPE_KURSUS))  echo  (TRIM($detail_riwayat->TIPE_KURSUS)=="Kursus") ? "selected" : ""; ?> >Non sertifikat</option>
 						<option value="Sertifikat" <?php if(isset($detail_riwayat->TIPE_KURSUS))  echo  (TRIM($detail_riwayat->TIPE_KURSUS)=="Sertifikat") ? "selected" : ""; ?> >Sertifikat</option>
 					</select>
                     <span class='help-inline'><?php echo form_error('TIPE_KURSUS'); ?></span>
                 </div>
             </div>
             <div class="control-group<?php echo form_error('JENIS_KURSUS') ? ' error' : ''; ?> col-sm-12">
-                <?php echo form_label("JENIS KURSUS", 'JENIS_KURSUS', array('class' => 'control-label')); ?>
+                <?php echo form_label("JENIS PELATIHAN", 'JENIS_KURSUS', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='JENIS_KURSUS' type='text' class="form-control" name='JENIS_KURSUS' maxlength='32' value="<?php echo set_value('JENIS_KURSUS', isset($detail_riwayat->JENIS_KURSUS) ? trim($detail_riwayat->JENIS_KURSUS) : ''); ?>" />
+                    <input placeholder= 'workshop/seminar/kursus/dll' id='JENIS_KURSUS' type='text' class="form-control" name='JENIS_KURSUS' maxlength='32' value="<?php echo set_value('JENIS_KURSUS', isset($detail_riwayat->JENIS_KURSUS) ? trim($detail_riwayat->JENIS_KURSUS) : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('JENIS_KURSUS'); ?></span>
                 </div>
             </div>
             <div class="control-group<?php echo form_error('NAMA_KURSUS') ? ' error' : ''; ?> col-sm-12">
-                <?php echo form_label("NAMA KURSUS", 'SK NOMOR', array('class' => 'control-label')); ?>
+                <?php echo form_label("NAMA PELATIHAN", 'SK NOMOR', array('class' => 'control-label')); ?>
                 <div class='controls'>
                     <input id='NAMA_KURSUS' type='text' class="form-control" name='NAMA_KURSUS' maxlength='200' value="<?php echo set_value('NAMA_KURSUS', isset($detail_riwayat->NAMA_KURSUS) ? trim($detail_riwayat->NAMA_KURSUS) : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('NAMA_KURSUS'); ?></span>
@@ -53,7 +53,7 @@
             <div class="control-group<?php echo form_error('LAMA_KURSUS') ? ' error' : ''; ?> col-sm-3">
                 <?php echo form_label("LAMA (JAM)", 'SK NOMOR', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='LAMA_KURSUS' type='text' class="form-control" name='LAMA_KURSUS' maxlength='5' value="<?php echo set_value('LAMA_KURSUS', isset($detail_riwayat->LAMA_KURSUS) ? trim($detail_riwayat->LAMA_KURSUS) : ''); ?>" />
+                    <input id='LAMA_KURSUS' type='number' class="form-control" name='LAMA_KURSUS' maxlength='5' value="<?php echo set_value('LAMA_KURSUS', isset($detail_riwayat->LAMA_KURSUS) ? trim($detail_riwayat->LAMA_KURSUS) : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('LAMA_KURSUS'); ?></span>
                 </div>
             </div>

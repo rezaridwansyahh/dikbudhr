@@ -39,21 +39,13 @@ class Diklat_struktural_model extends BF_Model
 	// That way it is only required during inserts, not updates which may only
 	// be updating a portion of the data.
 	protected $validation_rules 		= array(
-		array(
-			'field' => 'PNS_ID',
-			'label' => 'PNS ID',
-			'rules' => 'required',
-		),
+		
 		array(
 			'field' => 'TAHUN',
 			'label' => 'TAHUN',
 			'rules' => 'required',
 		),
-		array(
-			'field' => 'ID_DIKLAT',
-			'label' => 'ID_DIKLAT',
-			'rules' => 'required',
-		), 
+		
 	);
 	protected $insert_validation_rules  = array(
 		

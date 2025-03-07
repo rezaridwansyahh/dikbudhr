@@ -42,7 +42,7 @@ class Pegawai_model extends BF_Model
 		array(
 			'field' => 'PNS_ID',
 			'label' => 'PNS ID',
-			'rules' => 'max_length[32]|required',
+			'rules' => 'max_length[36]|required',
 		),
 		array(
 			'field' => 'NIP_LAMA',
@@ -99,6 +99,7 @@ class Pegawai_model extends BF_Model
 			'label' => 'lang:pegawai_field_NIK',
 			'rules' => 'max_length[32]',
 		),
+		
 		array(
 			'field' => 'KK',
 			'label' => 'lang:pegawai_field_KK',
@@ -152,7 +153,12 @@ class Pegawai_model extends BF_Model
 		array(
 			'field' => 'KARTU_PEGAWAI',
 			'label' => 'lang:pegawai_field_KARTU_PEGAWAI',
-			'rules' => 'max_length[11]',
+			'rules' => 'max_length[100]',
+		),
+		array(
+			'field' => 'KARTU_ASN',
+			'label' => 'lang:pegawai_field_KARTU_ASN',
+			'rules' => 'max_length[100]',
 		),
 		array(
 			'field' => 'NOMOR_SK_CPNS',
@@ -237,12 +243,12 @@ class Pegawai_model extends BF_Model
 		array(
 			'field' => 'UNOR_ID',
 			'label' => 'lang:pegawai_field_UNOR_ID',
-			'rules' => 'max_length[32]',
+			'rules' => 'max_length[36]',
 		),
 		array(
 			'field' => 'UNOR_INDUK_ID',
 			'label' => 'lang:pegawai_field_UNOR_INDUK_ID',
-			'rules' => 'max_length[32]',
+			'rules' => 'max_length[36]',
 		),
 		array(
 			'field' => 'INSTANSI_INDUK_ID',
@@ -287,9 +293,9 @@ class Pegawai_model extends BF_Model
 			$where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
 		}
 		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
-		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
-		$this->db->where('pa."ID" is not null', NULL, FALSE);
-		 $this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		// $this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		// $this->db->where('pa."ID" is not null', NULL, FALSE);
+		 // $this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
 
 		$this->db->where("status_pegawai = 3 " . $where_clause);
 
@@ -330,13 +336,13 @@ class Pegawai_model extends BF_Model
 			if (is_array($satker_id) && sizeof($satker_id) > 0) {
 				$where_clause = 'AND ( 1=2 ';
 				foreach ($satker_id as $u_id) {
-					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' OR "UNOR_INDUK_ID" = \'' . $u_id . '\' ';
 				}
 				$where_clause .= ')';
-			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\' OR "UNOR_INDUK_ID" = \'' . $satker_id . '\')';
 		}
 		$this->db->select('pegawai."ID",pegawai."PNS_ID",pegawai."NIP_BARU",pegawai."NAMA",vw."NAMA_UNOR_FULL",
-			golongan."NAMA" AS "NAMA_GOLONGAN","NAMA_PANGKAT","NAMA_UNOR_ESELON_4","NAMA_UNOR_ESELON_3","NAMA_UNOR_ESELON_2","NAMA_UNOR_ESELON_1","KATEGORI_JABATAN","PHOTO"', false);
+			golongan."NAMA" AS "NAMA_GOLONGAN","NAMA_PANGKAT","GOL_PPPK","NAMA_UNOR_ESELON_4","NAMA_UNOR_ESELON_3","NAMA_UNOR_ESELON_2","NAMA_UNOR_ESELON_1","KATEGORI_JABATAN","PHOTO","KEDUDUKAN_HUKUM_ID"', false);
 		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
 		$this->db->join('golongan', 'pegawai.GOL_ID = golongan.ID', 'left');
 		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
@@ -354,6 +360,9 @@ class Pegawai_model extends BF_Model
 
 		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
 		$this->db->order_by("NAMA", "ASC");
+
+		//var_dump($this->db);
+		//$this->db->last_query();
 		return parent::find_all();
 	}
 	public function find_all_detil($satker_id, $strict_in_satker = false)
@@ -503,15 +512,16 @@ class Pegawai_model extends BF_Model
 	public function count_all($satker_id = "", $strict_in_satker = false, $status_aktif = "")
 	{
 
+		//$this->db->_compile_select(); 
 		$where_clause = '';
 		if ($satker_id) {
 			if (is_array($satker_id) && sizeof($satker_id) > 0) {
 				$where_clause = 'AND ( 1=2 ';
 				foreach ($satker_id as $u_id) {
-					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' OR "UNOR_INDUK_ID" = \'' . $u_id . '\' ';
 				}
 				$where_clause .= ')';
-			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\' OR "UNOR_INDUK_ID" = \'' . $satker_id . '\')';
 		}
 		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
 		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
@@ -526,7 +536,8 @@ class Pegawai_model extends BF_Model
 			$this->db->where('vw."ID" is not null');
 		}
 		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
-
+		//$this->db->last_query(); 
+		//var_dump( $this->db );
 		return parent::count_all();
 	}
 	public function count_pensiun_all($satker_id = "", $strict_in_satker = false)
@@ -935,7 +946,7 @@ class Pegawai_model extends BF_Model
 			pegawai."UPDATED_BY" "UPDATED_BY",
 			TRIM(pegawai."EMAIL_DIKBUD") "EMAIL_DIKBUD",
 			TRIM(pegawai."KODECEPAT") "KODECEPAT"
-			,jenis_pegawai.NAMA as JENIS_PEGAWAI,kedudukan_hukum.NAMA AS KEDUDUKAN_HUKUM,pa.masa_kerja_th,pa.masa_kerja_bl');
+			,jenis_pegawai.NAMA as JENIS_PEGAWAI,kedudukan_hukum.NAMA AS KEDUDUKAN_HUKUM,pa.masa_kerja_th,pa.masa_kerja_bl,pegawai."MASA_KERJA"');
 		}
 		$this->db->join('jenis_pegawai', 'pegawai.JENIS_PEGAWAI_ID = jenis_pegawai.ID', 'left');
 		$this->db->join('pns_aktif pa', 'pa.ID = pegawai.ID', 'left');
@@ -1046,7 +1057,7 @@ class Pegawai_model extends BF_Model
 			pegawai."UPDATED_BY" "UPDATED_BY",
 			TRIM(pegawai."EMAIL_DIKBUD") "EMAIL_DIKBUD",
 			TRIM(pegawai."KODECEPAT") "KODECEPAT"
-			,jenis_pegawai.NAMA as JENIS_PEGAWAI,kedudukan_hukum.NAMA AS KEDUDUKAN_HUKUM,pa.masa_kerja_th,pa.masa_kerja_bl');
+			,jenis_pegawai.NAMA as JENIS_PEGAWAI,kedudukan_hukum.NAMA AS KEDUDUKAN_HUKUM,pa.masa_kerja_th,pa.masa_kerja_bl,pegawai."MASA_KERJA');
 		}
 		$this->db->join('jenis_pegawai', 'pegawai.JENIS_PEGAWAI_ID = jenis_pegawai.ID', 'left');
 		$this->db->join('pns_aktif pa', 'pa.ID = pegawai.ID', 'left');
@@ -2226,10 +2237,10 @@ class Pegawai_model extends BF_Model
 			if (is_array($satker_id) && sizeof($satker_id) > 0) {
 				$where_clause = 'AND ( 1=2 ';
 				foreach ($satker_id as $u_id) {
-					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' OR "UNOR_INDUK_ID" = \'' . $u_id . '\' ';
 				}
 				$where_clause .= ')';
-			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\' OR "UNOR_INDUK_ID" = \'' . $satker_id . '\')';
 		}
 
 
@@ -2261,6 +2272,592 @@ class Pegawai_model extends BF_Model
 		$this->db->group_by('pegawai."ID",pegawai."PNS_ID",pegawai."NIP_BARU",pegawai."NAMA",vw."NAMA_UNOR_FULL",
 			golongan."NAMA","NAMA_PANGKAT","NAMA_UNOR_ESELON_4","NAMA_UNOR_ESELON_3","NAMA_UNOR_ESELON_2",
 			"NAMA_UNOR_ESELON_1","PHOTO"');
+		//echo $this->db->last_query();
+		//var_dump($this->db);
+		return parent::find_all();
+	}
+	public function find_pensiunbysatker($unor_id = '')
+	{
+		$sepuluhtahun = date("Y") + 10;
+		if ($unor_id != '') {
+			$this->db->where("(unitkerja.ID = '" . $unor_id . "' or unitkerja.ESELON_1 = '" . $unor_id . "' or unitkerja.ESELON_2 = '" . $unor_id . "' or unitkerja.ESELON_3 = '" . $unor_id . "' or unitkerja.ESELON_4 = '" . $unor_id . "')");
+		}
+		$this->db->select('vw.ID,vw."NAMA_UNOR_FULL",vw."NAMA_UNOR",
+			date_part(\'year\', "TGL_LAHIR" ) + "PENSIUN" AS perkiraan_tahun_pensiun,
+			vw."ESELON_1",
+ 			count(*) as total');
+
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null)");
+		$this->db->where("(TMT_PENSIUN IS NULL)");
+		$this->db->where('date_part(\'year\', "TGL_LAHIR" ) + "PENSIUN" >= ' . date("Y") . '');
+		$this->db->where('date_part(\'year\', "TGL_LAHIR" ) + "PENSIUN" <= ' . $sepuluhtahun . '');
+
+		$this->db->join("mv_unit_list_all as vui", "pegawai.\"UNOR_ID\"=vui.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("mv_unit_list_all as vw", "vui.\"UNOR_INDUK\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("hris.jabatan ", "pegawai.JABATAN_INSTANSI_REAL_ID=jabatan.KODE_JABATAN", 'left');
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "inner");
+		$this->db->order_by('vw.ESELON_1', "asc");
+		$this->db->group_by('vw.ID');
+		$this->db->group_by('vw.ESELON_1');
+		$this->db->group_by('vw."NAMA_UNOR_FULL"');
+		$this->db->group_by('vw."NAMA_UNOR"');
+		$this->db->group_by('perkiraan_tahun_pensiun');
+		return parent::find_all();
+	}
+	public function umurbySatker($unor_id = '')
+	{
+		$where_clause = '';
+		if ($unor_id != '') {
+			$where_clause = 'AND (vw."ESELON_1" = \'' . $unor_id . '\' OR vw."ESELON_2" = \'' . $unor_id . '\' OR vw."ESELON_3" = \'' . $unor_id . '\' OR vw."ESELON_4" = \'' . $unor_id . '\')';
+		}
+		$this->db->select('vw."UNOR_INDUK" as "UNOR_INDUK_ID",
+							vw."NAMA_UNOR",
+							vw."ESELON_1",
+							sum(CASE WHEN pa."ID" is not null AND  "AGE" < 25 THEN 1 else 0 END) "dualima"
+							,sum(CASE WHEN pa."ID" is not null AND  "AGE" >= 25  AND "AGE" <= 30 THEN 1 else 0 END) "dualimatigapuluh"
+							,sum(CASE WHEN pa."ID" is not null AND  "AGE" >= 31  AND "AGE" <= 35 THEN 1 else 0 END) "tigasatutigalima"
+							,sum(CASE WHEN pa."ID" is not null AND  "AGE" >= 36  AND "AGE" <= 40 THEN 1 else 0 END) "tigaenamempatpuluh"
+							,sum(CASE WHEN pa."ID" is not null AND  "AGE" >= 41  AND "AGE" <= 45 THEN 1 else 0 END) "empatsatuempatlima"
+							,sum(CASE WHEN pa."ID" is not null AND  "AGE" >= 46  AND "AGE" <= 50 THEN 1 else 0 END) "empatenamlimapuluh"
+							,sum(CASE WHEN pa."ID" is not null AND  "AGE" > 50 THEN 1 END) "limapuluh"
+										', false);
+
+		$this->db->join("daftar_pegawai", "daftar_pegawai.ID=pegawai.ID", "LEFT");
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->join("mv_unit_list_all as vui", "pegawai.\"UNOR_ID\"=vui.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("mv_unit_list_all as vw", "vui.\"UNOR_INDUK\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by('vw.ESELON_1', "asc");
+		$this->db->group_by('vw.UNOR_INDUK');
+		$this->db->group_by('vw.ESELON_1');
+		$this->db->group_by('vw."NAMA_UNOR"');
+		return parent::find_all();
+	}
+	public function findPegawaiTingkatPendidikanSatker($unor_id = '')
+	{
+		if ($unor_id != '') {
+			$this->db->where("(unitkerja.ID = '" . $unor_id . "' or unitkerja.ESELON_1 = '" . $unor_id . "' or unitkerja.ESELON_2 = '" . $unor_id . "' or unitkerja.ESELON_3 = '" . $unor_id . "' or unitkerja.ESELON_4 = '" . $unor_id . "')");
+		}
+		$this->db->select('vw."UNOR_INDUK" as "UNOR_INDUK_ID",
+							vw."ESELON_1",
+							pendidikan.TINGKAT_PENDIDIKAN_ID as "TINGKAT",
+ 							count(*) as total');
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null)");
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		$this->db->join('pendidikan', 'pegawai.PENDIDIKAN_ID = pendidikan.ID', 'left');
+		$this->db->join('tkpendidikan', 'pendidikan.TINGKAT_PENDIDIKAN_ID = tkpendidikan.ID', 'left');
+		$this->db->join("mv_unit_list_all as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "left");
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->group_by('pendidikan.TINGKAT_PENDIDIKAN_ID');
+		$this->db->group_by('vw.UNOR_INDUK');
+		$this->db->group_by('vw.ESELON_1');
+		return parent::find_all();
+	}
+	public function count_all_pensiun_tahun_satker($tahun = "", $satker_id = '')
+	{
+		$this->db->select('pegawai.NIP_BARU,pegawai.ID,pegawai.NAMA,
+			TGL_LAHIR,vw."NAMA_UNOR_FULL" AS NAMA_UNOR,
+			EXTRACT(YEAR FROM age(cast("TGL_LAHIR" as date))) as umur,
+			date_part(\'year\',"TGL_LAHIR")+"PENSIUN" AS tahunpensiun,
+			jabatan."NAMA_JABATAN",jabatan."PENSIUN"');
+		$this->db->where('date_part(\'year\',"TGL_LAHIR")+"PENSIUN" = ' . $tahun . '');
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null)");
+		if($satker_id != "-")
+			$this->db->where('vw."ID"', $satker_id);
+		else
+			$this->db->where("vw.\"ID\"  IS NULL");
+		$this->db->where("(TMT_PENSIUN IS NULL)");
+		$this->db->join("mv_unit_list_all as vui", "pegawai.\"UNOR_ID\"=vui.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("mv_unit_list_all as vw", "vui.\"UNOR_INDUK\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("hris.jabatan ", "pegawai.JABATAN_INSTANSI_REAL_ID=jabatan.KODE_JABATAN", 'left');
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "inner");
+		return parent::count_all();
+	}
+	public function find_all_detil_umur_satker($satker_id = null, $strict_in_satker = false, $status_aktif = "")
+	{
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('pegawai."ID",pegawai."PNS_ID",pegawai."NIP_BARU",pegawai."NAMA",vw."NAMA_UNOR_FULL",
+			golongan."NAMA" AS "NAMA_GOLONGAN","NAMA_PANGKAT","NAMA_UNOR_ESELON_4","NAMA_UNOR_ESELON_3","NAMA_UNOR_ESELON_2","NAMA_UNOR_ESELON_1","KATEGORI_JABATAN","PHOTO"', false);
+		$this->db->join("mv_unit_list_all as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join('golongan', 'pegawai.GOL_ID = golongan.ID', 'left');
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->join('jabatan', 'pegawai.JABATAN_INSTANSI_ID = jabatan.KODE_JABATAN', 'left');
+		$this->db->join('pendidikan', 'pegawai.PENDIDIKAN_ID = pendidikan.ID', 'left');
+		$this->db->join('tkpendidikan', 'pendidikan.TINGKAT_PENDIDIKAN_ID = tkpendidikan.ID', 'left');
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		if ($status_aktif == "") {
+			 $this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		} else {
+			$this->db->where('pegawai."KEDUDUKAN_HUKUM_ID"', $status_aktif);
+		}
+
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by("pegawai,NAMA", "ASC");
+
+		//var_dump($this->db);
+		return parent::find_all();
+	}
+	public function count_all_detil_umur_satker($satker_id = null, $strict_in_satker = false, $status_aktif = "")
+	{
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('pegawai."ID",pegawai."PNS_ID",pegawai."NIP_BARU",pegawai."NAMA",vw."NAMA_UNOR_FULL",
+			golongan."NAMA" AS "NAMA_GOLONGAN","NAMA_PANGKAT","NAMA_UNOR_ESELON_4","NAMA_UNOR_ESELON_3","NAMA_UNOR_ESELON_2","NAMA_UNOR_ESELON_1","KATEGORI_JABATAN","PHOTO"', false);
+		$this->db->join("mv_unit_list_all as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join('golongan', 'pegawai.GOL_ID = golongan.ID', 'left');
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->join('jabatan', 'pegawai.JABATAN_INSTANSI_ID = jabatan.KODE_JABATAN', 'left');
+		$this->db->join('pendidikan', 'pegawai.PENDIDIKAN_ID = pendidikan.ID', 'left');
+		$this->db->join('tkpendidikan', 'pendidikan.TINGKAT_PENDIDIKAN_ID = tkpendidikan.ID', 'left');
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		if ($status_aktif == "") {
+			 $this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		} else {
+			$this->db->where('pegawai."KEDUDUKAN_HUKUM_ID"', $status_aktif);
+		}
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		//var_dump($this->db);
+		return parent::count_all();
+	}
+	public function find_all_pensiun_tahun_satker($tahun = "", $satker_id = '')
+	{
+		$this->db->select('pegawai.NIP_BARU,pegawai.ID,pegawai.NAMA,
+			TGL_LAHIR,vw."NAMA_UNOR" AS NAMA_UNOR,
+			EXTRACT(YEAR FROM age(cast("TGL_LAHIR" as date))) as umur,
+			date_part(\'year\',"TGL_LAHIR")+"PENSIUN" AS tahunpensiun,
+			jabatan."NAMA_JABATAN",jabatan."PENSIUN"');
+		$this->db->where('date_part(\'year\',"TGL_LAHIR")+"PENSIUN" = ' . $tahun . '');
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null)");
+		if($satker_id != "-")
+			$this->db->where('vw."ID"', $satker_id);
+		else
+			$this->db->where("vw.\"ID\"  IS NULL");
+		$this->db->where("(TMT_PENSIUN IS NULL)");
+		$this->db->join("mv_unit_list_all as vui", "pegawai.\"UNOR_ID\"=vui.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("mv_unit_list_all as vw", "vui.\"UNOR_INDUK\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("hris.jabatan ", "pegawai.JABATAN_INSTANSI_REAL_ID=jabatan.KODE_JABATAN", 'left');
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "inner");
+		$this->db->order_by('vw."NAMA_UNOR"', "asc");
+		return parent::find_all();
+	}
+	public function find_all_api_nip($satker_id, $strict_in_satker = false)
+	{
+
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('
+			TRIM(pegawai."NIP_BARU") "nip"', false);
+		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		return parent::find_all();
+	}
+	public function count_all_api_nip($satker_id, $strict_in_satker = false)
+	{
+
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('
+			TRIM(pegawai."NIP_BARU") "nip"', false);
+		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		return parent::count_all();
+	}
+
+	public function FindCountKursus($satker_id = "", $strict_in_satker = false)
+	{
+
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('
+			TRIM(pegawai."NIP_BARU") AS "NIP_BARU",pegawai."NAMA",count(rk."ID") as jumlah', false);
+		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->join("rwt_kursus rk", "pegawai.PNS_ID = rk.PNS_ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->group_by("NIP_BARU");
+		$this->db->group_by("NAMA");
+		return parent::find_all();
+	}
+	
+	public function CountKursus($satker_id, $strict_in_satker = false)
+	{
+
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('
+			TRIM(pegawai."NIP_BARU") "nip"', false);
+		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->join("rwt_kursus rk", "pegawai.PNS_ID = rk.PNS_ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		return parent::count_all();
+	}
+	public function getPangkatPendidikanKosong(){
+		$this->db->select('
+			TRIM(pegawai."PNS_ID") "PNS_ID",
+			TRIM(pegawai."NIP_LAMA") "NIP_LAMA",
+			TRIM(pegawai."NIP_BARU") "NIP_BARU",
+			TRIM(pegawai."NAMA") "NAMA",
+			"KEDUDUKAN_HUKUM_ID"
+			,"JABATAN_INSTANSI_REAL_ID"
+			,"GOL_ID"
+			,"JENIS_KELAMIN"
+			,"PENDIDIKAN_ID",
+			"AGAMA_ID",
+			"JABATAN_INSTANSI_REAL_ID"
+			',false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->group_start();
+			// $this->db->where("JABATAN_INSTANSI_REAL_ID IS NULL");
+			// $this->db->or_where("GOL_ID  IS NULL");
+			// $this->db->or_where("JENIS_KELAMIN  IS NULL");
+			$this->db->where("PENDIDIKAN_ID  IS NULL");
+		$this->db->group_end();
+		
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by("random()");
+		return parent::find_all();
+	}
+	public function getPangkatKosong(){
+		$this->db->select('
+			TRIM(pegawai."PNS_ID") "PNS_ID",
+			TRIM(pegawai."NIP_LAMA") "NIP_LAMA",
+			TRIM(pegawai."NIP_BARU") "NIP_BARU",
+			TRIM(pegawai."NAMA") "NAMA",
+			"KEDUDUKAN_HUKUM_ID"
+			,"JABATAN_INSTANSI_REAL_ID"
+			,"GOL_ID"
+			,"JENIS_KELAMIN"
+			,"PENDIDIKAN_ID",
+			"AGAMA_ID",
+			"JABATAN_INSTANSI_REAL_ID"
+			',false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->group_start();
+			$this->db->where("JABATAN_INSTANSI_REAL_ID IS NULL");
+			$this->db->or_where("GOL_ID  IS NULL");
+			// $this->db->or_where("JENIS_KELAMIN  IS NULL");
+			// $this->db->or_where("PENDIDIKAN_ID  IS NULL");
+		$this->db->group_end();
+		
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by("random()");
+		return parent::find_all();
+	}
+	public function getJkKosong(){
+		$this->db->select('
+			TRIM(pegawai."PNS_ID") "PNS_ID",
+			TRIM(pegawai."NIP_LAMA") "NIP_LAMA",
+			TRIM(pegawai."NIP_BARU") "NIP_BARU",
+			TRIM(pegawai."NAMA") "NAMA",
+			"KEDUDUKAN_HUKUM_ID"
+			,"JABATAN_INSTANSI_REAL_ID"
+			,"GOL_ID"
+			,"JENIS_KELAMIN"
+			,"PENDIDIKAN_ID",
+			"AGAMA_ID",
+			"JABATAN_INSTANSI_REAL_ID"
+			',false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->group_start();
+			// $this->db->where("JABATAN_INSTANSI_REAL_ID IS NULL");
+			// $this->db->or_where("GOL_ID  IS NULL");
+			$this->db->where("JENIS_KELAMIN  IS NULL");
+			// $this->db->or_where("PENDIDIKAN_ID  IS NULL");
+		$this->db->group_end();
+		
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by("random()");
+		return parent::find_all();
+	}
+	public function getAgamaKosong(){
+		$this->db->select('
+			TRIM(pegawai."PNS_ID") "PNS_ID",
+			TRIM(pegawai."NIP_LAMA") "NIP_LAMA",
+			TRIM(pegawai."NIP_BARU") "NIP_BARU",
+			TRIM(pegawai."NAMA") "NAMA",
+			"KEDUDUKAN_HUKUM_ID"
+			,"JABATAN_INSTANSI_REAL_ID"
+			,"GOL_ID"
+			,"JENIS_KELAMIN"
+			,"PENDIDIKAN_ID",
+			"AGAMA_ID",
+			"JABATAN_INSTANSI_REAL_ID"
+			',false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->group_start();
+			// $this->db->where("JABATAN_INSTANSI_REAL_ID IS NULL");
+			$this->db->where("AGAMA_ID  IS NULL");
+			// $this->db->or_where("JENIS_KELAMIN  IS NULL");
+			// $this->db->or_where("PENDIDIKAN_ID  IS NULL");
+		$this->db->group_end();
+		
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by("random()");
+		return parent::find_all();
+	}
+	public function getUnorKosong(){
+		$this->db->select('
+			TRIM(pegawai."PNS_ID") "PNS_ID",
+			TRIM(pegawai."NIP_LAMA") "NIP_LAMA",
+			TRIM(pegawai."NIP_BARU") "NIP_BARU",
+			TRIM(pegawai."NAMA") "NAMA",
+			"KEDUDUKAN_HUKUM_ID"
+			,"JABATAN_INSTANSI_REAL_ID"
+			,"GOL_ID"
+			,"JENIS_KELAMIN"
+			,"PENDIDIKAN_ID",
+			"AGAMA_ID",
+			"UNOR_INDUK_ID",
+			"UNOR_ID",
+			"JABATAN_INSTANSI_REAL_ID"
+			',false);
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		// if ($strict_in_satker) {
+		// 	$this->db->where('vw."ID" is not null');
+		// }
+		$this->db->group_start();
+			$this->db->where("UNOR_ID  IS NULL");
+			$this->db->or_where("UNOR_ID = ''");
+			$this->db->or_where("UNOR_INDUK_ID IS NULL");
+			$this->db->or_where("UNOR_INDUK_ID = ''");
+		$this->db->group_end();
+		
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		// $this->db->where("NIP_BARU",'198102112008011007');
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by("random()");
+		return parent::find_all();
+	}
+	public function find_all_pejabat($satker_id = null, $strict_in_satker = false, $status_aktif = "")
+	{
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('pegawai."ID",
+			pegawai."PNS_ID",pegawai."NIP_BARU",pegawai."NAMA",vw."NAMA_UNOR_FULL",
+			golongan."NAMA" AS "NAMA_GOLONGAN",
+			"NAMA_PANGKAT","NAMA_UNOR_ESELON_4",
+			"NAMA_UNOR_ESELON_3","NAMA_UNOR_ESELON_2",
+			"NAMA_UNOR_ESELON_1","KATEGORI_JABATAN",
+			jabatan."NAMA_JABATAN",
+			"PHOTO",
+			"EMAIL",
+			"NOMOR_HP",
+			EXTRACT(YEAR from AGE("TGL_LAHIR")) as "age",
+			pegawai."TGL_LAHIR" "TGL_LAHIR",
+			TRIM(pegawai."JENIS_KELAMIN") "JENIS_KELAMIN",
+			vw."JENIS_SATKER",vw."ESELON_ID",
+			"EMAIL_DIKBUD","NOMOR_DARURAT",
+			lokasi."NAMA" as "TEMPAT_LAHIR_NAMA","TEMPAT_LAHIR_ID",
+			pendidikan."NAMA" AS "NAMA_PENDIDIKAN",
+			kedudukan_hukum."NAMA" AS "KEDUDUKAN_HUKUM_NAMA",
+			"KELAS",
+			uk."NAMA_UNOR" AS nama_satker,
+			"NOMOR_SK_CPNS","TGL_SK_CPNS",
+			agama."NAMA" AS "NAMA_AGAMA"', false);
+		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join('golongan', 'pegawai.GOL_ID = golongan.ID', 'left');
+		$this->db->join('kedudukan_hukum', 'kedudukan_hukum.ID = pegawai.KEDUDUKAN_HUKUM_ID', 'left');
+		$this->db->join('lokasi', 'lokasi.ID = pegawai.TEMPAT_LAHIR_ID', 'left');
+		$this->db->join('pendidikan', 'pendidikan.ID = pegawai.PENDIDIKAN_ID', 'left');
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->join('agama', 'agama.ID = pegawai.AGAMA_ID', 'left');
+		$this->db->join("unitkerja as uk", 'uk.ID=vw.UNOR_INDUK', 'left');
+		$this->db->join('jabatan', 'pegawai.JABATAN_INSTANSI_REAL_ID = jabatan.KODE_JABATAN', 'left');
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->where("JENIS_JABATAN","1");
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		if ($status_aktif == "") {
+			 $this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		} else {
+			$this->db->where('pegawai."KEDUDUKAN_HUKUM_ID"', $status_aktif);
+		}
+
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		$this->db->order_by("NAMA", "ASC");
+		return parent::find_all();
+	}
+	public function count_all_pejabat($satker_id = null, $strict_in_satker = false, $status_aktif = "")
+	{
+		$where_clause = '';
+		if ($satker_id) {
+			if (is_array($satker_id) && sizeof($satker_id) > 0) {
+				$where_clause = 'AND ( 1=2 ';
+				foreach ($satker_id as $u_id) {
+					$where_clause .= ' OR vw."ESELON_1" = \'' . $u_id . '\' OR vw."ESELON_2" = \'' . $u_id . '\' OR vw."ESELON_3" = \'' . $u_id . '\' OR vw."ESELON_4" = \'' . $u_id . '\' ';
+				}
+				$where_clause .= ')';
+			} else $where_clause = 'AND (vw."ESELON_1" = \'' . $satker_id . '\' OR vw."ESELON_2" = \'' . $satker_id . '\' OR vw."ESELON_3" = \'' . $satker_id . '\' OR vw."ESELON_4" = \'' . $satker_id . '\')';
+		}
+		$this->db->select('pegawai."ID",pegawai."PNS_ID",pegawai."NIP_BARU",pegawai."NAMA",vw."NAMA_UNOR_FULL",
+			golongan."NAMA" AS "NAMA_GOLONGAN",
+			"NAMA_PANGKAT","NAMA_UNOR_ESELON_4",
+			"NAMA_UNOR_ESELON_3","NAMA_UNOR_ESELON_2",
+			"NAMA_UNOR_ESELON_1","KATEGORI_JABATAN",
+			jabatan."NAMA_JABATAN",
+			"PHOTO"', false);
+		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join('golongan', 'pegawai.GOL_ID = golongan.ID', 'left');
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->join('jabatan', 'pegawai.JABATAN_INSTANSI_REAL_ID = jabatan.KODE_JABATAN', 'left');
+		if ($strict_in_satker) {
+			$this->db->where('vw."ID" is not null');
+		}
+		$this->db->where("JENIS_JABATAN","1");
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		if ($status_aktif == "") {
+			 $this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		} else {
+			$this->db->where('pegawai."KEDUDUKAN_HUKUM_ID"', $status_aktif);
+		}
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
+		return parent::count_all();
+	}
+	public function findGroupSatker($UNOR_INDUK = "")
+	{
+
+		if (empty($this->selects)) {
+			$this->select($this->table_name . '.UNOR_INDUK_ID,
+				SUM ( CASE WHEN "JENIS_KELAMIN" = \'M\' THEN 1 END )  AS jml_laki, 
+				SUM ( CASE WHEN "JENIS_KELAMIN" = \'F\' THEN 1 END )  AS jml_wanita,
+				SUM ( CASE WHEN "GOL_ID" IN (11,12,13,14) THEN 1 END )  AS jml_gol1,
+				SUM ( CASE WHEN "GOL_ID" IN (21,22,23,24) THEN 1 END )  AS jml_gol2,
+				SUM ( CASE WHEN "GOL_ID" IN (31,32,33,34) THEN 1 END )  AS jml_gol3,
+				SUM ( CASE WHEN "GOL_ID" IN (41,42,43,44) THEN 1 END )  AS jml_gol4,
+				SUM ( CASE WHEN "JENIS_JABATAN_ID" IN (1) THEN 1 END )  AS jml_str,
+				SUM ( CASE WHEN "JENIS_JABATAN_ID" IN (2) THEN 1 END )  AS jml_jft,
+				SUM ( CASE WHEN "JENIS_JABATAN_ID" IN (4) THEN 1 END )  AS jml_jfu,
+				SUM ( CASE WHEN "IS_DOSEN" IN (1) THEN 1 END )  AS jml_dosen,
+				SUM ( CASE WHEN "TINGKAT_PENDIDIKAN_ID" IN (\'05\') THEN 1 END )  AS jml_sd,
+				SUM ( CASE WHEN "TINGKAT_PENDIDIKAN_ID" IN (\'10\',\'12\') THEN 1 END )  AS jml_smp,
+				SUM ( CASE WHEN "TINGKAT_PENDIDIKAN_ID" IN (\'15\',\'17\',\'18\') THEN 1 END )  AS jml_sma,
+				SUM ( CASE WHEN "TINGKAT_PENDIDIKAN_ID" IN (\'20\',\'25\',\'30\',\'35\') THEN 1 END )  AS jml_d,
+				SUM ( CASE WHEN "TINGKAT_PENDIDIKAN_ID" IN (\'40\') THEN 1 END )  AS jml_s1,
+				SUM ( CASE WHEN "TINGKAT_PENDIDIKAN_ID" IN (\'45\') THEN 1 END )  AS jml_s2,
+				SUM ( CASE WHEN "TINGKAT_PENDIDIKAN_ID" IN (\'50\') THEN 1 END )  AS jml_s3,
+				count(pegawai."ID") as jumlah');
+		}
+		if ($UNOR_INDUK != "") {
+			$this->db->where("UNOR_INDUK_ID",$UNOR_INDUK);
+		}
+		$this->db->join("pns_aktif pa", "pegawai.ID=pa.ID", "LEFT");
+		$this->db->join("vw_unit_list as vw", "pegawai.\"UNOR_ID\"=vw.\"ID\" $where_clause ", 'left', false);
+		$this->db->join('pendidikan', 'pegawai.PENDIDIKAN_ID = pendidikan.ID', 'left');
+		$this->db->join('tkpendidikan', 'pendidikan.TINGKAT_PENDIDIKAN_ID = tkpendidikan.ID', 'left');
+
+		$this->db->where_not_in("pegawai.KEDUDUKAN_HUKUM_ID",$this->STATUS_NON_ACTIVE);
+		$this->db->where('pa."ID" is not null', NULL, FALSE);
+		$this->db->where("(status_pegawai != 3 or status_pegawai is null) ");
+		$this->db->group_by("UNOR_INDUK_ID");
 		return parent::find_all();
 	}
 }

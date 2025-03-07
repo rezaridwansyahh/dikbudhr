@@ -46,19 +46,25 @@ class MasterPendidikan extends Admin_Controller
 		$output['recordsTotal']= $output['recordsFiltered']=$total;
 		$output['data']=array();
 
+        //var_dump($search);
+
 
 		/*Jika $search mengandung nilai, berarti user sedang telah 
 		memasukan keyword didalam filed pencarian*/
 		if($search!=""){
-			$this->pendidikan_model->where('upper("NAMA") LIKE \'%'.strtoupper($search).'%\'');
-			$this->pendidikan_model->or_where('upper("JENIS_JABATAN") LIKE \'%'.strtoupper($search).'%\'');
+			$this->pendidikan_model->where('upper(pendidikan."NAMA") LIKE \'%'.strtoupper($search).'%\'');
+            //$this->pendidikan_model->or_where('upper("JENIS_JABATAN") LIKE \'%'.strtoupper($search).'%\'');
 		}
 		$this->pendidikan_model->limit($length,$start);
 		
+
 		$kolom = $iSortCol != "" ? $iSortCol : "NAMA";
 		$sSortCol == "asc" ? "asc" : "desc";
 		$this->pendidikan_model->order_by($iSortCol,$sSortCol);
+        //echo "wkwkwkwkw";
+        //error_reporting(E_ALL);
 		$records=$this->pendidikan_model->find_all();
+        //var_dump($records);
 
 		/*Ketika dalam mode pencarian, berarti kita harus
 		'recordsTotal' dan 'recordsFiltered' sesuai dengan jumlah baris
@@ -66,8 +72,8 @@ class MasterPendidikan extends Admin_Controller
 		*/
 		if($search != "")
 		{
-			$this->pendidikan_model->where('upper("NAMA") LIKE \'%'.strtoupper($search).'%\'');
-			$this->pendidikan_model->or_where('upper("JENIS_JABATAN") LIKE \'%'.strtoupper($search).'%\'');
+			$this->pendidikan_model->where('upper(pendidikan."NAMA") LIKE \'%'.strtoupper($search).'%\'');
+			//$this->pendidikan_model->or_where('upper("JENIS_JABATAN") LIKE \'%'.strtoupper($search).'%\'');
 			$jum	= $this->pendidikan_model->count_all();
 			$output['recordsTotal']=$output['recordsFiltered']=$jum;
 		}

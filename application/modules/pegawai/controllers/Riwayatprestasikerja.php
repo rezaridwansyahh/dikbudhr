@@ -32,6 +32,7 @@ class Riwayatprestasikerja extends Admin_Controller
         if(!empty($q)){
             $this->db->start_cache();
             $this->db->like('lower("NAMA")', strtolower($q));
+            $this->db->or_like('lower("NIP_BARU")', strtolower($q));
             $this->db->from("hris.pegawai");
             $this->db->stop_cache();
             $total = $this->db->get()->num_rows();
@@ -123,27 +124,16 @@ class Riwayatprestasikerja extends Admin_Controller
                 $row []  = $record->JABATAN_NAMA;
 
                 $btn_actions = array();
-                if($this->auth->has_permission($this->permissionEdit)){
-                $btn_actions  [] = "
-                    <a class='show-modal-custom' href='".base_url()."pegawai/riwayatprestasikerja/edit/".$PNS_ID."/".$record->ID."'  data-toggle='modal' title='Ubah Data'><span class='fa-stack'>
-					   	<i class='fa fa-square fa-stack-2x'></i>
-					   	<i class='fa fa-pencil fa-stack-1x fa-inverse'></i>
-					   	</span>
-					   	</a>
-                ";
+                if($this->auth->has_permission($this->permissionEdit))
+                {    
+                    $btn_actions  [] = "<a href='".base_url()."pegawai/riwayatprestasikerja/edit/".$PNS_ID."/".$record->ID."' data-toggle='tooltip' title='Ubah data' tooltip='Ubah data' class='btn btn-sm btn-success show-modal-custom'><i class='fa fa-pencil'></i> </a>";
                 }
-                if($this->auth->has_permission($this->permissionDelete)){
-                $btn_actions  [] = "
-                        <a href='#' kode='$record->ID' class='btn-hapus' data-toggle='tooltip' title='Hapus data' >
-					   	<span class='fa-stack'>
-					   	<i class='fa fa-square fa-stack-2x'></i>
-					   	<i class='fa fa-trash-o fa-stack-1x fa-inverse'></i>
-					   	</span>
-					   	</a>
-                ";
+                if($this->auth->has_permission($this->permissionDelete))
+                {    
+                    $btn_actions  [] = "<a href='#' kode='$record->ID' data-toggle='tooltip' title='Hapus Data' class='btn btn-sm btn-danger btn-hapus'><i class='fa fa-trash-o'></i> </a>";
                 }
-                $row[] = implode(" ",$btn_actions);
-                
+
+                $row[] = "<div class='btn-group'>".implode(" ",$btn_actions)."</div>";
 
                 $output['data'][] = $row;
 				$nomor_urut++;
@@ -213,6 +203,12 @@ class Riwayatprestasikerja extends Admin_Controller
     public function save(){
          // Validate the data
         $this->form_validation->set_rules($this->riwayat_prestasi_kerja_model->get_validation_rules());
+        $this->form_validation->set_rules('TAHUN','TAHUN','required|max_length[4]');
+        $this->form_validation->set_rules('PERATURAN','PERATURAN','required|max_length[18]');
+        $this->form_validation->set_rules('PERILAKU_INISIATIF_KERJA','INISIATIF KERJA','required|max_length[18]');
+        if($this->input->post("PERATURAN") == "PP46"){
+            $this->form_validation->set_rules('NILAI_SKP','NILAI SKP','numeric|required|less_than_equal_to[100]');
+        }
         $response = array(
             'success'=>false,
             'msg'=>'Unknown error'
@@ -248,32 +244,38 @@ class Riwayatprestasikerja extends Admin_Controller
             unset($data["SK_TANGGAL"]);
         }
 
-       
-        $data['NILAI_PROSENTASE_SKP'] = 60;
+        $data['PERATURAN'] = $this->input->post("PERATURAN");
+        $data['NILAI_PROSENTASE_SKP'] = $this->input->post("NILAI_PROSENTASE_SKP");
         $data['NILAI_SKP_AKHIR'] = $data['NILAI_PROSENTASE_SKP']/100*$data['NILAI_SKP'];
 
-        $data['NILAI_PROSENTASE_PERILAKU'] = 40;
-        $data['NILAI_PERILAKU'] = $data['PERILAKU_KOMITMEN'] 
-                                  +$data['PERILAKU_INTEGRITAS'] 
-                                  +$data['PERILAKU_DISIPLIN'] 
-                                  +$data['PERILAKU_KERJASAMA'] 
-                                  +$data['PERILAKU_ORIENTASI_PELAYANAN'] ;
-        if($data['JABATAN_TIPE']==1){
-             $data['NILAI_PERILAKU'] += $data['PERILAKU_KEPEMIMPINAN'] ;
-              $data['NILAI_PERILAKU'] = $data['NILAI_PERILAKU']/6;
-        }
-        else {
-            $data['NILAI_PERILAKU'] = $data['NILAI_PERILAKU']/5;
-        }
-        $data['NILAI_PERILAKU_AKHIR'] = $data['NILAI_PROSENTASE_PERILAKU']/100*$data['NILAI_PERILAKU'];
-
-         $data['NILAI_PPK'] = round($data['NILAI_SKP_AKHIR']  + $data['NILAI_PERILAKU_AKHIR'],2);
-
+        $data['NILAI_PROSENTASE_PERILAKU'] = $this->input->post("NILAI_PROSENTASE_PERILAKU");//40;
+        $data['NILAI_PERILAKU'] = $this->input->post("NILAI_PERILAKU");//40;
+        // $data['NILAI_PERILAKU'] = $data['PERILAKU_KOMITMEN'] 
+        //                           +$data['PERILAKU_INTEGRITAS'] 
+        //                           +$data['PERILAKU_DISIPLIN'] 
+        //                           +$data['PERILAKU_KERJASAMA'] 
+        //                           +$data['PERILAKU_ORIENTASI_PELAYANAN'] ;
+        // if($data['JABATAN_TIPE']==1){
+        //      $data['NILAI_PERILAKU'] += $data['PERILAKU_KEPEMIMPINAN'] ;
+        //       $data['NILAI_PERILAKU'] = $data['NILAI_PERILAKU']/6;
+        // }
+        // else {
+        //     $data['NILAI_PERILAKU'] = $data['NILAI_PERILAKU']/5;
+        // }
+        // $data['NILAI_PERILAKU_AKHIR'] = $data['NILAI_PROSENTASE_PERILAKU']/100*$data['NILAI_PERILAKU'];
+        $data['NILAI_PERILAKU_AKHIR'] = $this->input->post("NILAI_PERILAKU_AKHIR");
+        $data['PERILAKU_INISIATIF_KERJA'] = $this->input->post("PERILAKU_INISIATIF_KERJA");
+        
+        $data['NILAI_PPK'] = round($data['NILAI_SKP_AKHIR']  + $data['NILAI_PERILAKU_AKHIR'],2);
         $id_data = $this->input->post("ID");
         if(isset($id_data) && !empty($id_data)){
+            $data['updated_date'] = date("Y-m-d");
             $this->riwayat_prestasi_kerja_model->update($id_data,$data);
         }
-        else $this->riwayat_prestasi_kerja_model->insert($data);
+        else{
+            $data['created_date'] = date("Y-m-d");
+            $this->riwayat_prestasi_kerja_model->insert($data);
+        }
         $response ['success']= true;
         $response ['msg']= "Transaksi berhasil";
         echo json_encode($response);    

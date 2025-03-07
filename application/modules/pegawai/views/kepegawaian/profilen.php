@@ -30,6 +30,7 @@ if (validation_errors()) :
 endif;
     $id = isset($pegawai->ID) ? $pegawai->ID : '';
     $PNS_ID = isset($pegawai->PNS_ID) ? $pegawai->PNS_ID : '';
+    
 ?>
 <div class="row">
         <div class="col-md-3">
@@ -40,7 +41,12 @@ endif;
 
               <img src="<?php echo base_url(); ?><?php echo $foto_pegawai; ?>" class="img-responsive pic-bordered" id="photopegawai" alt="Photo" width="100%">
                 <h3 class="profile-username text-center">
-                    <?php echo isset($pegawai->GELAR_DEPAN) ? $pegawai->GELAR_DEPAN : ''; ?>  <?php echo isset($pegawai->NAMA) ? $pegawai->NAMA : ''; ?> <?php echo isset($pegawai->GELAR_BELAKANG) ? $pegawai->GELAR_BELAKANG : ''; ?>
+                    <?php 
+                    $gelarDepan = isset($pegawai->GELAR_DEPAN) ? $pegawai->GELAR_DEPAN : '';
+                    $gelarDepan = strpos($gelarDepan,"-") ?  '':$gelarDepan;
+                    echo $gelarDepan;
+                     ?>  
+                    <?php echo isset($pegawai->NAMA) ? $pegawai->NAMA : ''; ?> <?php echo isset($pegawai->GELAR_BELAKANG) ? $pegawai->GELAR_BELAKANG : ''; ?>
                 </h3>
               <p class="text-muted text-center">
                     <?php if($pegawai->JENIS_JABATAN_ID == "1") {  ?>
@@ -73,6 +79,12 @@ endif;
                     <a href="<?php echo base_url();?>admin/kepegawaian/pegawai/profilen/<?php echo urlencode(base64_encode($id)); ?>" class="btn btn-success btn-block"><i class="fa fa-user"></i> Lihat Profile </a>
                 <?php
                 } ?>
+                <?php if ($this->auth->has_permission('Pegawai.Kepegawaian.Edit')) : ?>
+                    <a href="<?php echo base_url();?>admin/kepegawaian/pegawai/edit/<?php echo urlencode(base64_encode($id)); ?>" tooltip="Update Detil" class="btn btn-danger btn-block"><i class="fa fa-edit"></i> Edit Detil </a>
+                <?PHP endif; ?>
+                <?php if ($this->auth->has_permission('Pegawai.SinkronPersonal.View')){ ?>
+                <button tooltip="Singkron data Pribadi" class="btn btn-success btn-block generatedatabkn" kode="<?=$pegawai->NIP_BARU?>"><i class="fa fa-gear"></i> Sinkron Data Pribadi (SIASN)</button>
+                <?php  } ?>
             </div>
             <!-- /.box-body -->
           </div>
@@ -109,12 +121,21 @@ endif;
               <p class="text-muted"><?php echo set_value('ALAMAT', isset($pegawai->ALAMAT) ? $pegawai->ALAMAT : ''); ?></p>
 
               <hr>
-              <strong><i class="fa fa-users margin-r-5"></i> Masa Kerja</strong>
+              <strong><i class="fa fa-users margin-r-5"></i> Masa Kerja Keseluruhan (Berdasarkan TMT CPNS sampai saat ini)</strong>
               <p class="text-muted">
                   <?php 
                     echo isset($recpns_aktif->masa_kerja_th) ? $recpns_aktif->masa_kerja_th  : ""; ?> 
                     Tahun 
                     <?php echo isset($recpns_aktif->masa_kerja_bl) ? $recpns_aktif->masa_kerja_bl  : ""; ?> Bulan
+              </p>
+              <hr>
+              <strong><i class="fa fa-users margin-r-5"></i> Masa Kerja Golongan (Berdasarkan SIASN TMT CPNS - TMT Golongan, Klik Sinkron Data Pribadi untuk update masa kerja)</strong>
+              <p class="text-muted">
+                  <?php 
+                    echo isset($pegawai->MASA_KERJA) ? $pegawai->MASA_KERJA  : "KOSONG, SILAHKAN UPDATE DAHULU"; 
+                    
+                    ?> 
+                    
               </p>
               <hr>
               <!--
@@ -150,13 +171,13 @@ endif;
            <div class="nav-tabs-custom">
                 <ul id="tab-insides-here" class="nav nav-tabs">
                     <li class="active">
-                        <a href="#<?php echo $tab_pane_personal_id; ?>" data-toggle="tab" aria-expanded="true"> Data Personal </a>
+                        <a href="#<?php echo $tab_pane_personal_id; ?>" data-toggle="tab" aria-expanded="true"> Data Pribadi </a>
                     </li>
                     <li class="">
                         <a href="#<?php echo $tab_pane_keluarga; ?>" data-toggle="tab" aria-expanded="false"> Keluarga </a>
                     </li>
                     <li class="">
-                        <a href="#<?php echo $tab_pendidikan; ?>" data-toggle="tab" aria-expanded="false"> Pendidikan </a>
+                        <a href="#<?php echo $tab_pendidikan; ?>" data-toggle="tab" aria-expanded="false"> Pendidikan dan Pelatihan</a>
                     </li>
                     <li class="">
                         <a href="#<?php echo $tab_pane_penilaian; ?>" data-toggle="tab" aria-expanded="false"> Penilaian </a>
@@ -190,3 +211,49 @@ endif;
         </div>
         <!-- /.col -->
       </div>
+<script type="text/javascript">
+$('body').on('click','.generatedatabkn',function () { 
+  var kode = $(this).attr("kode");
+  swal({
+    title: "Anda Yakin?",
+    text: "Pastikan data anda sudah update di SIASN BKN, Batalkan jika belum update!",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonClass: 'btn-danger',
+    confirmButtonText: 'Ya!',
+    cancelButtonText: "Tidak, Batalkan!",
+    closeOnConfirm: false,
+    closeOnCancel: false,
+    showLoaderOnConfirm: true
+  },
+  function (isConfirm) {
+    if (isConfirm) {
+      var post_data = "nip_bkn="+kode;
+      $.ajax({
+          url: "<?php echo base_url() ?>pegawai/bkn/getpegawaibknnew",
+          type:"POST",
+          data: post_data,
+          dataType: "json",
+          timeout:180000,
+          success: function (result) {
+            if(result.success){
+              swal("Perhatian!", result.msg, "success");
+              window.location.reload();
+            }else{
+              swal("Perhatian!", result.msg, "error");
+            }
+              
+            
+              
+        },
+        error : function(error) {
+          alert(error);
+        } 
+      });        
+      
+    } else {
+      swal("Batal", "", "error");
+    }
+  });
+});
+</script>

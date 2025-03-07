@@ -153,6 +153,7 @@ $table = $(".table-data").DataTable({
 	"<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>",
 	processing: true,
 	serverSide: true,
+	order: [[4, 'desc']],
 	"columnDefs": [
 					{"className": "text-center", "targets": [0,6,7]},
 					{ "targets": [0,5], "orderable": false }
@@ -221,5 +222,47 @@ $('.cal1').click(function(event){
 });
 $('.cal2').click(function(event){
     $("#sampai_tanggal").trigger('focus');
+});
+$('body').on('click','.send-kehadiran',function () { 
+	var kode =$(this).attr("kode");
+	swal({
+		title: "Anda Yakin?",
+		text: "Kirim data ke e-kehadiran!",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonClass: 'btn-success',
+		confirmButtonText: 'Ya, Kirimkan!',
+		cancelButtonText: "Tidak, Batalkan!",
+		closeOnConfirm: false,
+		showLoaderOnConfirm: true,
+		closeOnCancel: false
+	},
+	function (isConfirm) {
+		if (isConfirm) {
+			var post_data = "kode="+kode;
+			$.ajax({
+					url: "<?php echo base_url() ?>admin/izin/izin_pegawai/resendekehadiran",
+					type:"POST",
+					data: post_data,
+					dataType: "json",
+					timeout:180000,
+					success: function (result) {
+						 if(result.success){
+							swal("Deleted!", result.msg, "success");
+						 	$table.ajax.reload(null,true);	
+						}else{
+							swal("Perhatian!", result.msg, "error");
+						 	$table.ajax.reload(null,true);	
+						}
+				},
+				error : function(error) {
+					swal("Error", error, "error");
+				} 
+			});        
+			
+		} else {
+			swal("Batal", "Aksi dibatalkan", "error");
+		}
+	});
 });
 </script>

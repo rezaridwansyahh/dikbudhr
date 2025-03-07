@@ -16,8 +16,8 @@
     <div class="col-md-9">     
         <div class='box box-warning' id="form-riwayat-assesmen-add">
             <div class="box-body">
-                    <?php
-                    $this->load->view('izin/_approval',array('level'=>$level,'NIP_ATASAN'=>$izin_pegawai->NIP_ATASAN,'NAMA_ATASAN'=>$izin_pegawai->NAMA_ATASAN,'NIP_PPK'=>$NIP_izin_pegawai->izin_pegawai->NIP_PYBMC,'NAMA_PPK'=>$izin_pegawai->NAMA_PYBMC,'NAMA_PEGAWAI'=>$pegawai->NAMA,"status_atasan"=>true));
+                   <?php
+                    $this->load->view('izin/lineaproval',array('verifikasidata'=>$verifikasidata,'aatasan'=>$aatasan,'apejabat'=>$apejabat,'PERSETUJUAN'=>$PERSETUJUAN));
                     ?>
                 <hr>
                 <div class="messages">
@@ -37,37 +37,35 @@
                     <input id='JUMLAH' type='hidden' name='JUMLAH' value="<?php echo set_value('JUMLAH', isset($izin_pegawai->JUMLAH) ? trim($izin_pegawai->JUMLAH) : ""); ?>" />
                     
                     <?php if($kode_izin == "1"){ ?>
-                    <div class="control-group  col-sm-3">
-                        <?php echo form_label("SISA TAHUN N", 'SISA_CUTI_TAHUN_N', array('class' => 'control-label')); ?>
+                    
+                    <div class="control-group  col-sm-4">
+                        <?php echo form_label("SISA CUTI TAHUN INI", 'SISA_CUTI_TAHUN_N', array('class' => 'control-label')); ?>
                         <div class="input-group date">
-                            <?php echo set_value('SISA_CUTI_TAHUN_N', isset($izin_pegawai->SISA_CUTI_TAHUN_N) ? $izin_pegawai->SISA_CUTI_TAHUN_N : $data_cuti->SISA_N); ?>
+                            <?php echo set_value('SISA', $data_cuti->THISYEAR); ?>
                             <span class="info">Hari</i></span>
                         </div>
                     </div>
-                    <div class="control-group  col-sm-3">
-                        <?php echo form_label("SISA TAHUN N-1", 'SISA_CUTI_TAHUN_N1', array('class' => 'control-label')); ?>
+                    <div class="control-group  col-sm-4">
+                        <?php echo form_label("SUDAH DIAMBIL", 'SISA_CUTI_TAHUN_N1', array('class' => 'control-label')); ?>
                         <div class="input-group date">
-                            <?php echo set_value('SISA_CUTI_TAHUN_N1', isset($izin_pegawai->SISA_CUTI_TAHUN_N1) ? $izin_pegawai->SISA_CUTI_TAHUN_N1 : $data_cuti->SISA_N_1); ?>
+                            <?php echo set_value('SUDAH_DIAMBIL', isset($data_cuti->SUDAH_DIAMBIL) ? $data_cuti->SUDAH_DIAMBIL : (int)$data_cuti->SUDAH_DIAMBIL); ?>
                             <span class="info">Hari</i></span>
                         </div>
                     </div>
-                    <div class="control-group  col-sm-3">
-                        <?php echo form_label("SISA TAHUN N-2", 'SISA_CUTI_TAHUN_N2', array('class' => 'control-label')); ?>
+                    <div class="control-group  col-sm-4">
+                        <?php echo form_label("SISA", 'SISA_CUTI_TAHUN_N2', array('class' => 'control-label')); ?>
                         <div class="input-group date">
-                            <?php echo set_value('SISA_CUTI_TAHUN_N2', isset($izin_pegawai->SISA_CUTI_TAHUN_N2) ? $izin_pegawai->SISA_CUTI_TAHUN_N2 : $data_cuti->SISA_N_2); ?>
+                            <?php
+                            echo (int)$data_cuti->SISA;
+                            ?>
                             <span class="info">Hari</i></span>
                         </div>
                     </div>
-                    <div class="control-group  col-sm-3">
-                        <?php echo form_label("JUMLAH SISA CUTI", 'SISA', array('class' => 'control-label')); ?>
-                        <div class="input-group date">
-                            <?php echo set_value('SISA', isset($izin_pegawai->SISA) ? $izin_pegawai->SISA : $data_cuti->SISA); ?>
-                            <span class="info">Hari</i></span>
-                        </div>
-                    </div>
+                    
                     <?php } ?>
+
                     <?php if($izin_pegawai->SAMPAI_TANGGAL != ""){ ?>
-                    <div class="control-group col-sm-3">
+                    <div class="control-group col-sm-4">
                         <label for="inputNAMA" class="control-label">DARI TANGGAL</label>
                         <div class="input-group date">
 
@@ -75,7 +73,7 @@
                             <span class='help-inline'><?php echo form_error('DARI_TANGGAL'); ?></span>
                         </div>
                     </div> 
-                    <div class="control-group col-sm-3">
+                    <div class="control-group col-sm-4">
                         <label for="inputNAMA" class="control-label">SAMPAI TANGGAL</label>
                         <div class="input-group date">
                             <?php echo set_value('SAMPAI_TANGGAL', isset($izin_pegawai->SAMPAI_TANGGAL) ? $izin_pegawai->SAMPAI_TANGGAL : ''); ?>
@@ -83,7 +81,7 @@
                         </div>
                     </div> 
                 <?php }else{ ?>
-                    <div class="control-group col-sm-3">
+                    <div class="control-group col-sm-4">
                         <label for="inputNAMA" class="control-label">TANGGAL</label>
                         <div class="input-group date">
 
@@ -93,7 +91,7 @@
                     </div> 
                 <?php } ?>
                 <?php if($izin_pegawai->JUMLAH!= ""){ ?>
-                    <div class="control-group  col-sm-6">
+                    <div class="control-group  col-sm-4">
                         <?php echo form_label(lang('izin_pegawai_field_JUMLAH'), 'JUMLAH', array('class' => 'control-label')); ?>
                         <div class="input-group date">
                             <?php echo set_value('JUMLAH', isset($izin_pegawai->JUMLAH) ? $izin_pegawai->JUMLAH : ''); ?>
@@ -128,6 +126,15 @@
                         </div>
                     </div>
                 <?php } ?>
+                <?php if($izin_pegawai->ALASAN_CUTI != ""){ ?>
+                    <div class="control-group<?php echo form_error('ALASAN_CUTI') ? ' error' : ''; ?>  col-sm-12">
+                        <?php echo form_label("ALASAN_CUTI", 'ALASAN_CUTI', array('class' => 'control-label')); ?>
+                        <div class='controls'>
+                            <?php echo set_value('ALASAN_CUTI', isset($izin_pegawai->ALASAN_CUTI) ? $izin_pegawai->ALASAN_CUTI : ''); ?>
+                            <span class='help-inline'><?php echo form_error('ALASAN_CUTI'); ?></span>
+                        </div>
+                    </div>
+                <?php } ?>
                 <?php if($izin_pegawai->ALAMAT_SELAMA_CUTI != ""){ ?>
                     <div class="control-group<?php echo form_error('ALAMAT_SELAMA_CUTI') ? ' error' : ''; ?>  col-sm-12">
                         <?php echo form_label(lang('izin_pegawai_field_ALAMAT_SELAMA_CUTI'), 'KETERANGAN', array('class' => 'control-label')); ?>
@@ -138,7 +145,7 @@
                     </div>
                 <?php } ?> 
                 <?php if($izin_pegawai->TLP_SELAMA_CUTI != ""){ ?>
-                    <div class="control-group<?php echo form_error('TLP_SELAMA_CUTI') ? ' error' : ''; ?>  col-sm-12">
+                    <div class="control-group<?php echo form_error('TLP_SELAMA_CUTI') ? ' error' : ''; ?>  col-sm-4">
                         <?php echo form_label(lang('izin_pegawai_field_TLP_SELAMA_CUTI'), 'TLP_SELAMA_CUTI', array('class' => 'control-label')); ?>
                         <div class="input-group">
                             <?php echo set_value('TLP_SELAMA_CUTI', isset($izin_pegawai->TLP_SELAMA_CUTI) ? $izin_pegawai->TLP_SELAMA_CUTI : ''); ?>
@@ -146,6 +153,13 @@
 
                     </div>
                 <?php } ?> 
+                    <div class="control-group<?php echo form_error('jumlah_izin_bulan_sama') ? ' error' : ''; ?>  col-sm-6">
+                        <?php echo form_label("JUMLAH IZIN BULAN YANG SAMA", 'jumlah_izin_bulan_sama', array('class' => 'control-label')); ?>
+                        <div class="input-group">
+                            <?php echo set_value('jumlah_izin_bulan_sama', isset($jumlah_izin_bulan_sama) ? $jumlah_izin_bulan_sama : ''); ?>
+                          </div>
+
+                    </div>
                     <div class="control-group<?php echo form_error('STATUS_ATASAN') ? ' error' : ''; ?>  col-sm-12">
                         <?php echo form_label("STATUS", 'STATUS_ATASAN', array('class' => 'control-label')); ?>
                         <div class="controls">

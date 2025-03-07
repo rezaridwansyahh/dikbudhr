@@ -229,13 +229,19 @@ class Izin extends Admin_Controller
                 $row []  = $record->SISA_N_1;
                 $row []  = $record->SISA_N_2;
                 $row []  = $record->SISA;
-                $row []  = $record->SUDAH_DIAMBIL;
-                $row []  = (int)$record->SISA - (int)$record->SUDAH_DIAMBIL;
+                $SUDAH_DIAMBIL = $record->SUDAH_DIAMBIL;
+                if((int)$record->SUDAH_DIAMBIL > (int)$record->V_SUDAH_DIAMBIL)
+                    $row []  = $record->SUDAH_DIAMBIL;
+                else{
+                    $SUDAH_DIAMBIL = $record->V_SUDAH_DIAMBIL;
+                    $row []  = $record->V_SUDAH_DIAMBIL;
+                }
+                $row []  = (int)$record->SISA - (int)$SUDAH_DIAMBIL;
                 $btn_actions = array();
                 if($this->auth->has_permission($this->permissionEdit)){
                     $btn_actions  [] = "<a href='".base_url()."admin/izin/sisa_cuti/edit/".$record->ID."' class='btn btn-sm btn-warning show-modal'title='Edit Sisa Cuti' tooltip='Edit Sisa Cuti'><i class='glyphicon glyphicon-edit'></i> </a>";  
                 }
-                if($this->auth->has_permission("Pegawai.Kepegawaian.Delete")){
+                if($this->auth->has_permission($this->permissionDelete)){
                     $btn_actions  [] = "<a kode='$record->ID' class='btn btn-sm btn-danger btn-hapus' data-toggle='tooltip' data-placement='top' data-original-title='Hapus data' title='Hapus data' tooltip='Hapus'><i class='glyphicon glyphicon-remove'></i> </a>";
                 }
                 $row[] = "<div class='btn-group'>".implode(" ",$btn_actions)."</div>";
@@ -270,7 +276,7 @@ class Izin extends Admin_Controller
         $PNS_NIP = $this->input->post("PNS_NIP");
         $TAHUN = $this->input->post("TAHUN");
         $id_data = $this->input->post("ID");
-        $this->sisa_cuti_model->where("TAHUN",$TAHUN);
+        $this->sisa_cuti_model->where("sisa_cuti.TAHUN",$TAHUN);
         $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$PNS_NIP);
         if($data_cuti->ID != "" && $data_cuti->ID != $id_data){
             $response ['success']= false;

@@ -32,7 +32,7 @@ $id = isset($pegawai->ID) ? $pegawai->ID : '';
 			 <div class="control-group<?php echo form_error('PNS_ID') ? ' error' : ''; ?> col-sm-12">
                 <?php echo form_label('PNS ID', 'PNS_ID', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='PNS_ID' type='text' class="form-control" name='PNS_ID' maxlength='32' value="<?php echo set_value('PNS_ID', isset($pegawai->PNS_ID) ? $pegawai->PNS_ID : ''); ?>" />
+                    <input id='PNS_ID' type='text' class="form-control" name='PNS_ID' maxlength='36' value="<?php echo set_value('PNS_ID', isset($pegawai->PNS_ID) ? $pegawai->PNS_ID : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('PNS_ID'); ?></span>
                 </div>
             </div>
@@ -523,7 +523,8 @@ $id = isset($pegawai->ID) ? $pegawai->ID : '';
                     <select class="validate[required] text-input form-control" name="status_pegawai" id="status_pegawai" class="chosen-select-deselect">
                         <option value="">-- Pilih  --</option>
                         <option value="1" <?php if(isset($pegawai->status_pegawai))  echo  ("1"==$pegawai->status_pegawai) ? "selected" : ""; ?>> PNS</option>
-                        <option value="2" <?php if(isset($pegawai->status_pegawai))  echo  ("2"==$pegawai->status_pegawai) ? "selected" : ""; ?>> Bukan PNS</option>
+                        <option value="2" <?php if(isset($pegawai->status_pegawai))  echo  ("2"==$pegawai->status_pegawai) ? "selected" : ""; ?>> P3K</option>
+                        <option value="3" <?php if(isset($pegawai->status_pegawai))  echo  ("3"==$pegawai->status_pegawai) ? "selected" : ""; ?>> Bukan PNS</option>
                     </select>
                     <span class='help-inline'><?php echo form_error('status_pegawai'); ?></span>
                 </div>

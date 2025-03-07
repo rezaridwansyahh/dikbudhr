@@ -5,7 +5,7 @@
  
 <div class='controls'>
  	<select name="tahun" id="tahun" class="form-control select2" style="width:100%">
- 	<?php for($i=2018;$i<=2019;$i++){ ?>     
+ 	<?php for($i=2018;$i<=(int)date("Y");$i++){ ?>     
     	<option  value='<?php echo $i; ?>' <?php echo $tahun == $i ? "selected" : ""; ?>><?php echo $i; ?></option>
     <?php } ?>
 	</select>

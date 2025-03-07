@@ -23,7 +23,7 @@ if ($can_delete) {
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">×</span></button>
-				<h4 class="modal-title">Ubah status pegawai menjadi pensiun/meninggal</h4>
+				<h4 class="modal-title">Ubah status pegawai menjadi pensiun/meninggal/berhenti</h4>
 			</div>
 			<div class="modal-body">
 				<div class='box box-warning' id="form-riwayat-assesmen-add">
@@ -40,8 +40,12 @@ if ($can_delete) {
 							<div class="form-group">
 								<label>Status</label>
 								<select class="form-control" name="status_pensiun" id="status_pensiun">
-									<option value="pensiun">Pensiun</option>
-									<option value="meninggal">Meninggal</option>
+									<option value="99">Pensiun</option>
+									<option value="99x">Meninggal</option>
+									<option value="100">Pindah Instansi</option>
+									<option value="77">Pemberhentian tanpa hak pensiun</option>
+									<option value="88">Pemberhentian dengan hak pensiun</option>
+									<option value="66">Diberhentikan</option>
 								</select>
 							</div>
 						</form>
@@ -290,33 +294,34 @@ $("#form_search_pegawai").submit(function(){
 	$table.ajax.reload(null,true);
 	return false;
 });
-
-
 $('body').on('click','.generatedatabkn',function () { 
 	var kode =$(this).attr("kode");
 	swal({
 		title: "Anda Yakin?",
-		text: "Sinkronisasi data Pegawai!",
+		text: "Pastikan data anda sudah update di SIASN BKN, Batalkan jika belum update!",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonClass: 'btn-danger',
 		confirmButtonText: 'Ya!',
 		cancelButtonText: "Tidak, Batalkan!",
 		closeOnConfirm: false,
+		showLoaderOnConfirm: true,
 		closeOnCancel: false
 	},
 	function (isConfirm) {
 		if (isConfirm) {
 			var post_data = "nip_bkn="+kode;
 			$.ajax({
-					url: "<?php echo base_url() ?>admin/kepegawaian/pegawai/getpegawaibknnew",
+					url: "<?php echo base_url() ?>pegawai/bkn/getpegawaibknnew",
 					type:"POST",
 					data: post_data,
-					dataType: "html",
+					dataType: "json",
 					timeout:180000,
 					success: function (result) {
-						 result = JSON.parse(result);
-						 swal("Perhatian!", result.msg, "success");
+						if(result.success)
+						 	swal("Perhatian!", result.msg, "success");
+						else
+							swal("Perhatian!", result.msg, "error");
 				},
 				error : function(error) {
 					alert(error);
@@ -332,7 +337,7 @@ $('body').on('click','.viewdatabkn',function () {
 	var kode =$(this).attr("kode");
 	swal({
 		title: "Anda Yakin?",
-		text: "Lihat data Pegawai berdasarkan data BKN!",
+		text: "Sinkron data pribadi dan riwayat berdasarkan data BKN!",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonClass: 'btn-success',

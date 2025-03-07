@@ -47,12 +47,12 @@ class Izin_verifikasi_model extends BF_Model
 		array(
 			'field' => 'NAMA',
 			'label' => 'lang:izin_pegawai_field_NAMA',
-			'rules' => 'max_length[100]',
+			'rules' => 'max_length[255]',
 		),
 		array(
 			'field' => 'JABATAN',
 			'label' => 'lang:izin_pegawai_field_JABATAN',
-			'rules' => 'max_length[100]',
+			'rules' => 'max_length[255]',
 		),
 	);
 	protected $insert_validation_rules  = array();

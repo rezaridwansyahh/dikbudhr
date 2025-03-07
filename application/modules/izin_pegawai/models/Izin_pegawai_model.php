@@ -211,7 +211,9 @@ class Izin_pegawai_model extends BF_Model
 				izin.KETERANGAN,
 				ALASAN_CUTI,TGL_DIBUAT
 				SELAMA_JAM,SELAMA_MENIT,
-				STATUS_PENGAJUAN');
+				STATUS_PENGAJUAN,
+				source,
+				status_kirim');
 		}
 		$this->db->join('jenis_izin', 'izin.KODE_IZIN = jenis_izin.ID', 'left');
 		return parent::find_all();
@@ -269,6 +271,7 @@ class Izin_pegawai_model extends BF_Model
 				SELAMA_JAM,
 				SELAMA_MENIT,
 				IS_SIGNED,
+				source,
 				STATUS_PENGAJUAN');
 		}
 		$this->db->where("NIP_PNS",$nip);
@@ -289,6 +292,7 @@ class Izin_pegawai_model extends BF_Model
 				CATATAN_ATASAN,CATATAN_PYBMC,
 				LAMPIRAN_FILE,
 				JUMLAH,SATUAN,
+				ALASAN_CUTI,
 				izin.KETERANGAN');
 		}
 		$this->db->where("NIP_PNS",$nip);
@@ -312,7 +316,10 @@ class Izin_pegawai_model extends BF_Model
 				LAMPIRAN_FILE,
 				JUMLAH,SATUAN,
 				izin.KETERANGAN,
-				STATUS_PENGAJUAN
+				STATUS_PENGAJUAN,
+				ALASAN_CUTI,
+				source,
+				status_kirim
 				');
 		}
 		$this->db->where("UNOR_INDUK_ID",$unit_kerja);
@@ -356,8 +363,10 @@ class Izin_pegawai_model extends BF_Model
 				LAMPIRAN_FILE,
 				JUMLAH,SATUAN,
 				izin.KETERANGAN,
+				ALASAN_CUTI,
 				STATUS_PENGAJUAN,
-				STATUS_VERIFIKASI
+				STATUS_VERIFIKASI,
+				source
 				');
 		}
 		$this->db->where("izin_verifikasi.NIP_ATASAN",$nip);
@@ -404,6 +413,7 @@ class Izin_pegawai_model extends BF_Model
 				LAMPIRAN_FILE,
 				JUMLAH,SATUAN,
 				izin.KETERANGAN,
+				ALASAN_CUTI,
 				STATUS_PENGAJUAN');
 		}
 		$this->db->where("NIP_PYBMC",$nip);
@@ -506,6 +516,7 @@ class Izin_pegawai_model extends BF_Model
 			$this->izin_pegawai_model->db->where_not_in('id',$exclude_ids);				
 		}
 		$this->db->where("NIP_PNS",$nip);
+		$this->db->where_in('STATUS_PENGAJUAN',array(1,2,3)); // jika masih proses/blm ditertima
 		$this->db->group_start();
 		if($dari_tanggal != ""and $sampai_tanggal != ""){
 			$this->izin_pegawai_model->where("\"DARI_TANGGAL\" between '".$dari_tanggal."' AND '".$sampai_tanggal."'",null);
@@ -590,5 +601,23 @@ class Izin_pegawai_model extends BF_Model
 		$this->db->group_by("PHOTO");
 		$this->db->group_by("STATUS_PENGAJUAN");	
 		return parent::find_all();
+	}
+	public function countPerBulan($tahun = "",$bulan = "",$nip = "",$jenis_izin = "")
+	{
+		if (empty($this->selects))
+		{
+			$this->select("date_part('YEAR',\"DARI_TANGGAL\") as year,date_part('MONTH',\"DARI_TANGGAL\") as month,count(*) as jumlah");
+		}
+		if($nip != ""){
+			$this->db->where("NIP_PNS",$nip);
+		}
+		if($tahun != ""){
+			$this->izin_pegawai_model->where("date_part('YEAR',\"DARI_TANGGAL\")",$tahun);
+			$this->izin_pegawai_model->where("date_part('MONTH',\"DARI_TANGGAL\")",$bulan);
+		}
+		$this->db->where("KODE_IZIN",$jenis_izin);
+		$this->db->where("STATUS_PENGAJUAN",3);
+		return parent::count_all();
+
 	}
 }

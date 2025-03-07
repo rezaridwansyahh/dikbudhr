@@ -31,6 +31,7 @@ $modal_id = uniqid("modal_");
                     <form id="form-tap-absen">
                         <input type="hidden" name="token" value="token" />
                             <strong class=''>
+<center><b>PASTIKAN PENGAJUAN BDR SESUAI DENGAN LEVEL PPKM PADA LOKASI ANDA BEKERJA</b> </center></br>
                             <center><b>Transaksi lapor kehadiran Bekerja dari rumah (BDR), <?php echo $hari; ?> <?php echo $tanggal_indonesia; ?>, Waktu anda "<?php echo $WAKTU; ?>"</b></center>
                             </strong>
                         <table class='table-history table table-bordered compact table-condensed table-hover'>

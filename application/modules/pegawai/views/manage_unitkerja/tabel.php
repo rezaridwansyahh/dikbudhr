@@ -46,7 +46,7 @@ if ($can_delete) {
                     <td></td>
                     <td><label for="example-text-input" class="col-form-label">Jenis Satker</label></td>
                     <td colspan=2>
-                        <select id="jenis" name="jenis" style="width:100%" class="form-control select2">
+                        <select id="jenis" name="jenis" style="width:100%" class="form-control">
                         <option value="">Silahkan Pilih</option>
                             <?php 
                             foreach($jenis_satkers as $row){
@@ -70,13 +70,29 @@ if ($can_delete) {
                     </td>
                 </tr>
                 <tr>
+                    <td width="20px"></td>
+                    <td width="200px"><label for="example-text-input" class="col-form-label">IS Satker</label></td>
+                    <td colspan=2>
+                        <select id="is_satker" name="is_satker" width="100%" class=" col-md-10 form-control">
+                            <option value="">Semua</option>
+                            <option value="1">Ya</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
                     <td></td>
                     <td><label for="example-text-input" class="col-form-label">Nama Unit</label></td>
                     <td colspan=2>
                         <input type="text" name="nama_unit" class="form-control">
                     </td>
                 </tr>
-                 
+                <tr>
+                    <td></td>
+                    <td><label for="example-text-input" class="col-form-label">ID BKN</label></td>
+                    <td colspan=2>
+                        <input type="text" name="id_bkn" class="form-control">
+                    </td>
+                </tr>
                 <tr>
                     <td colspan=4>
                         <button type="submit" class="btn btn-success pull-right "><i class="fa fa-search"></i> Cari</button>

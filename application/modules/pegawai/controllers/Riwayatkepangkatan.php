@@ -106,6 +106,9 @@ class Riwayatkepangkatan extends Admin_Controller
                 if($record->KETERANGAN_BERKAS != ""){
                     $btn_actions  [] = "<a href='".base_url()."pegawai/riwayatkepangkatan/viewdoc/".$record->ID."' data-toggle='tooltip' title='Lihat Dokumen' tooltip='Lihat Dokumen ".$record->SK_NOMOR."' class='btn btn-sm btn-info show-modal'><i class='glyphicon glyphicon-eye-open'></i> </a>";
                 }
+                if($record->id_arsip != ""){
+                    $btn_actions  [] = "<a href='".base_url()."admin/arsip/arsip_digital/viewbkn/".$record->id_arsip."' data-toggle='tooltip' title='Lihat Dokumen' tooltip='Lihat Dokumen ".$record->SK_NOMOR."' class='btn btn-sm btn-info' target='_blank'><i class='glyphicon glyphicon-eye-open'></i> </a>";
+                }
                 if($this->auth->has_permission($this->permissionEdit))
                 {    
                     $btn_actions  [] = "<a href='".base_url()."pegawai/riwayatkepangkatan/edit/".$PNS_ID."/".$record->ID."' data-toggle='tooltip' title='Ubah data' tooltip='Ubah data' class='btn btn-sm btn-success show-modal-custom'><i class='fa fa-pencil'></i> </a>";
@@ -247,7 +250,7 @@ class Riwayatkepangkatan extends Admin_Controller
             $data_base64 = file_get_contents($file_tmp);
             $base64 = 'data:' . $type . ';base64,' . base64_encode($data_base64);
 
-            if(in_array(end($file_ext),$allowed_ext) === false)
+            if(in_array(strtolower(end($file_ext)),$allowed_ext) === false)
             {
                 $errors[]='Extension not allowed';
                 $response['msg'] = "

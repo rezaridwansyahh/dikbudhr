@@ -42,7 +42,7 @@ class Anak_model extends BF_Model
 		array(
 			'field' => 'PNS_ID',
 			'label' => 'PNS ID',
-			'rules' => 'max_length[32]|required',
+			'rules' => 'max_length[36]|required',
 		),
 		array(
 			'field' => 'NAMA',

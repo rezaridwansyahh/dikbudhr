@@ -246,13 +246,25 @@ $kode = isset($pegawai->ID) ? $pegawai->ID : '';
                     <span class='help-inline'><?php echo form_error('Unor_ID'); ?></span>
                 </div>
             </div>
+
             <div class="control-group<?php echo form_error('JABATAN_PPNPN') ? ' error' : ''; ?> col-sm-12">
-                <?php echo form_label("JABATAN", 'JABATAN_PPNPN', array('class' => 'control-label')); ?>
+                <?php echo form_label("JABATAN PPNPN", 'JABATAN_PPNPN', array('class' => 'control-label')); ?>
                 <div class='controls'>
                     <input id='JABATAN_PPNPN' type='text' class="form-control" name='JABATAN_PPNPN' maxlength='50' value="<?php echo set_value('JABATAN_PPNPN', isset($pegawai->JABATAN_PPNPN) ? $pegawai->JABATAN_PPNPN : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('JABATAN_PPNPN'); ?></span>
                 </div>
             </div>
+
+            <div class="control-group<?php echo form_error('JABATAN_INSTANSI_REAL_ID') ? ' error' : ''; ?> col-sm-12">
+                <?php echo form_label("JABATAN REAL", 'JABATAN_INSTANSI_REAL_ID', array('class' => 'control-label')); ?>
+                <div class='controls'>
+                    <select name="JABATAN_REAL_ID" id="JABATAN_INSTANSI_REAL_ID" class="form-control select2">
+                        
+						
+                    </select>
+                    <span class='help-inline'><?php echo form_error('UNOR_INDUK_ID'); ?></span>
+                </div>
+            </div> 
         </fieldset>
         </div>
   		<div class="box-footer">
@@ -362,6 +374,25 @@ function submitdata(){
             cache: true
         }
     });
+
+    $("#JABATAN_INSTANSI_REAL_ID").select2({
+        placeholder: 'Cari Jabatan ...',
+        width: '100%',
+        minimumInputLength: 3,
+        allowClear: true,
+        ajax: {
+            url: '<?php echo site_url("admin/masters/jabatan/ajax");?>',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1
+                }
+            },
+            cache: true
+        }
+    });
+
     $("#UNOR_INDUK_ID").select2({
         placeholder: 'Cari Unit Kerja...',
         width: '100%',

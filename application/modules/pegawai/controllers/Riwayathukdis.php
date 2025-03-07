@@ -202,7 +202,7 @@ class Riwayathukdis extends Admin_Controller
             $data_base64 = file_get_contents($file_tmp);
             $base64 = 'data:' . $type . ';base64,' . base64_encode($data_base64);
 
-            if(in_array(end($file_ext),$allowed_ext) === false)
+            if(in_array(strtolower(end($file_ext)),$allowed_ext) === false)
             {
                 $errors[]='Extension not allowed';
                 $response['msg'] = "

@@ -269,6 +269,17 @@ class Mv_pegawai_model extends BF_Model
 	protected $skip_validation 			= true;
 
 
+	public function find_with_limit_offset($limit,$offset){
+		$dbdefault = $this->load->database('default', true);
+		
+		$list = $dbdefault->query("
+                    select userid, min (checktime) as checkin, max(checktime) as checkout
+                    from checkinout
+                    where userid=? and date(checktime)>=? and date(checktime)<=?
+                    group by userid,date(checktime)
+                    order by date(checktime) asc 
+                    ", array($nip, $tgl_mulai,$tgl_selesai))->result();
+	}
 	 
 	public function find_all_api($satker_id, $strict_in_satker = false)
 	{
@@ -398,6 +409,7 @@ class Mv_pegawai_model extends BF_Model
 		$this->db->order_by("NAMA", "ASC");
 		return parent::find_all();
 	}
+
 	public function count_all_api($satker_id, $strict_in_satker = false)
 	{
 
@@ -526,6 +538,7 @@ class Mv_pegawai_model extends BF_Model
 		$this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
 		return parent::count_all();
 	}
+
 	public function find_download($satker_id = null, $strict_in_satker = false)
 	{
 
@@ -613,5 +626,63 @@ class Mv_pegawai_model extends BF_Model
 		// $this->db->where("(status_pegawai != 3 or status_pegawai is null) " . $where_clause);
 		return parent::count_all();
 	}
+
+	public function rekap_diklat_pegawai($unor_id=null, $tahun=null, $nama=null){
+		$this->db->select('mv_pegawai."ID",mv_pegawai."NAMA"', false);
+		// $this->db->join("hris.rwt_diklat as rd", 'mv_pegawai."NIP_BARU"=rd."nip_baru"', "LEFT");
+		// $this->db->join("hris.vw_unit_list as vul", 'mv_pegawai."UNOR_ID"=vul."ID"', "LEFT");
+		
+		// if($unor_id!=null){
+		// 	$this->db->group_start();
+		// 	$this->db->where('vul."ID"',$unor_id);	
+		// 	$this->db->or_where('vul."ESELON_1"',$unor_id);	
+		// 	$this->db->or_where('vul."ESELON_2"',$unor_id);	
+		// 	$this->db->or_where('vul."ESELON_3"',$unor_id);	
+		// 	$this->db->or_where('vul."ESELON_4"',$unor_id);	
+		// 	$this->db->group_end();
+		// }
+
+		// if($tahun!=null){
+		// 	$this->db->where('rd."tahun_diklat"',$tahun);
+		// }
+
+		// if($nama!=null){
+		// 	$this->db->like('upper(mv_pegawai."NAMA")',strtoupper($nama),"BOTH");
+		// }
+
+		
+		
+		// $this->db->group_by('mv_pegawai."ID"');
+		// $this->db->group_by('mv_pegawai."NAMA"');
+		// $this->db->group_by('"PNS_ID"');
+		// $this->db->group_by('rd."tahun_diklat"');
+		
+		// $this->db->group_by('mv_pegawai."NIP_BARU"');
+		// $this->db->group_by('"UNOR_ID"');
+		// $this->db->group_by('vul."NAMA_UNOR"');
+		// $this->db->group_by('vul."ESELON_1"');
+		// $this->db->group_by('vul."ESELON_2"');
+		// $this->db->group_by('vul."ESELON_3"');
+		// $this->db->group_by('vul."ESELON_4');
+		return parent::find_all();
+
+	} 
+
+	public function count_rekap_diklat_pegawai($unor_id=null, $tahun=null, $nama=null){
+		$this->db->select('"ID"', false);
+		$this->db->join("rwt_diklat rd", 'mv_pegawai."NIP_BARU"=rd."nip_baru"', "LEFT");
+
+		
+
+		$this->db->group_by("ID");
+		$this->db->group_by("PNS_ID");
+		$this->db->group_by('mv_pegawai."NIP_BARU"');
+		$this->db->group_by("UNOR_ID");
+		$this->db->group_by("NAMA_UNOR_FULL");
+		return parent::count_all();
+
+	} 
+
+
 
 }

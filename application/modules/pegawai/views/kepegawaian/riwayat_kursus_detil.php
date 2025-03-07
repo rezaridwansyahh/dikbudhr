@@ -50,7 +50,7 @@
             <div class="control-group<?php echo form_error('LAMA_KURSUS') ? ' error' : ''; ?> col-sm-3">
                 <?php echo form_label("LAMA (JAM)", 'SK NOMOR', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='LAMA_KURSUS' type='text' class="form-control" name='LAMA_KURSUS' maxlength='5' value="<?php echo set_value('LAMA_KURSUS', isset($detail_riwayat->LAMA_KURSUS) ? trim($detail_riwayat->LAMA_KURSUS) : ''); ?>" />
+                    <input id='LAMA_KURSUS' type='number' class="form-control" name='LAMA_KURSUS' maxlength='5' value="<?php echo set_value('LAMA_KURSUS', isset($detail_riwayat->LAMA_KURSUS) ? trim($detail_riwayat->LAMA_KURSUS) : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('LAMA_KURSUS'); ?></span>
                 </div>
             </div>

@@ -154,7 +154,7 @@ class Riwayat_jabatan_model extends BF_Model
 		return parent::insert($data);
 	}*/
 
-	public function insert($data, $posts)
+	public function insert($data, $posts="")
 	{
 		if (isset($data['IS_ACTIVE']) and $data['IS_ACTIVE'] == "1") {
 

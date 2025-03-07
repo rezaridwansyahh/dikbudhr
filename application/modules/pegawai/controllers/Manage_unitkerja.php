@@ -385,7 +385,7 @@ class Manage_unitkerja extends Admin_Controller {
         // $start = ($page-1)*$limit;
         
         if(!empty($q)){
-            $json = $this->data_model($q,$page,$limit);
+            $json = $this->data_model($q,$page,$limit,TRUE);
         }
         echo json_encode($json);
     }

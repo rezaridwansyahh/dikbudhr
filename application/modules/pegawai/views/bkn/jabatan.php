@@ -37,12 +37,16 @@
                         <tr>
                           <td><?php echo $no; ?></td>
                           <td>
-                            <?php echo $row->jenisJabatan; ?><br>
-                            <?php echo $row->jabatanFungsionalUmumNama != "" ? "<b>JFU : </b>".$row->jabatanFungsionalUmumNama : ""; ?>    
-                            <?php echo $row->jabatanFungsionalNama != "" ? "<b>JFT : </b>".$row->jabatanFungsionalNama : ""; ?>    
+                            Jenis : <?php echo $row->jenisJabatan; ?><br>
+                            <?php echo $row->jabatanFungsionalUmumNama != "" ? "<b>JFU : </b>".$row->jabatanFungsionalUmumNama."<br>".$row->jabatanFungsionalUmumId : ""; ?>    
+                            <?php echo $row->jabatanFungsionalNama != "" ? "<b>JFT : </b>".$row->jabatanFungsionalNama."<br>".$row->jabatanFungsionalId : ""; ?>    
                             <?php echo $row->namaJabatan != "" ? "<br><b>ST : </b>".$row->namaJabatan : ""; ?>    
                           </td>
-                          <td><?php echo $row->unorNama; ?></td>
+                          <td>
+                            <?php echo $row->unorId; ?> | <?php echo $row->unorNama; ?><br>
+                             Satker :  <?php echo $row->satuanKerjaId; ?> | <?php echo $row->satuanKerjaNama; ?>
+
+                            </td>
                           <td><?php echo $row->unorIndukNama; ?></td>
 
                           <td><?php echo $row->nomorSk; ?>

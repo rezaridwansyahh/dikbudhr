@@ -137,9 +137,11 @@
                     <?php } ?>  
                 </div>
             </div>
+</br>
 			</fieldset>
 			<fieldset>
-			<legend>Jika tidak ada</legend>
+
+			<legend></br>Isi jika unit kerja atau jabatan <b>tidak ada</b> pada pilihan di form atas (opsional)</legend>
 			<div class="control-group<?php echo form_error('eselon1') ? ' error' : ''; ?> col-sm-12">
                 <?php echo form_label('ESELON 1', 'ESELON1', array('class' => 'control-label')); ?>
                 <div class='controls'>

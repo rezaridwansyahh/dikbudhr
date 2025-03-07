@@ -1,7 +1,7 @@
 <div class="callout callout-success">
        <h4>Perhatian</h4>
        <P>dibawah ini merupakan data riwayat dari BKN</p>
-        <p>Silahkan klik tombol <button class="btn btn-warning sinkrondata_kepangkatan" kode="<?php echo $nipBaru; ?>" tooltip="Sinkron data" ><i class="fa fa-refresh" aria-hidden="true"></i> Sinkron</button> untuk sinkronisasi data dengan aplikasi dikbudhr</p>
+        <p>Silahkan klik tombol <button class="btn btn-warning sinkrondata_kepangkatan" kode="<?php echo $nipBaru; ?>" tooltip="Sinkron data" ><i class="fa fa-refresh" aria-hidden="true"></i> Sinkron</button> untuk sinkronisasi data dengan aplikasi BRIN</p>
      </div>
     <div class="box box-info">
         <fieldset>
@@ -26,6 +26,7 @@
                         <th>No Pertek</th>
                         <th>Tgl Pertek</th>
                         <th>Jenis KP</th>
+                        <th>File</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,13 +36,19 @@
                     ?>
                     <tr>
                       <td><?php echo $no; ?></td>
-                      <td><?php echo $row->golongan; ?></td>
+                      <td><?php echo isset($apangakt[$row->golonganId]) ? $apangakt[$row->golonganId] : ""; ?></td>
                       <td><?php echo $row->skNomor; ?></td>
                       <td><?php echo $row->skTanggal; ?></td>
                       <td><?php echo $row->tmtGolongan; ?></td>
                       <td><?php echo $row->noPertekBkn; ?></td>
                       <td><?php echo $row->tglPertekBkn; ?></td>
                       <td><?php echo $row->jenisKPNama; ?></td>
+                      <td><?php 
+                        foreach($row->path as $i => $i_value) { ?>
+                          <?php //print_r($i_value); ?>
+                            <span url="<?php echo base_url().'pegawai/bkn/lihatdokumen?file='.urlencode($i_value->dok_uri); ?>" class='btn btn-sm btn-info popup' target="_blank"> <i class="fa fa-eye"></i> </span>
+                        <?php } ?>
+                      </td>
                     </tr>
                     <?php  
                     $no++;

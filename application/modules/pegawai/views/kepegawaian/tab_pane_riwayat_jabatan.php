@@ -9,7 +9,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-21 col-xs-12">
-            <?php if ($this->auth->has_permission('Pegawai.ViewDataBkn.View')) : ?>
+            <?php if ($this->auth->has_permission('Riwayatjabatan.SyncBkn.View')) : ?>
             	<a class="btn btn-default btn-success margin pull-right" id="lihat_jabatan_bkn" kode="<?php echo $PNS_ID ?>" tooltip="Sinkron dengan BKN">
 				<i class="fa fa-refresh"></i> Sinkron BKN
             	</a>

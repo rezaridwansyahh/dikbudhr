@@ -17,6 +17,7 @@ class Izin extends Admin_Controller
 
     protected $permissionSettingView   = 'Setting_atasan.Izin.View';
     protected $permissionSettingAdd   = 'Setting_atasan.Izin.Add';
+    protected $permissionSettingEdit   = 'Setting_atasan.Izin.Edit';
     protected $permissionSettingDelete   = 'Setting_atasan.Izin.Delete';
 
     protected $permissionSettingKirimAbsen   = 'Izin_pegawai.KirimAbsen.View';
@@ -24,6 +25,8 @@ class Izin extends Admin_Controller
     protected $permissionUploaddata   = 'Izin_pegawai.Upload.View';
     protected $permissionFiltersatker   = 'Pegawai.Kepegawaian.Filtersatker';
     protected $UnitkerjaTerbatas   = 'Unitkerja.Kepegawaian.Terbatas';
+    protected $permissionKirimKehadiran   = 'Izin_pegawai.KirimKeEkehadiran.View';
+    
     public $SATKER_ID = null;
     public $is_pejabat_cuti = null;
     /**
@@ -130,7 +133,17 @@ class Izin extends Admin_Controller
         Template::set('toolbar_title', "Pilih Pejabat");
         Template::render();
     }
-    
+    public function pilihpejabatedit($nip = "")
+    {
+        $this->auth->restrict($this->permissionSettingEdit);
+        $line_approval = $this->line_approval_model->find_all($nip);
+        $ajabatan = get_list_pejabat_cuti();
+        Template::set('ajabatan', $ajabatan);
+        Template::set('line_approval', $line_approval);
+        Template::set('nip', $nip);
+        Template::set('toolbar_title', "Pilih Pejabat");
+        Template::render();
+    }
     public function pengajuanjadwalbdr(){
         $ses_nip    = trim($this->auth->username());
         $dataatasan     = $this->get_data_pejabat($ses_nip);
@@ -203,52 +216,12 @@ class Izin extends Admin_Controller
         $alasan_izin = $this->izin_alasan_model->find_all($id);
         Template::set('alasan_izin', $alasan_izin);
         if($id == "1"){
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
-            $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
-            if($data_cuti->ID == ""){
-                $SISA_N = 0;
-                $SISA_N_1 = 0;
-                $SISA_N_2 = 0;
-                $SISA = 0;
-                $tahun_1 = $TAHUN - 1;
-                $this->sisa_cuti_model->where("TAHUN = '".$tahun_1."'");
-                $data_cuti_1 = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
-                if($data_cuti_1->ID != ""){
-                    if($data_cuti_1->SISA_N >= 6){
-                        $SISA_N_1 = 6;
-                        $SISA_N = 12;
-                        $SISA = 12 + 6;
-                    }
-                    if($data_cuti_1->SISA_N >= 12 && $data_cuti_1->SISA_N_1 >= 12){
-                        $SISA_N_1 = 6;
-                        $SISA_N_2 = 6;
-                        $SISA_N = 12;
-                        $SISA = 12 + 12;
-                    }
-                }else{
-                    $SISA_N_1 = 0;
-                    $SISA_N_2 = 0;
-                    $SISA_N = 12;
-                    $SISA = 12;
-                }
+            $this->create_saldo($ses_nip,$TAHUN);
 
-                $data_pegawai = $this->pegawai_model->find_by("NIP_BARU",$ses_nip);
-                $NAMA_PEGAWAI = isset($data_pegawai->NAMA) ? $data_pegawai->NAMA : "";
-                $data['PNS_NIP'] = $ses_nip;
-                $data['NAMA'] = $NAMA_PEGAWAI;
-                $data['TAHUN'] = $TAHUN;
-                $data['SISA_N'] = (int)$SISA_N;
-                $data['SISA_N_1'] = (int)$SISA_N_1;
-                $data['SISA_N_2'] = (int)$SISA_N_2;
-                $data['SISA'] = (int)$SISA;
-                $this->sisa_cuti_model->skip_validation(true);
-                if($insert_id = $this->sisa_cuti_model->insert($data)){
-                    log_activity($this->auth->user_id(), 'Save data sisa cuti : ' . $insert_id . ' : ' . $this->input->ip_address(), 'sisa_cuti');    
-                }
-            }
-
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
+            $this->sisa_cuti_model->where("sisa_cuti.TAHUN = '".$TAHUN."'");
             $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
+            if((int)$data_cuti->SUDAH_DIAMBIL < (int)$data_cuti->V_SUDAH_DIAMBIL)
+                $data_cuti->SUDAH_DIAMBIL = $data_cuti->V_SUDAH_DIAMBIL;
         }
         if($id == "5"){
             
@@ -450,57 +423,15 @@ class Izin extends Admin_Controller
         $alasan_izin = $this->izin_alasan_model->find_all($id);
         Template::set('alasan_izin', $alasan_izin);
         if($id == "1"){
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
-            $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
-            if($data_cuti->ID == ""){
-                $SISA_N = 0;
-                $SISA_N_1 = 0;
-                $SISA_N_2 = 0;
-                $SISA = 0;
-                $tahun_1 = $TAHUN - 1;
-                $this->sisa_cuti_model->where("TAHUN = '".$tahun_1."'");
-                $data_cuti_1 = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
-                if($data_cuti_1->ID != ""){
-                    if($data_cuti_1->SISA_N >= 6){
-                        $SISA_N_1 = 6;
-                        $SISA_N = 12;
-                        $SISA = 12 + 6;
-                    }
-                    if($data_cuti_1->SISA_N >= 12 && $data_cuti_1->SISA_N_1 >= 12){
-                        $SISA_N_1 = 6;
-                        $SISA_N_2 = 6;
-                        $SISA_N = 12;
-                        $SISA = 12 + 12;
-                    }
-                }else{
-                    $SISA_N_1 = 0;
-                    $SISA_N_2 = 0;
-                    $SISA_N = 12;
-                    $SISA = 12;
-                }
+            $this->create_saldo($ses_nip,$TAHUN);
 
-                $data_pegawai = $this->pegawai_model->find_by("NIP_BARU",$ses_nip);
-                $NAMA_PEGAWAI = isset($data_pegawai->NAMA) ? $data_pegawai->NAMA : "";
-                $data['PNS_NIP'] = $ses_nip;
-                $data['NAMA'] = $NAMA_PEGAWAI;
-                $data['TAHUN'] = $TAHUN;
-                $data['SISA_N'] = (int)$SISA_N;
-                $data['SISA_N_1'] = (int)$SISA_N_1;
-                $data['SISA_N_2'] = (int)$SISA_N_2;
-                $data['SISA'] = (int)$SISA;
-                $this->sisa_cuti_model->skip_validation(true);
-                if($insert_id = $this->sisa_cuti_model->insert($data)){
-                    log_activity($this->auth->user_id(), 'Save data sisa cuti : ' . $insert_id . ' : ' . $this->input->ip_address(), 'sisa_cuti');    
-                }
-            }
-
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
+            $this->sisa_cuti_model->where("sisa_cuti.TAHUN = '".$TAHUN."'");
             $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
         }
         if($id == "12"){
             $tanggal = date("Y-m-d");
             $data_absen = $this->absen_model->getdata_absen($ses_nip,$tanggal);
-            print_r($data_absen);
+            // print_r($data_absen);
             $jam_checkin = isset($data_absen[0]->JAM) ? $data_absen[0]->JAM : "";
             $jam_checkout = "";
             if(isset($data_absen[0]->JAM) and count($data_absen) > 1){
@@ -608,6 +539,7 @@ class Izin extends Admin_Controller
         $ses_nip    = $izin_pegawai->NIP_PNS; 
         Template::set('izin_pegawai', $izin_pegawai);
         $verifikasidata = $this->get_data_verifikasi_izin($izin_pegawai->ID);
+
         Template::set('verifikasidata', $verifikasidata);
 
         $jenis_izin = $this->jenis_izin_model->find($id);
@@ -615,8 +547,12 @@ class Izin extends Admin_Controller
         $PERSETUJUAN      = isset($jenis_izin->PERSETUJUAN) ? $jenis_izin->PERSETUJUAN : "";
 
         $adata_pejabat = $this->get_data_pejabat($ses_nip);
-        Template::set('NAMA_PEGAWAI', $this->getnama_pegawai_session($ses_nip));
         Template::set('aatasan', $adata_pejabat);
+
+        $datapejabat = $this->get_data_pejabat_nip($ses_nip);
+        Template::set('apejabat', $datapejabat);
+
+        Template::set('NAMA_PEGAWAI', $this->getnama_pegawai_session($ses_nip));
         Template::set('PERSETUJUAN', $PERSETUJUAN);
 
         Template::set('toolbar_title', "Line Approval ".$nama_izin);
@@ -648,6 +584,16 @@ class Izin extends Admin_Controller
         if(isset($line_approval) && is_array($line_approval) && count($line_approval)):
             foreach ($line_approval as $record) {
                 $aatasan[$record->SEBAGAI] = $record;
+            }
+        endif;
+        return $aatasan;
+    }
+    private function get_data_pejabat_nip($ses_nip = ""){
+        $line_approval = $this->getatasan($ses_nip);
+        $aatasan = array();
+        if(isset($line_approval) && is_array($line_approval) && count($line_approval)):
+            foreach ($line_approval as $record) {
+                $aatasan[$record->NIP_ATASAN] = $record->SEBAGAI;
             }
         endif;
         return $aatasan;
@@ -687,9 +633,10 @@ class Izin extends Admin_Controller
         $KODE_JENIS_IZIN      = isset($jenis_izin->KODE) ? $jenis_izin->KODE : "";
         Template::set('KODE_JENIS_IZIN',$KODE_JENIS_IZIN);    
         if($id != ""){
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
-            $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
-            Template::set('data_cuti',$data_cuti);    
+            $data_cuti = getSisaCuti($ses_nip,$TAHUN);
+            // $this->sisa_cuti_model->where("sisa_cuti.TAHUN = '".$TAHUN."'");
+            // $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
+            Template::set('data_cuti',$data_cuti);   
         }
         $pegawai = $this->pegawai_model->find_detil_with_nip($ses_nip);
         $recpns_aktif = $this->Pns_aktif_model->find($pegawai->ID);
@@ -722,7 +669,10 @@ class Izin extends Admin_Controller
         $NIP = trim($this->auth->username());
         $pegawai_login = $this->pegawai_model->find_by("NIP_BARU",trim($NIP));
         Template::set("pegawai_login",$pegawai_login);
-
+        // get jumlah izin bulan yang sama
+        $jumlah_izin_bulan_sama = $this->getJumlahIzinBulanSama($DARI_TANGGAL,$ses_nip,$id);
+        Template::set('jumlah_izin_bulan_sama', $jumlah_izin_bulan_sama);
+        // end jumlah izin bulan yang sama
         Template::set('ID_VERIFIKASI', $kode_tabel);
         Template::set('kode_pengajuan', $kode_pengajuan);
         
@@ -734,8 +684,24 @@ class Izin extends Admin_Controller
         Template::set('NIP_PNS', $ses_nip);
         Template::set('nama_izin', $nama_izin);
         Template::set('toolbar_title', "Verifikasi Izin ".$nama_izin);
-
+        //line approval
+        $verifikasidata = $this->get_data_verifikasi_izin($izin_pegawai->ID);
+        Template::set('verifikasidata', $verifikasidata);
+        $adata_pejabat = $this->get_data_pejabat($ses_nip);
+        Template::set('aatasan', $adata_pejabat);
+        $datapejabat = $this->get_data_pejabat_nip($ses_nip);
+        Template::set('apejabat', $datapejabat);
+        Template::set('NAMA_PEGAWAI',$pegawai->NAMA);
+        Template::set('PERSETUJUAN', $level);
+        // end persetujuan
         Template::render();
+    }
+    private function getJumlahIzinBulanSama($tanggal,$nip,$jenis_izin){
+        $tanggal = explode("-", $tanggal);
+        $tahun = isset($tanggal[0]) ? $tanggal[0] : "";
+        $bulan = isset($tanggal[1]) ? $tanggal[1] : "";
+        $jumlah = $this->izin_pegawai_model->countPerBulan($tahun,$bulan,$nip,$jenis_izin);
+        return $jumlah;
     }
     public function form_tangguhkan()
     {
@@ -762,7 +728,7 @@ class Izin extends Admin_Controller
         $KODE_JENIS_IZIN      = isset($jenis_izin->KODE) ? $jenis_izin->KODE : "";
         Template::set('KODE_JENIS_IZIN',$KODE_JENIS_IZIN);    
         if($id != ""){
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
+            $this->sisa_cuti_model->where("sisa_cuti.TAHUN = '".$TAHUN."'");
             $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
             Template::set('data_cuti',$data_cuti);    
         }
@@ -831,7 +797,7 @@ class Izin extends Admin_Controller
         $level      = isset($jenis_izin->PERSETUJUAN) ? $jenis_izin->PERSETUJUAN : "";
         
         if($id != ""){
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
+            $this->sisa_cuti_model->where("sisa_cuti.TAHUN = '".$TAHUN."'");
             $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
             Template::set('data_cuti',$data_cuti);    
         }
@@ -894,7 +860,7 @@ class Izin extends Admin_Controller
         $PERSETUJUAN      = isset($jenis_izin->PERSETUJUAN) ? $jenis_izin->PERSETUJUAN : "";
         
         if($id != ""){
-            $this->sisa_cuti_model->where("TAHUN = '".$TAHUN."'");
+            $this->sisa_cuti_model->where("sisa_cuti.TAHUN = '".$TAHUN."'");
             $data_cuti = $this->sisa_cuti_model->find_by("PNS_NIP",$ses_nip);
             Template::set('data_cuti',$data_cuti);    
         }
@@ -1055,9 +1021,9 @@ class Izin extends Admin_Controller
         // Additional handling for default values should be added below,
         // or in the model's prep_data() method
         
-		$data['DARI_TANGGAL']	= $this->input->post('DARI_TANGGAL') ? $this->input->post('DARI_TANGGAL') : '0000-00-00';
-		$data['SAMPAI_TANGGAL']	= $this->input->post('SAMPAI_TANGGAL') ? $this->input->post('SAMPAI_TANGGAL') : '0000-00-00';
-		$data['TGL_DIBUAT']	= $this->input->post('TGL_DIBUAT') ? $this->input->post('TGL_DIBUAT') : '0000-00-00';
+        $data['DARI_TANGGAL']   = $this->input->post('DARI_TANGGAL') ? $this->input->post('DARI_TANGGAL') : '0000-00-00';
+        $data['SAMPAI_TANGGAL'] = $this->input->post('SAMPAI_TANGGAL') ? $this->input->post('SAMPAI_TANGGAL') : '0000-00-00';
+        $data['TGL_DIBUAT'] = $this->input->post('TGL_DIBUAT') ? $this->input->post('TGL_DIBUAT') : '0000-00-00';
 
         $return = false;
         if ($type == 'insert') {
@@ -1173,7 +1139,7 @@ class Izin extends Admin_Controller
                     $STATUS_PYBMC = "<br>".get_status_cuti($record->STATUS_PYBMC);
                 }
 
-                $STATUS_PENGAJUAN = get_status_cuti($record->STATUS_PENGAJUAN);
+                $STATUS_PENGAJUAN = get_status_cuti($record->STATUS_PENGAJUAN).$CATATAN_ATASAN;
                 $CATATAN_PYBMC = "";
                 if($record->CATATAN_ATASAN != ""){
                     $CATATAN_PYBMC = "<br><i>".$record->CATATAN_PYBMC."</i>";
@@ -1201,7 +1167,8 @@ class Izin extends Admin_Controller
                     
                 }
                 if($record->LAMPIRAN_FILE != ""){
-                    $btn_actions  [] = "<a url='".trim($this->settings_lib->item('site.urllampiranizin')).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-success popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>";  
+                    $url_lampiran = $record->source == 2 ? "https://geo-kehadiran.kemdikbud.go.id/lampiran/" : trim($this->settings_lib->item('site.urllampiranizin'));
+                    $btn_actions  [] = "<a url='".trim($url_lampiran).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>"; 
                 }
                 /*
                 if($this->auth->has_permission($this->permissionEdit)){
@@ -1336,7 +1303,8 @@ class Izin extends Admin_Controller
                 
                 $btn_actions  [] = "<a href='".base_url()."admin/izin/izin_pegawai/lineaproval/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-warning show-modal' tooltip='Line Approval ".$record->NAMA_IZIN."' title='Line Approval' data-toggle='tooltip' data-placement='top' title='Line Approval'><i class='fa fa-info-circle'></i> </a>";  
                 if($record->LAMPIRAN_FILE != ""){
-                    $btn_actions  [] = "<a url='".trim($this->settings_lib->item('site.urllampiranizin')).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>";  
+                    $url_lampiran = $record->source == 2 ? "https://geo-kehadiran.kemdikbud.go.id/lampiran/" : trim($this->settings_lib->item('site.urllampiranizin'));
+                    $btn_actions  [] = "<a url='".trim($url_lampiran).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>"; 
                 }
                 if($record->ID != "" and strpos(strtolower($record->NAMA_IZIN), "cuti") !== false){
                     $btn_actions  [] = "<a url='".base_url()."admin/izin/izin_pegawai/formpdf/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-success popup' data-toggle='tooltip' data-placement='top' title='Lihat Dokumen cuti'><i class='glyphicon glyphicon-open-file'></i> </a>";  
@@ -1398,7 +1366,12 @@ class Izin extends Admin_Controller
             if($filters['STATUS']){
                 $this->izin_pegawai_model->where("STATUS_PENGAJUAN",trim($filters['STATUS']));  
             }
-            
+            if($filters['status_kirim']){
+                if($filters['status_kirim'] == "-")
+                    $this->izin_pegawai_model->where("status_kirim is NULL",NULL, false);  
+                if($filters['status_kirim'] == "1")
+                    $this->izin_pegawai_model->where("status_kirim",trim($filters['status_kirim']));  
+            }
         }
         
         $this->db->stop_cache();
@@ -1431,19 +1404,22 @@ class Izin extends Admin_Controller
         $nomor_urut=$start+1;
         if(isset($records) && is_array($records) && count($records)):
             foreach ($records as $record) {
+                $classStatusKirim = $record->status_kirim == "1" ? "success" : "warning";
                 $foto_pegawai = base_url().trim($this->settings_lib->item('site.urlphoto'))."noimage.jpg";
                 if(file_exists(trim($this->settings_lib->item('site.urlphoto')).$record->PHOTO) and $record->PHOTO != ""){
                     $foto_pegawai =  base_url().trim($this->settings_lib->item('site.urlphoto')).$record->PHOTO;
                 }
                 $row = array();
-                $STATUS_ATASAN = "";
-                if($record->STATUS_ATASAN != ""){
-                    $STATUS_ATASAN = "<br>".get_status_cuti($record->STATUS_ATASAN);
-                }
                 $CATATAN_ATASAN = "";
                 if($record->CATATAN_ATASAN != ""){
                     $CATATAN_ATASAN = "<br><i>".$record->CATATAN_ATASAN."</i>";
                 }
+
+                $STATUS_ATASAN = "";
+                if($record->STATUS_ATASAN != ""){
+                    $STATUS_ATASAN = "<br>".get_status_cuti($record->STATUS_ATASAN).$CATATAN_ATASAN;
+                }
+                
                 $STATUS_PYBMC = "";
                 if($record->STATUS_PYBMC != ""){
                     $STATUS_PYBMC = "<br>".get_status_cuti($record->STATUS_PYBMC);
@@ -1452,7 +1428,7 @@ class Izin extends Admin_Controller
                 if($record->CATATAN_ATASAN != ""){
                     $CATATAN_PYBMC = "<br><i>".$record->CATATAN_PYBMC."</i>";
                 }
-                $STATUS_PENGAJUAN = get_status_cuti($record->STATUS_PENGAJUAN);
+                $STATUS_PENGAJUAN = get_status_cuti($record->STATUS_PENGAJUAN).$CATATAN_ATASAN;
                 $row []  = $nomor_urut.".";
                 $row []  = "<img src='".$foto_pegawai."' width='100%'>";
                 $row []  = $record->NIP_PNS."<br><i>".$record->NAMA."</i>";
@@ -1460,19 +1436,23 @@ class Izin extends Admin_Controller
                 $row []  = $record->DARI_TANGGAL."<br>s/d<br>".$record->SAMPAI_TANGGAL;
                 //$row []  = $record->NAMA_ATASAN.$STATUS_ATASAN.$CATATAN_ATASAN;
                 //$row []  = $record->NAMA_PYBMC.$STATUS_PYBMC.$CATATAN_PYBMC;
-                $row []  = $record->KETERANGAN;
+                $row []  = isset($record->ALASAN_CUTI) ? $record->ALASAN_CUTI."<br>".$record->KETERANGAN : $record->KETERANGAN;
                 $row []  = $STATUS_PENGAJUAN;
                 $btn_actions = array();
                 
                 $btn_actions  [] = "<a href='".base_url()."admin/izin/izin_pegawai/lineaproval/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-warning show-modal' tooltip='Line Approval ".$record->NAMA_IZIN."' title='Line Approval' data-toggle='tooltip' data-placement='top' title='Line Approval'><i class='fa fa-info-circle'></i> </a>";  
                 if($record->LAMPIRAN_FILE != ""){
-                    $btn_actions  [] = "<a url='".trim($this->settings_lib->item('site.urllampiranizin')).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>";  
+                    $url_lampiran = $record->source == 2 ? "https://geo-kehadiran.kemdikbud.go.id/lampiran/" : trim($this->settings_lib->item('site.urllampiranizin'));
+                    $btn_actions  [] = "<a url='".trim($url_lampiran).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>"; 
                 }
                 if($record->ID != "" and strpos(strtolower($record->NAMA_IZIN), "cuti") !== false){
                     $btn_actions  [] = "<a url='".base_url()."admin/izin/izin_pegawai/formpdf/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-danger popup' data-toggle='tooltip' data-placement='top' title='Lihat Dokumen cuti'><i class='glyphicon glyphicon-open-file'></i> </a>";  
                 }
                 if($this->auth->has_permission($this->permissionDelete)){
                     $btn_actions  [] = "<a kode='$record->ID' class='btn btn-sm btn-danger btn-hapus' data-toggle='tooltip' data-placement='top' data-original-title='Hapus data' title='Hapus data' tooltip='Hapus'><i class='glyphicon glyphicon-remove'></i> </a>";
+                }
+                if($this->auth->has_permission($this->permissionKirimKehadiran)){
+                    $btn_actions  [] = "<a kode='$record->ID' class='btn btn-sm btn-".$classStatusKirim." send-kehadiran' data-toggle='tooltip' data-placement='top' data-original-title='Kirim ke e-kehadiran' title='Kirim ke e-kehadiran' tooltip='Kirim ke e-kehadiran'><i class='glyphicon glyphicon-forward'></i> </a>";
                 }
                 $row[] = "<div class='btn-group'>".implode(" ",$btn_actions)."</div>";
                 $output['data'][] = $row;
@@ -1618,11 +1598,24 @@ class Izin extends Admin_Controller
             if($filters['nip_key']){
                 $this->izin_pegawai_model->where("NIP_PNS",trim($filters['nip_key']));  
             }
-            if($filters['dari_tanggal']){
-                $this->izin_pegawai_model->where("DARI_TANGGAL >= '".$filters['dari_tanggal']."'");  
-            }
-            if($filters['sampai_tanggal']){
-                $this->izin_pegawai_model->where("SAMPAI_TANGGAL <= '".$filters['sampai_tanggal']."'");  
+            if($filters['sampai_tanggal'] & $filters['sampai_tanggal']){
+                $this->db->group_start();
+                    $this->izin_pegawai_model->where("DARI_TANGGAL >= '{$filters['dari_tanggal']}'");  
+                    $this->izin_pegawai_model->where("SAMPAI_TANGGAL <= '{$filters['sampai_tanggal']}'");  
+                    $this->izin_pegawai_model->or_where("DARI_TANGGAL >= '{$filters['dari_tanggal']}'");  
+                    $this->izin_pegawai_model->where("DARI_TANGGAL <= '{$filters['sampai_tanggal']}'");  
+                $this->db->group_end();
+                // $this->db->group_start();
+                //     $this->izin_pegawai_model->or_where("DARI_TANGGAL >= '{$filters['dari_tanggal']}'");  
+                //     $this->izin_pegawai_model->where("DARI_TANGGAL <= '{$filters['sampai_tanggal']}'");  
+                // $this->db->group_end();
+            }else{
+                if($filters['dari_tanggal']){
+                    $this->izin_pegawai_model->where("DARI_TANGGAL >= '".$filters['dari_tanggal']."'");  
+                }
+                if($filters['sampai_tanggal']){
+                    $this->izin_pegawai_model->where("SAMPAI_TANGGAL <= '".$filters['sampai_tanggal']."'");  
+                }
             }
             if($filters['jenis_izin']){
                 $this->izin_pegawai_model->where("KODE_IZIN",trim($filters['jenis_izin']));  
@@ -1648,7 +1641,7 @@ class Izin extends Admin_Controller
                 $this->izin_pegawai_model->order_by("TAHUN",$order['dir']);
             }
             if($order['column']==4){
-                $this->izin_pegawai_model->order_by("SISA",$order['dir']);
+                $this->izin_pegawai_model->order_by("DARI_TANGGAL",$order['dir']);
             }
         }
         $output['recordsTotal']= $output['recordsFiltered']=$total;
@@ -1660,6 +1653,7 @@ class Izin extends Admin_Controller
         $nomor_urut=$start+1;
         if(isset($records) && is_array($records) && count($records)):
             foreach ($records as $record) {
+                $classStatusKirim = $record->status_kirim == "1" ? "success" : "warning";
                 $foto_pegawai = base_url().trim($this->settings_lib->item('site.urlphoto'))."noimage.jpg";
                 if(file_exists(trim($this->settings_lib->item('site.urlphoto')).$record->PHOTO) and $record->PHOTO != ""){
                     $foto_pegawai =  base_url().trim($this->settings_lib->item('site.urlphoto')).$record->PHOTO;
@@ -1689,7 +1683,11 @@ class Izin extends Admin_Controller
                 $row []  = $record->DARI_TANGGAL."<br>s/d<br>".$record->SAMPAI_TANGGAL;
                 //$row []  = $record->NAMA_ATASAN.$STATUS_ATASAN.$CATATAN_ATASAN;
                 //$row []  = $record->NAMA_PYBMC.$STATUS_PYBMC.$CATATAN_PYBMC;
-                $row []  = $record->KETERANGAN;
+                if($record->KODE_IZIN == "11"){
+                    $row []  = $record->ALASAN_CUTI."<br><i>".$record->KETERANGAN."<br><i>Dari jam ".$record->SELAMA_JAM." - ".$record->SELAMA_MENIT."</i>";
+                }else{
+                    $row []  = $record->ALASAN_CUTI."<br><i>".$record->KETERANGAN;    
+                }
                 $row []  = $STATUS_PENGAJUAN;
                 $btn_actions = array();
                 if ($this->auth->has_permission($this->permissionVerifikasi) || $this->is_pejabat_cuti && ($record->STATUS_PENGAJUAN == 3)) {
@@ -1697,10 +1695,14 @@ class Izin extends Admin_Controller
                 }
                 $btn_actions  [] = "<a href='".base_url()."admin/izin/izin_pegawai/lineaproval/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-danger show-modal' tooltip='Line Approval ".$record->NAMA_IZIN."' title='Line Approval' data-toggle='tooltip' data-placement='top' title='Line Approval'><i class='fa fa-info-circle'></i> </a>";  
                 if($record->LAMPIRAN_FILE != ""){
-                    $btn_actions  [] = "<a url='".trim($this->settings_lib->item('site.urllampiranizin')).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>";  
+                    $url_lampiran = $record->source == 2 ? "https://geo-kehadiran.kemdikbud.go.id/lampiran/" : trim($this->settings_lib->item('site.urllampiranizin'));
+                    $btn_actions  [] = "<a url='".trim($url_lampiran).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>"; 
                 }
                 if($record->ID != "" and strpos(strtolower($record->NAMA_IZIN), "cuti") !== false){
                     $btn_actions  [] = "<a url='".base_url()."admin/izin/izin_pegawai/formpdf/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-warning popup' data-toggle='tooltip' data-placement='top' title='Lihat Dokumen cuti'><i class='glyphicon glyphicon-open-file'></i> </a>";  
+                }
+                if($this->auth->has_permission($this->permissionKirimKehadiran)){
+                    $btn_actions  [] = "<a kode='$record->ID' class='btn btn-sm btn-".$classStatusKirim." send-kehadiran' data-toggle='tooltip' data-placement='top' data-original-title='Kirim ke e-kehadiran' title='Kirim ke e-kehadiran' tooltip='Kirim ke e-kehadiran'><i class='glyphicon glyphicon-forward'></i> </a>";
                 }
                 if($this->auth->has_permission($this->permissionDelete)){
                     $btn_actions  [] = "<a kode='$record->ID' class='btn btn-sm btn-danger btn-hapus' data-toggle='tooltip' data-placement='top' data-original-title='Hapus data' title='Hapus data' tooltip='Hapus'><i class='glyphicon glyphicon-remove'></i> </a>";
@@ -1944,18 +1946,13 @@ class Izin extends Admin_Controller
             }
             
         }
-
         $this->db->start_cache();
-        
-        /*Jika $search mengandung nilai, berarti user sedang telah 
-        memasukan keyword didalam filed pencarian*/
         $advanced_search_filters  = $this->input->post("search[advanced_search_filters]");
         if($advanced_search_filters){
             $filters = array();
             foreach($advanced_search_filters as  $filter){
                 $filters[$filter['name']] = $filter["value"];
             }
-             
             if($filters['nama_key']){
                 $this->izin_pegawai_model->like('upper("NAMA")',strtoupper(trim($filters['nama_key'])),"BOTH"); 
             }
@@ -1965,9 +1962,7 @@ class Izin extends Admin_Controller
             if($filters['STATUS']){
                 $this->izin_pegawai_model->where("STATUS_PENGAJUAN",trim($filters['STATUS']));  
             }
-            
         }
-        
         $this->db->stop_cache();
         $output=array();
         $output['draw']=$draw;
@@ -1987,7 +1982,6 @@ class Izin extends Admin_Controller
             if($order['column']==6){
                 $this->izin_pegawai_model->order_by("STATUS_VERIFIKASI",$order['dir']);
             }
-             
         }
         $output['recordsTotal']= $output['recordsFiltered']=$total;
         $output['data']=array();
@@ -2027,7 +2021,11 @@ class Izin extends Admin_Controller
                 $row []  = $record->DARI_TANGGAL."<br>s/d<br>".$record->SAMPAI_TANGGAL;
                 //$row []  = $record->NAMA_ATASAN.$STATUS_ATASAN.$CATATAN_ATASAN;
                 //$row []  = $record->NAMA_PYBMC.$STATUS_PYBMC.$CATATAN_PYBMC;
-                $row []  = $record->KETERANGAN;
+                if($record->KODE_IZIN == "11"){
+                    $row []  = $record->ALASAN_CUTI."<br><i>".$record->KETERANGAN."<br><i>Dari jam ".$record->SELAMA_JAM." - ".$record->SELAMA_MENIT."</i>";
+                }else{
+                    $row []  = $record->ALASAN_CUTI."<br><i>".$record->KETERANGAN;    
+                }
                 $row []  = $STATUS_PENGAJUAN;
                 $btn_actions = array();
                 if($this->auth->has_permission($this->permissionVerifikasi) || $this->is_pejabat_cuti){
@@ -2035,7 +2033,8 @@ class Izin extends Admin_Controller
                 }
                 $btn_actions  [] = "<a href='".base_url()."admin/izin/izin_pegawai/lineaproval/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-warning show-modal' tooltip='Line Approval ".$record->NAMA_IZIN."' title='Line Approval' data-toggle='tooltip' data-placement='top' title='Line Approval'><i class='fa fa-info-circle'></i> </a>";  
                 if($record->LAMPIRAN_FILE != ""){
-                    $btn_actions  [] = "<a url='".trim($this->settings_lib->item('site.urllampiranizin')).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>";  
+                    $url_lampiran = $record->source == 2 ? "https://geo-kehadiran.kemdikbud.go.id/lampiran/" : trim($this->settings_lib->item('site.urllampiranizin'));
+                    $btn_actions  [] = "<a url='".trim($url_lampiran).$record->LAMPIRAN_FILE."' class='btn btn-sm btn-info popup' data-toggle='tooltip' data-placement='top' title='Lihat Lampiran'><i class='fa fa-paperclip'></i> </a>"; 
                 }
                 if($record->ID != "" and strpos(strtolower($record->NAMA_IZIN), "cuti") !== false){
                     $btn_actions  [] = "<a url='".base_url()."admin/izin/izin_pegawai/formpdf/".$record->KODE_IZIN."/".$record->ID."' class='btn btn-sm btn-danger popup' data-toggle='tooltip' data-placement='top' title='Lihat Dokumen cuti'><i class='glyphicon glyphicon-open-file'></i> </a>";  
@@ -2224,10 +2223,10 @@ class Izin extends Admin_Controller
             if($filters['unit_id_key']){
                 $this->db->group_start();
                 $this->db->where('UNOR_ID',$filters['unit_id_key']);    
-                $this->db->or_where('ESELON_1',$filters['unit_id_key']);   
-                $this->db->or_where('ESELON_2',$filters['unit_id_key']);   
-                $this->db->or_where('ESELON_3',$filters['unit_id_key']);   
-                $this->db->or_where('ESELON_4',$filters['unit_id_key']);   
+                $this->db->or_where('vw."ESELON_1"',$filters['unit_id_key']);   
+                $this->db->or_where('vw."ESELON_2"',$filters['unit_id_key']);   
+                $this->db->or_where('vw."ESELON_3"',$filters['unit_id_key']);   
+                $this->db->or_where('vw."ESELON_4"',$filters['unit_id_key']);   
                 $this->db->group_end();
             } 
             if($filters['nama_key']){
@@ -2314,9 +2313,6 @@ class Izin extends Admin_Controller
         }
         $kedudukan_hukum = "";
         $this->db->start_cache();
-        
-        /*Jika $search mengandung nilai, berarti user sedang telah 
-        memasukan keyword didalam filed pencarian*/
         $pegawai = $this->input->post('pegawai');
         $advanced_search_filters  = $this->input->post("search[advanced_search_filters]");
         if($advanced_search_filters){
@@ -2335,8 +2331,13 @@ class Izin extends Admin_Controller
                 $this->db->or_where('ESELON_3',$filters['unit_id_key']);   
                 $this->db->or_where('ESELON_4',$filters['unit_id_key']);   
                 $this->db->group_end();
-            } 
-             
+            }
+            if($filters['nama_key']){
+                $this->pegawai_model->like('upper(pegawai."NAMA")',strtoupper($filters['nama_key']),"BOTH");    
+            }
+            if($filters['nip_key']){
+                $this->pegawai_model->like('upper("NIP_BARU")',strtoupper($filters['nip_key']),"BOTH"); 
+            }
         }
         $this->db->stop_cache();
         $output=array();
@@ -2368,14 +2369,14 @@ class Izin extends Admin_Controller
         $output['data']=array();
         
         $this->pegawai_model->limit($length,$start);
+        $auth = 'unit_kerja';
         if($this->auth->has_permission($this->UnitkerjaTerbatas)){
+            $auth = 'unit_kerja_terbatas';
             $asatkers = json_decode($this->auth->get_satkers());
             $records=$this->pegawai_model->find_atasan($asatkers,false,$kedudukan_hukum);
         }else{
             $records=$this->pegawai_model->find_atasan($this->SATKER_ID,false,$kedudukan_hukum);
         }
-        
-        
         $this->db->flush_cache();
         $nomor_urut=$start+1;
         if(isset($records) && is_array($records) && count($records)):
@@ -2396,6 +2397,9 @@ class Izin extends Admin_Controller
                 }
                 $row []  = $str_atasan;
                 $btn_actions = array();
+                if($this->auth->has_permission($this->permissionSettingEdit) && $record->ATASAN != ""){
+                    $btn_actions  [] = "<a href='".base_url()."admin/izin/izin_pegawai/pilihpejabatedit/".$record->NIP_BARU."' class='show-modal btn btn-sm btn-warning btn-edit' data-toggle='tooltip' data-placement='top' data-original-title='edit data' title='edit data' tooltip='Edit Data'><i class='glyphicon glyphicon-edit'></i> </a>";
+                }
                 if($this->auth->has_permission($this->permissionSettingDelete) && $record->ATASAN != ""){
                     $btn_actions  [] = "<a kode='$record->NIP_BARU' class='btn btn-sm btn-danger btn-hapus' data-toggle='tooltip' data-placement='top' data-original-title='Hapus data' title='Hapus data' tooltip='Hapus'><i class='glyphicon glyphicon-remove'></i> </a>";
                 }
@@ -2405,6 +2409,8 @@ class Izin extends Admin_Controller
                 $nomor_urut++;
             }
         endif;
+        $output['satker']=$this->SATKER_ID ;
+        $output['auth']=$auth ;
         echo json_encode($output);
         
     }
@@ -2417,6 +2423,7 @@ class Izin extends Admin_Controller
         );
         $kode_izin = $this->input->post("KODE_IZIN");
         $NIP_PNS = $this->input->post("NIP_PNS");
+        $dari_tanggal = $this->input->post("DARI_TANGGAL");
         $this->form_validation->set_rules('DARI_TANGGAL','DARI TANGGAL','required|max_length[30]');
         if($kode_izin != "7" and $kode_izin != "8" and $kode_izin != "9" and $kode_izin != "10" and $kode_izin != "11"){
             $this->form_validation->set_rules('SAMPAI_TANGGAL','SAMPAI TANGGAL ','required|max_length[30]');    
@@ -2430,10 +2437,34 @@ class Izin extends Admin_Controller
             $this->form_validation->set_rules('SELAMA_JAM','DARI JAM ','required|max_length[20]');    
             $this->form_validation->set_rules('SELAMA_MENIT','SAMPAI JAM ','required|max_length[20]');    
         }
+        $aTAHUN_PENGAJUAN = explode("-",$this->input->post("DARI_TANGGAL"));
+        $TAHUN_PENGAJUAN = isset($aTAHUN_PENGAJUAN[0]) ? $aTAHUN_PENGAJUAN[0] : date("Y");
+        // cuti tahunan, cek jatah cuti
+        if($kode_izin == "1"){
+            $this->load->helper('dikbud');
+            $jmlcutidiambil = (int)$this->input->post("JUMLAH");
+            $datasisa = getSisaCuti($NIP_PNS,$TAHUN_PENGAJUAN);
+            $jmltahunini = $datasisa->THISYEAR;
+            $jmlsudahdiambil = $datasisa->SUDAH_DIAMBIL;
+            $jmlsisa = $datasisa->SISA;
+            if(($jmlsisa) < $jmlcutidiambil){
+                $response['msg'] = "
+                <div class='alert alert-block alert-error fade in'>
+                    <a class='close' data-dismiss='alert'>&times;</a>
+                    <h4 class='alert-heading'>
+                        Error
+                    </h4>
+                    Permintaan jumlah hari cuti melebihi jatah cuti anda
+                </div>
+                ";
+                echo json_encode($response);
+                exit();
+            }
+        }
         // cuti sakit
         if($kode_izin == "3"){
             if (empty($_FILES['lampiran']['name'])) {
-               $this->form_validation->set_rules('LAMPIRAN_FILE','Lampiran','required');
+               $this->form_validation->set_rules('lampiran','Lampiran','required');
             }
         }
         // CAP
@@ -2452,7 +2483,7 @@ class Izin extends Admin_Controller
                 && $alasan_cuti != 'Menikah'
             ){
                 if (empty($_FILES['lampiran']['name'])) {
-                   $this->form_validation->set_rules('LAMPIRAN_FILE','Lampiran','required');
+                   $this->form_validation->set_rules('lampiran','Lampiran','required');
                 }
             }
         }
@@ -2473,6 +2504,26 @@ class Izin extends Admin_Controller
                     exit();
             }
         }
+        // cek pembatasan 2 kali
+        // cek hanya untuk rully dulu
+        if (in_array($kode_izin, ['7', '8', '9', '10', '11','12','13'])) {
+            $max_pengajuan = 2;
+            $jumlahPengajuan = $this->count_pengajuan_izin_bulanan($NIP_PNS,$kode_izin,$dari_tanggal);
+            if ($jumlahPengajuan >= $max_pengajuan) {
+                $response['msg'] = "
+                <div class='alert alert-block alert-error fade in'>
+                    <a class='close' data-dismiss='alert'>&times;</a>
+                    <h4 class='alert-heading'>
+                        Error
+                    </h4>
+                    Anda sudah mengajukan izin jenis ini sebanyak $max_pengajuan kali dalam bulan yang sama.
+                </div>
+                ";
+                echo json_encode($response);
+                exit();
+            }
+        }
+        // end mak pengajuan
         if ($this->form_validation->run() === false) {
             $response['msg'] = "
             <div class='alert alert-block alert-error fade in'>
@@ -2497,6 +2548,17 @@ class Izin extends Admin_Controller
              {
                 $tipefile = $_FILES['lampiran']['type'];
                 log_activity($this->auth->user_id(), 'Gagal upload lampiran : '.$uploadData['error'].$tipefile.$this->input->ip_address(), 'izin_pegawai');
+                $response['msg'] = "
+                <div class='alert alert-block alert-error fade in'>
+                    <a class='close' data-dismiss='alert'>&times;</a>
+                    <h4 class='alert-heading'>
+                        Error
+                    </h4>
+                    Gagal upload lampiran : ".$uploadData['error']."
+                </div>
+                ";
+                echo json_encode($response);
+                exit();
              }else{
                 $file_lampiran = $uploadData['data']['file_name'];
                 $data['LAMPIRAN_FILE'] = $file_lampiran;
@@ -2528,15 +2590,14 @@ class Izin extends Admin_Controller
         $data['JUMLAH'] = (int)$this->input->post("JUMLAH");
 
         $data['TGL_DIBUAT'] = date("Y-m-d");
-        $aTAHUN_PENGAJUAN = explode("-",$this->input->post("DARI_TANGGAL"));
-        $TAHUN_PENGAJUAN = isset($aTAHUN_PENGAJUAN[0]) ? $aTAHUN_PENGAJUAN[0] : date("Y");
+        
         $data['TAHUN'] = $TAHUN_PENGAJUAN;
         $data['STATUS_ATASAN'] = 1; // menunggu persetujuan
         $data['STATUS_PYBMC'] = 1; // menunggu persetujuan
         $data['TAHUN'] = $TAHUN_PENGAJUAN;
         
 
-        $data['TLP_SELAMA_CUTI'] = $this->input->post("TUJUAN_JAUH") ? $this->input->post("TUJUAN_JAUH") : null;
+        $data['TLP_SELAMA_CUTI'] = $this->input->post("TLP_SELAMA_CUTI") ? $this->input->post("TLP_SELAMA_CUTI") : null;
         $data['TAMBAHAN_HARI'] = $this->input->post("TAMBAHAN_HARI") ? $this->input->post("TAMBAHAN_HARI") : null;
         $data['LUAR_NEGERI'] = $this->input->post("LUAR_NEGERI") ? $this->input->post("LUAR_NEGERI") : null;
         
@@ -2584,6 +2645,11 @@ class Izin extends Admin_Controller
             if($insert_id = $this->izin_pegawai_model->insert($data)){
                 $this->save_izin_verifikasi($NIP_PNS,$insert_id,$kode_izin);
                 log_activity($this->auth->user_id(), 'Save data izin : ' . $insert_id . ' : ' . $this->input->ip_address(), 'izin_pegawai');    
+            }else{
+                $response ['success']= false;
+                $response ['msg']= "Ada kesalahan";
+                echo json_encode($response);            
+                exit;
             }
         } 
         $response ['success']= true;
@@ -2591,9 +2657,24 @@ class Izin extends Admin_Controller
         echo json_encode($response);    
 
     }
+    public function count_pengajuan_izin_bulanan($nip_pns, $kode_izin, $dari_tanggal)
+    {
+        // Ekstrak bulan dan tahun dari input
+        $bulan = date('m', strtotime($dari_tanggal));
+        $tahun = date('Y', strtotime($dari_tanggal));
+
+        $this->db->where('NIP_PNS', $nip_pns);
+        $this->db->where('KODE_IZIN', $kode_izin);
+        $this->db->where("EXTRACT(MONTH FROM \"DARI_TANGGAL\") = ", $bulan, false); // Kutip ganda di kolom
+        $this->db->where("EXTRACT(YEAR FROM \"DARI_TANGGAL\") = ", $tahun, false); // Kutip ganda di kolom
+
+        return $this->db->count_all_results('izin'); // Ganti dengan nama tabel izin Anda
+    }
     private function save_izin_verifikasi($nip_pegawai = "",$id_pengajuan = "",$id_jenis_izin = ""){
         $line_approval = $this->getpersetujuan($id_jenis_izin);
         $adata_pejabat = $this->get_data_pejabat($nip_pegawai);
+        // print_r($line_approval);
+        // print_r($adata_pejabat);
         $urutan = 1;
         foreach($line_approval as $values)
          {
@@ -2603,9 +2684,16 @@ class Izin extends Admin_Controller
                 $data['ID_PENGAJUAN'] = $id_pengajuan;
                 if($urutan == 1){
                     $data['STATUS_VERIFIKASI'] = 1;
+                }else
+                $data['STATUS_VERIFIKASI'] = null;
+                if($nip_pegawai == '198403192009121007'){
+                	// print_r($data);
                 }
-                if($insert_id = $this->izin_verifikasi_model->insert($data)){
-                    log_activity($this->auth->user_id(), 'Save izin atasan : ' . $insert_id . ' : ' . $this->input->ip_address(), 'izin_pegawai');    
+                $insert = $this->izin_verifikasi_model->insert($data);
+                if($insert){
+                    log_activity($this->auth->user_id(), 'Save izin atasan '. $this->input->ip_address(), 'izin_pegawai');    
+                }else{
+                	log_activity($this->auth->user_id(), 'gagal save izin verifikasi : ' . json_encode($this->izin_verifikasi_model->error), 'izin_pegawai');    
                 }
                 $urutan++;
             }
@@ -2633,11 +2721,25 @@ class Izin extends Admin_Controller
             echo json_encode($response);
             exit();
         }
+        if($this->input->post("STATUS_ATASAN") ==""){
+             $response['msg'] = "
+                <div class='alert alert-block alert-error fade in'>
+                    <a class='close' data-dismiss='alert'>&times;</a>
+                    <h4 class='alert-heading'>
+                        Error
+                    </h4>
+                   Silahkan Pilih Status
+                </div>
+                ";
+                echo json_encode($response);
+                exit();
+        }
         // save perubahan status izin_verifikasi
         $ID_VERIFIKASI = $this->input->post("ID_VERIFIKASI");
         $id_pengajuan = $this->input->post("ID");
         $DARI_TANGGAL = $this->input->post("DARI_TANGGAL");
         $SAMPAI_TANGGAL = $this->input->post("SAMPAI_TANGGAL");
+        $SAMPAI_TANGGAL = $SAMPAI_TANGGAL != "" ? $SAMPAI_TANGGAL : $DARI_TANGGAL;
         $NIP_PNS = $this->input->post("NIP_PNS");
         $KODE_JENIS_IZIN = $this->input->post("KODE_JENIS_IZIN");
         $KODE_IZIN      = $this->input->post("KODE_IZIN");
@@ -2664,6 +2766,7 @@ class Izin extends Admin_Controller
             // update status verifikasi selanjutnya menjadi 1 = siap di verifikasi
 
         }else{
+
             // jika level verifikasi terakhir
             $this->save_verifikasi_atasan($ID_VERIFIKASI,$this->input->post("STATUS_ATASAN"),$this->input->post("CATATAN_ATASAN"));
             // atasan terakhir
@@ -2674,7 +2777,7 @@ class Izin extends Admin_Controller
                 if($KODE_IZIN == "1"){
                     $TAHUN      = date('Y', strtotime($DARI_TANGGAL));;
                     $this->sisa_cuti_model->where('TAHUN', $TAHUN);
-                    $data_sisa = $this->sisa_cuti_model->find_by("PNS_NIP",$PNS_NIP);
+                    $data_sisa = $this->sisa_cuti_model->find_by("PNS_NIP",$NIP_PNS);
                     $sisa_n = isset($data_sisa->SISA_N) ? (int)$data_sisa->SISA_N : 0;
                     $sisa_n1 = isset($data_sisa->SISA_N_1) ? (int)$data_sisa->SISA_N_1 : 0;
                     $sisa_n2 = isset($data_sisa->SISA_N_2) ? (int)$data_sisa->SISA_N_2 : 0;
@@ -2688,7 +2791,7 @@ class Izin extends Admin_Controller
                     //$dataupdate["SISA"] = $jml_sisa;
                     $this->sisa_cuti_model->where('TAHUN', $TAHUN);
                     $this->sisa_cuti_model->skip_validation(true);
-                    $this->sisa_cuti_model->update_where("PNS_NIP",$this->input->post("NIP_PNS"), $dataupdate);
+                    $this->sisa_cuti_model->update_where("PNS_NIP",$NIP_PNS, $dataupdate);
                 }
 
                 // kirim update ke server kehadiran
@@ -2701,18 +2804,101 @@ class Izin extends Admin_Controller
                 $ot_before = "0";
                 $ot_after = "0";
                 $workinonholiday = "0";
-                $send_absen = $api_kehadiran->sendabsen($NIP_PNS,$DARI_TANGGAL,$SAMPAI_TANGGAL,$check_in,$check_out,$terlambat,$pulang_cepat,$ot_before,$ot_after,$workinonholiday,$KODE_JENIS_IZIN);
-                $result_kehadiran = json_decode($send_absen);
-                if($result_kehadiran->status){
-                    $msg_tambahan = "Data telah dikirim ke ekehadiran";
-                    log_activity($this->auth->user_id(), 'Kirim ke ekehadiran berhasil : ' . $NIP_PNS . ' Tanggal '.$DARI_TANGGAL." Kode ".$KODE_JENIS_IZIN.' : ' . $this->input->ip_address(), 'izin_pegawai');    
+                // $send_absen = $api_kehadiran->sendabsen($NIP_PNS,$DARI_TANGGAL,$SAMPAI_TANGGAL,$check_in,$check_out,$terlambat,$pulang_cepat,$ot_before,$ot_after,$workinonholiday,$KODE_JENIS_IZIN);
+                // $result_kehadiran = json_decode($send_absen);
+                // if($result_kehadiran->status){
+                //     $msg_tambahan = "Data telah dikirim ke ekehadiran";
+                //     log_activity($this->auth->user_id(), 'Kirim ke ekehadiran berhasil : ' . $NIP_PNS . ' Tanggal '.$DARI_TANGGAL." Kode ".$KODE_JENIS_IZIN.' : ' . $this->input->ip_address(), 'izin_pegawai');    
+                // }
+                 // save AT
+                $dbhadir = $this->load->database('kehadiran', true);
+                $cek_at = strpos($KODE_JENIS_IZIN, "AT_");
+           
+                $begin = new DateTime($DARI_TANGGAL);
+                $end   = new DateTime($SAMPAI_TANGGAL);
+                $jmlhari = 0;
+                for($i = $begin; $i <= $end; $i->modify('+1 day')){
+                    $jmlhari++;
+                    $data_at = [
+                        'userid' => $NIP_PNS,
+                        'attendance' => $KODE_JENIS_IZIN,
+                        'rosterdate' => $i->format("Y-m-d"),
+                        'editby' => "dikbudhr"
+                    ];
+                    // print_r($data_at);
+                    // $inserted_id = $dbhadir->insert('rosterdetailsatt', $data_at); // mas moda minta tidak perlu otomatis
+                    
                 }
+                    
+                
 
             }
         }
         $response ['success']= true;
         $response ['msg']= "Berhasil ".$msg_tambahan;
         echo json_encode($response);    
+
+    }
+    public function resendekehadiran(){
+        $this->auth->restrict($this->permissionKirimKehadiran);
+        // kirim update ke server kehadiran
+        $id         = $this->input->post('kode');
+        $data_izin = $this->izin_pegawai_model->find($id);
+        $NIP_PNS = $data_izin->NIP_PNS; 
+        $DARI_TANGGAL = $data_izin->DARI_TANGGAL;
+        $SAMPAI_TANGGAL = $data_izin->SAMPAI_TANGGAL != "" ? $data_izin->SAMPAI_TANGGAL : $data_izin->DARI_TANGGAL;
+
+        $jenis_izin = $this->jenis_izin_model->find($data_izin->KODE_IZIN);
+        $KODE_JENIS_IZIN      = isset($jenis_izin->KODE) ? $jenis_izin->KODE : "";
+        $this->load->library('Api_kehadiran');
+        $api_kehadiran = new Api_kehadiran;
+        $check_in = "07:30:00";
+        $check_out = "16:55:03";
+        $terlambat = "0";
+        $pulang_cepat = "0";
+        $ot_before = "0";
+        $ot_after = "0";
+        $workinonholiday = "0";
+        $status = false;
+        $msg = ""; 
+
+        // $send_absen = $api_kehadiran->sendabsen($NIP_PNS,$DARI_TANGGAL,$SAMPAI_TANGGAL,$check_in,$check_out,$terlambat,$pulang_cepat,$ot_before,$ot_after,$workinonholiday,$KODE_JENIS_IZIN);
+        // $result_kehadiran = json_decode($send_absen);
+        // if($result_kehadiran->status){
+        //     $msg_tambahan = "Data telah dikirim ke ekehadiran";
+        //     log_activity($this->auth->user_id(), 'Kirim ke ekehadiran berhasil : ' . $NIP_PNS . ' Tanggal '.$DARI_TANGGAL." Kode ".$KODE_JENIS_IZIN.' : ' . $this->input->ip_address(), 'izin_pegawai');    
+        // }
+        // save AT
+        $dbhadir = $this->load->database('kehadiran', true);
+        $begin = new DateTime($DARI_TANGGAL);
+        $end   = new DateTime($SAMPAI_TANGGAL);
+        $jmlhari = 0;
+        for($i = $begin; $i <= $end; $i->modify('+1 day')){
+            $jmlhari++;
+            $data_at = [
+                'userid' => $NIP_PNS,
+                'attendance' => $KODE_JENIS_IZIN,
+                'rosterdate' => $i->format("Y-m-d"),
+                'editby' => "dikbudhr"
+            ];
+            // print_r($data_at);
+            $inserted_id = $dbhadir->insert('rosterdetailsatt', $data_at);
+            if($inserted_id){
+                $status = true;
+                $msg = "Sukses kirimkan data ke e-kehadiran, jumlah hari ".$jmlhari;
+            }
+        }
+        // update status sudah dikirim ke kehadiran
+        $dataupdate = array();
+        $dataupdate['status_kirim'] = 1;
+        $this->izin_pegawai_model->skip_validation(true);
+        $this->izin_pegawai_model->update($id,$dataupdate);
+        // end update status
+        $response ['success']= $status;
+        $response ['msg']= $msg;
+        echo json_encode($response);   
+        exit();
+        // end kirim izin ke database kehadiran
 
     }
     public function save_penangguhan(){
@@ -2750,7 +2936,7 @@ class Izin extends Admin_Controller
         // atasan terakhir
         $data['STATUS_PENGAJUAN'] = $this->input->post("STATUS_ATASAN");
         if($this->input->post("STATUS_ATASAN") != 3){
-            $data['CATATAN_ATASAN'] = $catatan_atasan;    
+            $data['CATATAN_ATASAN'] = $this->input->post("CATATAN_ATASAN");
         }
         if(isset($id_pengajuan) && !empty($id_pengajuan)){
             $this->izin_pegawai_model->skip_validation(true);
@@ -2815,6 +3001,7 @@ class Izin extends Admin_Controller
         if(isset($verifikasi_izin) && is_array($verifikasi_izin) && count($verifikasi_izin)):
             foreach ($verifikasi_izin as $record) {
                 $adata[$record->NIP_ATASAN] = $record;
+                // $adata[] = $record;
             }
         endif;
 
@@ -2980,6 +3167,90 @@ class Izin extends Admin_Controller
                     }
                 }
                  
+            }
+        }
+        $response ['success']= $result;
+        $response ['msg']= $msg;
+        echo json_encode($response);    
+
+    }
+    public function saveeditpejabat(){
+         // Validate the data
+        $this->form_validation->set_rules($this->pegawai_atasan_model->get_validation_rules());
+        $response = array(
+            'success'=>false,
+            'msg'=>'Unknown error'
+        );
+        //$this->form_validation->set_rules('ATASAN','ATASAN','required|max_length[30]');
+        //$this->form_validation->set_rules('PPK','PPK','required|max_length[30]');
+        if ($this->form_validation->run() === false) {
+            $response['msg'] = "
+            <div class='alert alert-block alert-error fade in'>
+                <a class='close' data-dismiss='alert'>&times;</a>
+                <h4 class='alert-heading'>
+                    Error
+                </h4>
+                ".validation_errors()."
+            </div>
+            ";
+            echo json_encode($response);
+            exit();
+        }
+        // cek nip ini apakah masih ada izin yang belum di proses
+        $status_proses = array('1','2');
+        $this->izin_pegawai_model->where_in("STATUS_PENGAJUAN",$status_proses);
+        $this->izin_pegawai_model->where("NIP_PNS",$nip);
+        $jumlahIzin = $this->izin_pegawai_model->count_all();
+        if($jumlahIzin > 0){
+            $response ['success']= false;
+            $response ['msg']= "Data tidak dapat diubah karena masih ada pengajuan izin yang blm di proses";
+            echo json_encode($response);    
+            exit();
+        }
+        $nip = $this->input->post("nip");
+        $NIP_ATASAN = $this->input->post("ATASAN");
+        $NIP_PPK = $this->input->post("PPK");
+        $KETERANGAN_TAMBAHAN = $this->input->post("KETERANGAN_TAMBAHAN");
+        $ATASAN_TAMBAHAN = $this->input->post("ATASAN_TAMBAHAN");
+        $SEBAGAI = $this->input->post("SEBAGAI");
+        
+        $data_atasan = $this->pegawai_model->find_by("NIP_BARU",$NIP_ATASAN);
+        $NAMA_ATASAN = isset($data_atasan->NAMA) ? $data_atasan->NAMA : "";
+        $data_ppk = $this->pegawai_model->find_by("NIP_BARU",$NIP_PPK);
+        $NAMA_PPK = isset($data_ppk->NAMA) ? $data_ppk->NAMA : "";
+        $result = false;
+        $msg = "Ada Kesalahan";
+        // get nama atasan
+        $index = 0;
+        $anama_atasan = array();
+        if (is_array($ATASAN_TAMBAHAN) && count($ATASAN_TAMBAHAN)) {
+            // hapus dulu data atasannya semua untuk nip ini
+            $datadel_line_approval = array('PNS_NIP'=>$nip);
+            $this->line_approval_model->delete_where($datadel_line_approval);
+            foreach ($ATASAN_TAMBAHAN as $tambahan_atasan) {
+                $data_atasan = $this->pegawai_model->find_by("NIP_BARU",$tambahan_atasan);
+                $nama_atasan_tambahan = isset($data_atasan->NAMA) ? $data_atasan->NAMA : "";
+                $anama_atasan[$tambahan_atasan] = $nama_atasan_tambahan;
+                $index++;
+            }
+        }
+        // save to line approval
+        $index = 0;
+        if (is_array($ATASAN_TAMBAHAN) && count($ATASAN_TAMBAHAN)) {
+            foreach ($ATASAN_TAMBAHAN as $tambahan_atasan) {
+                // delete line approval
+                $data = array();
+                $data['NIP_ATASAN']     = $tambahan_atasan;
+                $data['NAMA_ATASAN']    = isset($anama_atasan[$tambahan_atasan]) ? $anama_atasan[$tambahan_atasan] : "";
+                $data['SEBAGAI']        = $SEBAGAI[$index];
+                $data['PNS_NIP']        = $nip;
+                $data['KETERANGAN_TAMBAHAN'] = $KETERANGAN_TAMBAHAN;
+                if($id_line = $this->line_approval_model->insert($data)){
+                    $result = true;
+                    $msg = "Berhasil";
+                    log_activity($this->auth->user_id(), 'Edit line approval : ' . $insert_id . ' : ' . $this->input->ip_address(), 'line_approval');    
+                }
+                $index++;
             }
         }
         $response ['success']= $result;
@@ -3835,5 +4106,56 @@ class Izin extends Admin_Controller
             }
         endif;
         return $adata;
+    }
+    public function create_saldo($ses_nip,$TAHUN){
+        $this->load->helper('dikbud');
+        $data_cuti = getSisaCuti($ses_nip,$TAHUN);
+        if(!isset($data_cuti->ID) or $data_cuti->ID == ""){
+            $SISA_N = 12;
+            $SISA_N_1 = 0;
+            $SISA_N_2 = 0;
+            $SISA = 12;
+            $tahun_1 = $TAHUN - 1;
+            $data_cuti_1 = getSisaCuti($ses_nip,(string)$tahun_1);
+            // echo "<pre>";
+            // print_r($data_cuti_1);
+            // echo "<pre>";
+            if($data_cuti_1->ID != ""){
+                if($data_cuti_1->SISA >= 6){
+                    $SISA_N_1 = 6;
+                    $SISA_N = 12;
+                    $SISA = 12 + 6;
+                }
+                if($data_cuti_1->SISA < 6 && $data_cuti_1->SISA > 0){
+                    $SISA_N_1 = (int)$data_cuti_1->SISA;
+                    $SISA_N = 12;
+                    $SISA = 12 + (int)$data_cuti_1->SISA;
+                }
+                if($data_cuti_1->SISA >= 12 && $data_cuti_1->SISA_N_1 >= 12){
+                    $SISA_N_1 = 6;
+                    $SISA_N_2 = 6;
+                    $SISA_N = 12;
+                    $SISA = 12 + 12;
+                }
+            }else{
+                $SISA_N_1 = 0;
+                $SISA_N_2 = 0;
+                $SISA_N = 12;
+                $SISA = 12;
+            }
+            $data_pegawai = $this->pegawai_model->find_by("NIP_BARU",$ses_nip);
+            $NAMA_PEGAWAI = isset($data_pegawai->NAMA) ? $data_pegawai->NAMA : "";
+            $data['PNS_NIP'] = $ses_nip;
+            $data['NAMA'] = $NAMA_PEGAWAI;
+            $data['TAHUN'] = $TAHUN;
+            $data['SISA_N'] = (int)$SISA_N;
+            $data['SISA_N_1'] = (int)$SISA_N_1;
+            $data['SISA_N_2'] = (int)$SISA_N_2;
+            $data['SISA'] = (int)$SISA;
+            $this->sisa_cuti_model->skip_validation(true);
+            if($insert_id = $this->sisa_cuti_model->insert($data)){
+                log_activity($this->auth->user_id(), 'Save data sisa cuti : ' . $insert_id . ' : ' . $this->input->ip_address(), 'sisa_cuti');    
+            }
+        }
     }
 }

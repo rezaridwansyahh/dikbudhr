@@ -9,28 +9,41 @@
         <fieldset>
             <input id='ID' type='hidden' class="form-control" name='ID' maxlength='32' value="<?php echo set_value('ID', isset($detail_riwayat->ID) ? trim($detail_riwayat->ID) : ''); ?>" />
             <input id='PNS_ID' type='hidden' class="form-control" name='PNS_ID' maxlength='32' value="<?php echo set_value('PNS_ID', isset($PNS_ID) ? trim($PNS_ID) : ''); ?>" />
-          <div class="control-group<?php echo form_error('TAHUN') ? ' error' : ''; ?> col-sm-12">
+            <div class="control-group<?php echo form_error('TAHUN') ? ' error' : ''; ?> col-sm-12">
                 <?php echo form_label("TAHUN SKP", 'TAHUN SKP', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='TAHUN' type='text' class="form-control" name='TAHUN' maxlength='32' value="<?php echo set_value('TAHUN', isset($detail_riwayat->TAHUN) ? $detail_riwayat->TAHUN : ''); ?>" />
+                    <input id='TAHUN' type='text' class="form-control" name='TAHUN' maxlength='32' value="<?php echo set_value('TAHUN', isset($detail_riwayat->TAHUN) ? $detail_riwayat->TAHUN : '2021'); ?>" <?php echo !isset($detail_riwayat->TAHUN) ? "readonly" : "readonly"?> />
                     <span class='help-inline'><?php echo form_error('TAHUN'); ?></span>
                 </div>
             </div>
-          <div class="control-group<?php echo form_error('JABATAN_TIPE') ? ' error' : ''; ?> col-sm-6">
+            <div class="control-group<?php echo form_error('PERATURAN') ? ' error' : ''; ?> col-sm-6">
+                <?php echo form_label('PERATURAN', 'PERATURAN', array('class' => 'control-label')); ?>
+                <div class='controls'>
+                    <select name="PERATURAN" id="PERATURAN" class="form-control">
+                        <option value="">Silahkan Pilih</option>
+                        <option value="PP46" <?php echo $detail_riwayat->PERATURAN == "PP46" ? "selected" : ""; ?>>PP Nomor 46 tahun 2011</option>
+                        <option value="PP30" <?php echo $detail_riwayat->PERATURAN == "PP30" ? "selected" : ""; ?>>PP Nomor 30 Tahun 2019</option>
+                    </select>
+                    <span class='help-inline'><?php echo form_error('JABATAN_TIPE'); ?></span>
+                </div>
+            </div>
+
+            <div class="control-group<?php echo form_error('JABATAN_TIPE') ? ' error' : ''; ?> col-sm-6">
                 <?php echo form_label('JENIS JABATAN', 'JENIS JABATAN', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                	<select name="JABATAN_TIPE" id="JABATAN_TIPE" class="form-control">
-						<?php 
+                    <select name="JABATAN_TIPE" id="JABATAN_TIPE" class="form-control">
+                        <?php 
                             foreach($jenis_jabatans as $record){
                                 $selected = "";
                                 if($record->ID == $detail_riwayat->JABATAN_TIPE) $selected = ' selected="selected"';
                                 echo "<option  value='".$record->ID."' ".$selected.">".$record->NAMA."</option> ";
                             }
                         ?>
-					</select>
+                    </select>
                     <span class='help-inline'><?php echo form_error('JABATAN_TIPE'); ?></span>
                 </div>
             </div>
+            
             <div class="control-group<?php echo form_error('JABATAN_NAMA') ? ' error' : ''; ?> col-sm-6">
                 <?php echo form_label("NAMA JABATAN", 'NAMA JABATAN', array('class' => 'control-label')); ?>
                 <div class='controls'>
@@ -39,30 +52,34 @@
                     <span class='help-inline'><?php echo form_error('JABATAN_NAMA'); ?></span>
                 </div>
             </div>
-           
-            <div class="control-group<?php echo form_error('NILAI_SKP') ? ' error' : ''; ?> col-sm-4">
+        
+<div class="row"></div>
+            <div class="control-group<?php echo form_error('NILAI_SKP') ? ' error' : ''; ?> col-sm-6">
                 <?php echo form_label("NILAI SKP", 'NILAI SKP', array('class' => 'control-label')); ?>
                 <div class='controls'>
                     <input id='NILAI_SKP'  class="form-control" name='NILAI_SKP' maxlength='32' value="<?php echo set_value('NILAI_PPK', isset($detail_riwayat->NILAI_SKP) ? $detail_riwayat->NILAI_SKP : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('NILAI_SKP'); ?></span>
                 </div>
             </div>
-            <div class="control-group<?php echo form_error('TAHUN') ? ' error' : ''; ?> col-sm-4">
-                <?php echo form_label("Prosentase (%)", 'Prosentase (%)', array('class' => 'control-label')); ?>
+<!--            <div class="control-group<?php // echo  form_error('Persentase') ? ' error' : ''; ?> col-sm-6">
+                <?php //  echo form_label("Persentase (%)", 'Persentase (%)', array('class' => 'control-label'));?>
                 <div class='controls'>
-                    <input id='NILAI_PROSENTASE_SKP' type='text' readonly class="form-control" name='NILAI_PROSENTASE_SKP' maxlength='32' value="<?php echo set_value('NILAI_PROSENTASE_SKP', isset($NILAI_PROSENTASE_SKP) ? $NILAI_PROSENTASE_SKP : ''); ?>" />
-                    <span class='help-inline'><?php echo form_error('NILAI_PROSENTASE_SKP'); ?></span>
+                    <input id='NILAI_PROSENTASE_SKP' type='number' class="form-control" name='NILAI_PROSENTASE_SKP' maxlength='32' value="<?php //  echo  set_value('NILAI_PROSENTASE_SKP', isset($NILAI_PROSENTASE_SKP) ? $NILAI_PROSENTASE_SKP : ''); ?>" />
+                    <span class='help-inline'><?php //   echo  form_error('NILAI_PROSENTASE_SKP');?></span>
                 </div>
             </div>
-            <div class="control-group<?php echo form_error('NILAI_SKP_AKHIR') ? ' error' : ''; ?> col-sm-4">
-                <?php echo form_label("NILAI SKP AKHIR", 'NILAI_SKP AKHIR', array('class' => 'control-label')); ?>
+
+       <div class="control-group<?php //  echo  form_error('NILAI_SKP_AKHIR') ? ' error' : ''; ?> col-sm-4">
+                <?php //  echo  form_label("NILAI SKP AKHIR", 'NILAI_SKP AKHIR', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='NILAI_SKP_AKHIR' readonly type='text' class="form-control" name='NILAI_SKP_AKHIR' maxlength='32' value="<?php echo set_value('NILAI_SKP_AKHIR', isset($detail_riwayat->NILAI_SKP_AKHIR) ? $detail_riwayat->NILAI_SKP_AKHIR : ''); ?>" />
-                    <span class='help-inline'><?php echo form_error('NILAI_SKP_AKHIR'); ?></span>
+                    <input id='NILAI_SKP_AKHIR' type='text' class="form-control" name='NILAI_SKP_AKHIR' maxlength='32' value="<?php //echo set_value('NILAI_SKP_AKHIR', isset($detail_riwayat->NILAI_SKP_AKHIR) ? $detail_riwayat->NILAI_SKP_AKHIR : ''); ?>" />
+                    <span class='help-inline'><?php // echo form_error('NILAI_SKP_AKHIR');?></span>
                 </div>
             </div>
+-->
+<div class="row"></div>
             <div class="control-group<?php echo form_error('PERILAKU_KOMITMEN') ? ' error' : ''; ?> col-sm-6">
-                <?php echo form_label("PERILAKU KOMITMEN", 'PERILAKU KOMITMEN', array('class' => 'control-label')); ?>
+                <?php echo  form_label("PERILAKU KOMITMEN", 'PERILAKU KOMITMEN', array('class' => 'control-label')); ?>
                 <div class='controls'>
                     <input id='PERILAKU_KOMITMEN' type='text' class="form-control" name='PERILAKU_KOMITMEN' maxlength='32' value="<?php echo set_value('PERILAKU_KOMITMEN', isset($detail_riwayat->NILAI_PPK) ? $detail_riwayat->PERILAKU_KOMITMEN : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('PERILAKU_KOMITMEN'); ?></span>
@@ -103,35 +120,45 @@
                     <span class='help-inline'><?php echo form_error('PERILAKU_KEPEMIMPINAN'); ?></span>
                 </div>
             </div>
+            <div class="control-group<?php echo form_error('PERILAKU_INISIATIF_KERJA') ? ' error' : ''; ?> col-sm-6">
+                <?php echo form_label("INISIATIF KERJA", 'INISIATIF KERJA', array('class' => 'control-label')); ?>
+                <div class='controls'>
+                    <input id='PERILAKU_INISIATIF_KERJA' type='text' class="form-control" name='PERILAKU_INISIATIF_KERJA' maxlength='32' value="<?php echo set_value('PERILAKU_INISIATIF_KERJA', isset($detail_riwayat->PERILAKU_INISIATIF_KERJA) ? $detail_riwayat->PERILAKU_INISIATIF_KERJA : ''); ?>" />
+                    <span class='help-inline'><?php echo form_error('PERILAKU_INISIATIF_KERJA'); ?></span>
+                </div>
+            </div>
             <div class="row"></div>
              <div class="control-group<?php echo form_error('NILAI_PERILAKU') ? ' error' : ''; ?> col-sm-4">
-                <?php echo form_label("NILAI_PERILAKU", 'NILAI_PERILAKU', array('class' => 'control-label')); ?>
+                <?php echo form_label("NILAI PERILAKU", 'NILAI_PERILAKU', array('class' => 'control-label')); ?>
                 <div class='controls'>
                     <input id='NILAI_PERILAKU' type='text' class="form-control" name='NILAI_PERILAKU' maxlength='32' value="<?php echo set_value('NILAI_PERILAKU', isset($detail_riwayat->NILAI_PERILAKU) ? $detail_riwayat->NILAI_PERILAKU : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('NILAI_PERILAKU'); ?></span>
                 </div>
             </div>
-             <div class="control-group<?php echo form_error('TAHUN') ? ' error' : ''; ?> col-sm-4">
-                <?php echo form_label("Prosentase (%)", 'Prosentase (%)', array('class' => 'control-label')); ?>
+<!--
+             <div class="control-group<?php //echo form_error('Persentase') ? ' error' : ''; ?> col-sm-4">
+                <?php //echo form_label("Persentase (%)", 'Persentase (%)', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='NILAI_PROSENTASE_PERILAKU' type='text' readonly class="form-control" name='NILAI_PROSENTASE_PERILAKU' maxlength='32' value="<?php echo set_value('NILAI_PROSENTASE_PERILAKU', isset($NILAI_PROSENTASE_PERILAKU) ? $NILAI_PROSENTASE_PERILAKU : ''); ?>" />
-                    <span class='help-inline'><?php echo form_error('NILAI_PROSENTASE_PERILAKU'); ?></span>
+                    <input id='NILAI_PROSENTASE_PERILAKU' type='number' class="form-control" name='NILAI_PROSENTASE_PERILAKU' maxlength='32' value="<?php //echo set_value('NILAI_PROSENTASE_PERILAKU', isset($NILAI_PROSENTASE_PERILAKU) ? $NILAI_PROSENTASE_PERILAKU : ''); ?>" />
+                    <span class='help-inline'><?php //echo form_error('NILAI_PROSENTASE_PERILAKU'); ?></span>
                 </div>
             </div>
-            <div class="control-group<?php echo form_error('NILAI_PERILAKU_AKHIR') ? ' error' : ''; ?> col-sm-4">
-                <?php echo form_label("NILAI_PERILAKU_AKHIR", 'NILAI_PERILAKU_AKHIR', array('class' => 'control-label')); ?>
+            <div class="control-group<?php //echo form_error('NILAI_PERILAKU_AKHIR') ? ' error' : ''; ?> col-sm-4">
+                <?php //echo form_label("NILAI PERILAKU AKHIR", 'NILAI_PERILAKU_AKHIR', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='NILAI_PERILAKU_AKHIR' readonly type='text' class="form-control" name='NILAI_PERILAKU_AKHIR' maxlength='32' value="<?php echo set_value('NILAI_PERILAKU_AKHIR', isset($detail_riwayat->NILAI_PERILAKU_AKHIR) ? $detail_riwayat->NILAI_PERILAKU_AKHIR : ''); ?>" />
-                    <span class='help-inline'><?php echo form_error('NILAI_PERILAKU_AKHIR'); ?></span>
+                    <input id='NILAI_PERILAKU_AKHIR' type='text' class="form-control" name='NILAI_PERILAKU_AKHIR' maxlength='32' value="<?php //echo set_value('NILAI_PERILAKU_AKHIR', isset($detail_riwayat->NILAI_PERILAKU_AKHIR) ? $detail_riwayat->NILAI_PERILAKU_AKHIR : ''); ?>" />
+                    <span class='help-inline'><?php //echo form_error('NILAI_PERILAKU_AKHIR'); ?></span>
                 </div>
             </div>
-            <div class="control-group<?php echo form_error('NILAI_PPK') ? ' error' : ''; ?> col-sm-12">
-                <?php echo form_label("NILAI PPK", 'NILAI PPK', array('class' => 'control-label')); ?>
+
+            <div class="control-group<?php //echo form_error('NILAI_PPK') ? ' error' : ''; ?> col-sm-12">
+                <?php //echo form_label("NILAI PPK", 'NILAI PPK', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='NILAI_PPK' type='text' class="form-control" readonly name='NILAI_PPK' maxlength='32' value="<?php echo set_value('NILAI_PPK', isset($detail_riwayat->NILAI_PPK) ? $detail_riwayat->NILAI_PPK : ''); ?>" />
-                    <span class='help-inline'><?php echo form_error('NILAI_PPK'); ?></span>
+                    <input id='NILAI_PPK' type='text' class="form-control" name='NILAI_PPK' maxlength='32' value="<?php //echo set_value('NILAI_PPK', isset($detail_riwayat->NILAI_PPK) ? $detail_riwayat->NILAI_PPK : ''); ?>" />
+                    <span class='help-inline'><?php //echo form_error('NILAI_PPK'); ?></span>
                 </div>
-            </div>	
+            </div>
+-->	
             <div class="nav-tabs-custom control-group col-sm-12" style="margin-top:5px">
                 <ul id="tab-insides-here" class="nav nav-tabs">
                     <li class="active">
@@ -214,6 +241,7 @@
             </div>    	
         </div>
   		<div class="box-footer">
+            <div class="messages"></div>
             <input type='submit' name='save' id="btnsaveskp" class='btn btn-primary' value="Simpan Data" /> 
         </div>
     <?php echo form_close(); ?>
@@ -231,59 +259,7 @@
 </script>
 <script>
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-	var pembagi = 6;
-    $("#JABATAN_TIPE").change(function(){
-        if($(this).val()==1){
-        	pembagi = 6;
-            $("#PERILAKU_KEPEMIMPINAN").val(0);
-            $("#PERILAKU_KEPEMIMPINAN").attr("READONLY",false);
-        }
-        else {
-        	pembagi = 5;
-            $("#PERILAKU_KEPEMIMPINAN").val(0);
-            $("#PERILAKU_KEPEMIMPINAN").attr("READONLY",true);
-        }
-        calcPerilaku();
-    });
-    
-    function calcPerilaku(){
-    	var nilaiskp = Number($("#NILAI_SKP_AKHIR").val());
-         var total = Number($("#PERILAKU_KOMITMEN").val())+
-         Number($("#PERILAKU_INTEGRITAS").val())+
-         Number($("#PERILAKU_DISIPLIN").val())+
-         Number($("#PERILAKU_KERJASAMA").val())+
-         Number($("#PERILAKU_ORIENTASI_PELAYANAN").val())+
-         Number($("#PERILAKU_KEPEMIMPINAN").val());
-         var totalperilaku = (total/pembagi);
-         $("#NILAI_PERILAKU").val(totalperilaku);
-         var NILAI_PERILAKU_AKHIR = totalperilaku*40/100;
-         $("#NILAI_PERILAKU_AKHIR").val(NILAI_PERILAKU_AKHIR);
-         var totalall = Number(NILAI_PERILAKU_AKHIR) + Number(nilaiskp);
-         $("#NILAI_PPK").val(totalall);
-         
-    }
-     $("#PERILAKU_KOMITMEN").keyup(function(){
-         calcPerilaku();
-     });
-     $("#PERILAKU_INTEGRITAS").keyup(function(){
-         calcPerilaku();
-     });
-     $("#PERILAKU_DISIPLIN").keyup(function(){
-         calcPerilaku();
-     });
-     $("#PERILAKU_KERJASAMA").keyup(function(){
-         calcPerilaku();
-     });
-     $("#PERILAKU_ORIENTASI_PELAYANAN").keyup(function(){
-         calcPerilaku();
-     });
-     $("#PERILAKU_KEPEMIMPINAN").keyup(function(){
-         calcPerilaku();
-     });
-    $("#NILAI_SKP").keyup(function(){
-        $("#NILAI_SKP_AKHIR").val($("#NILAI_SKP").val()*60/100);
-    });
-    
+	
     $("#ATASAN_LANGSUNG_PNS_ID").select2({
         placeholder: 'Cari Atasan Langsung...',
         width: '100%',

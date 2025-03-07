@@ -112,7 +112,7 @@ class Arsip_digital_model extends BF_Model
 	{
  
 		$this->db->select('arsip.ID,ID_JENIS_ARSIP,NIP,arsip.KETERANGAN,
-			JENIS_FILE,NAMA_JENIS,FILE_SIZE,EXTENSION_FILE,ISVALID');
+			JENIS_FILE,NAMA_JENIS,FILE_SIZE,EXTENSION_FILE,ISVALID,location,name');
 
 		$this->db->join('jenis_arsip', 'arsip.ID_JENIS_ARSIP = jenis_arsip.ID', 'left');
 		return parent::find_all();

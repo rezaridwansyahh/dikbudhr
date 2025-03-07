@@ -70,7 +70,12 @@ hr {
     .btnprint{
         display: none;
     }
-    
+    .noborder{
+        border-width:0px 0px 0px 0px;
+        border-bottom:0px 0px 0px 0px;
+        border-bottom: solid white !important;
+        border-left: solid white !important;
+    }
  
 </style>
 <?php
@@ -194,7 +199,8 @@ hr {
   </tr>
   <tr>
     <td>
-       <?php echo $izin_pegawai->KETERANGAN != "" ? "<br>".$izin_pegawai->KETERANGAN."<br><br>" : "<br><br>"; ?>
+       <?php echo $izin_pegawai->KETERANGAN != "" ? "<br>".$izin_pegawai->KETERANGAN."<br><br>" : ""; ?>
+       <?php echo $izin_pegawai->ALASAN_CUTI != "" ? "<br>".$izin_pegawai->ALASAN_CUTI."<br><br>" : "<br><br>"; ?>
     </td>
   </tr>
 </table>
@@ -339,8 +345,8 @@ hr {
   </tr>
   
   <tr>
-    <td>
-       <?php echo $izin_pegawai->ALAMAT_SELAMA_CUTI; ?>
+    <td style="word-break:break-all; word-wrap:break-word;">
+       <?php echo wordwrap(ucwords(strtolower($izin_pegawai->ALAMAT_SELAMA_CUTI)),80,"<br>\n"); ?>
     </td>
     <td colspan="2" align="center">
       <center>
@@ -383,8 +389,8 @@ hr {
   
   <tr>
     <td align="center" valign="middle">
-      <br>
       <?php
+      $astatus = array("3", "4", "5", "6");
         // disetujui atasan langsung
         $aatasan_langsung = isset($aatasan[2]) ? $aatasan[2] : "";
         $persetujuan_atasan_langsung = isset($verifikasidata[$aatasan_langsung->NIP_ATASAN]) ? $verifikasidata[$aatasan_langsung->NIP_ATASAN] : "";
@@ -392,32 +398,48 @@ hr {
         $TGL_ATASAN = date('d-m-Y',$dateValue);
         //PRINT_R($persetujuan_atasan_langsung);
       ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "3" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "3" ? "<br>".$persetujuan_atasan_langsung->NAMA : ""; ?>
+      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "3" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "3" ? "<br>".$persetujuan_atasan_langsung->NAMA : ""; ?>
       <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "3" ? "<br>".$persetujuan_atasan_langsung->NIP_ATASAN : ""; ?>
-      
-      <br>
+       -->
     </td>
     <td align="center" valign="middle">
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "4" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "4" ? "<br>Alasan: ".$persetujuan_atasan_langsung->ALASAN_DITOLAK : ""; ?>
+      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "4" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "4" ? "<br>Alasan: ".$persetujuan_atasan_langsung->ALASAN_DITOLAK : ""; ?>
       
       <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "4" ? "<br>".$persetujuan_atasan_langsung->NAMA : ""; ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "4" ? "<br>".$persetujuan_atasan_langsung->NIP_ATASAN : ""; ?>
+      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "4" ? "<br>".$persetujuan_atasan_langsung->NIP_ATASAN : ""; ?> -->
     </td>
     <td align="center" valign="middle">
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "5" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "5" ? "<br>Alasan: ".$persetujuan_atasan_langsung->ALASAN_DITOLAK : ""; ?>
+      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "5" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "5" ? "<br>Alasan: ".$persetujuan_atasan_langsung->ALASAN_DITOLAK : ""; ?>
       <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "5" ? "<br>".$persetujuan_atasan_langsung->NAMA : ""; ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "5" ? "<br>".$persetujuan_atasan_langsung->NIP_ATASAN : ""; ?>
+      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "5" ? "<br>".$persetujuan_atasan_langsung->NIP_ATASAN : ""; ?> -->
     </td>
 
     <td align="center" valign="middle">
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? "<br>Alasan: ".$persetujuan_atasan_langsung->ALASAN_DITOLAK : ""; ?>
+      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? "<br>Alasan: ".$persetujuan_atasan_langsung->ALASAN_DITOLAK : ""; ?>
       
       <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? "<br>".$persetujuan_atasan_langsung->NAMA : ""; ?>
-      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? "<br>".$persetujuan_atasan_langsung->NIP_ATASAN : ""; ?>
+      <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? "<br>".$persetujuan_atasan_langsung->NIP_ATASAN : ""; ?> -->
+    </td>
+  </tr>
+  <tr>
+    <td class="noborder">
+    </td>
+    <td class="noborder">
+    </td>
+    <td class="noborder">
+    </td>
+    <td align="center" width="200px">
+      <?php if(in_array($persetujuan_atasan_langsung->STATUS_VERIFIKASI, $astatus)){ ?>
+        <?php echo $TGL_ATASAN."<br>" ?>
+        <?php echo $persetujuan_atasan_langsung->STATUS_VERIFIKASI == "6" ? "<br>Alasan: ".$persetujuan_atasan_langsung->ALASAN_DITOLAK."<br>"  : ""; ?>
+        
+        <?php echo $persetujuan_atasan_langsung->NAMA."<br>" ; ?>
+        <?php echo $persetujuan_atasan_langsung->NIP_ATASAN."<br>" ; ?>
+      <?php } ?>
     </td>
   </tr>
 </table>
@@ -445,7 +467,6 @@ hr {
   
   <tr>
     <td align="center" valign="middle">
-      <br>
       <?php
         // disetujui atasan langsung
         $apybmc = isset($aatasan[3]) ? $aatasan[3] : "";
@@ -454,32 +475,48 @@ hr {
         $TGL_ATASAN = date('d-m-Y',$dateValue);
         //PRINT_R($persetujuan_pybmc);
       ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "3" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "3" ? "<br>".$persetujuan_pybmc->NAMA : ""; ?>
+      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "3" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "3" ? "<br>".$persetujuan_pybmc->NAMA : ""; ?>
       <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "3" ? "<br>".$persetujuan_pybmc->NIP_ATASAN : ""; ?>
-      
-      <br>
+       -->
     </td>
     <td align="center" valign="middle">
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "4" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "4" ? "<br>Alasan: ".$persetujuan_pybmc->ALASAN_DITOLAK : ""; ?>
+      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "4" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "4" ? "<br>Alasan: ".$persetujuan_pybmc->ALASAN_DITOLAK : ""; ?>
       
       <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "4" ? "<br>".$persetujuan_pybmc->NAMA : ""; ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "4" ? "<br>".$persetujuan_pybmc->NIP_ATASAN : ""; ?>
+      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "4" ? "<br>".$persetujuan_pybmc->NIP_ATASAN : ""; ?> -->
     </td>
     <td align="center" valign="middle">
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "5" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "5" ? "<br>Alasan: ".$persetujuan_pybmc->ALASAN_DITOLAK : ""; ?>
+      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "5" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "5" ? "<br>Alasan: ".$persetujuan_pybmc->ALASAN_DITOLAK : ""; ?>
       <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "5" ? "<br>".$persetujuan_pybmc->NAMA : ""; ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "5" ? "<br>".$persetujuan_pybmc->NIP_ATASAN : ""; ?>
+      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "5" ? "<br>".$persetujuan_pybmc->NIP_ATASAN : ""; ?> -->
     </td>
 
     <td align="center" valign="middle">
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? $TGL_ATASAN : ""; ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? "<br>Alasan: ".$persetujuan_pybmc->ALASAN_DITOLAK : ""; ?>
+      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? "Ya" : ""; ?>
+      <!-- <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? "<br>Alasan: ".$persetujuan_pybmc->ALASAN_DITOLAK : ""; ?>
       
       <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? "<br>".$persetujuan_pybmc->NAMA : ""; ?>
-      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? "<br>".$persetujuan_pybmc->NIP_ATASAN : ""; ?>
+      <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? "<br>".$persetujuan_pybmc->NIP_ATASAN : ""; ?> -->
+    </td>
+  </tr>
+  <tr>
+    <td class="noborder">
+    </td>
+    <td class="noborder">
+    </td>
+    <td class="noborder">
+    </td>
+    <td align="center" width="200px">
+      <?php if(in_array($persetujuan_pybmc->STATUS_VERIFIKASI, $astatus)){ ?>
+        <?php echo $TGL_ATASAN."<br>" ?>
+        <?php echo $persetujuan_pybmc->STATUS_VERIFIKASI == "6" ? "<br>Alasan: ".$persetujuan_pybmc->ALASAN_DITOLAK."<br>"  : ""; ?>
+        
+        <?php echo $persetujuan_pybmc->NAMA."<br>" ; ?>
+        <?php echo $persetujuan_pybmc->NIP_ATASAN."<br>" ; ?>
+      <?php } ?>
     </td>
   </tr>
 </table>

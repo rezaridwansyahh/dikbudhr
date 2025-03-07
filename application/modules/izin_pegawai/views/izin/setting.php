@@ -35,14 +35,22 @@ if ($can_delete) {
 			</style>
 			<table class="filter_pegawai" sborder=0 width='100%' cellpadding="10">
 				<tr>
-					<td width="100px"><label for="example-text-input" class="col-form-label">Satuan Kerja</label></td>
+					<td width="150px"><label for="example-text-input" class="col-form-label">Satuan Kerja</label></td>
 					<td colspan=2><select id="unit_id_key" name="unit_id_key" width="100%" class=" col-md-10 format-control"></select></td>
 				</tr>
 				<tr>
 					<td width="100px"><label for="example-text-input" class="col-form-label">Pegawai</label></td>
-					<td colspan=2><select id="pegawai_key" name="pegawai_key[]" multiple="multiple" width="100%" class=" col-md-10 format-control"></select></td>
+					<td colspan=2><select id="pegawai_key" name="pegawai_key[]" multiple="multiple" width="100%" class=" col-md-10 format-control"></select>
+					</td>
 				</tr>
-				 
+				<tr>
+					<td><label for="example-text-input" class="col-form-label">NAMA</label></td>
+					<td colspan=2><input class="form-control" type="text" name="nama_key" value="" ></td>
+				</tr>
+				<tr>
+					<td><label for="example-text-input" class="col-form-label">NIP</label></td>
+					<td colspan=2><input class="form-control" type="text" name="nip_key" value="" ></td>
+				</tr>
 				<tr>
 					<td colspan=4>
 						<button type="submit" class="btn btn-success pull-right "><i class="fa fa-search"></i> Cari</button>
@@ -87,7 +95,7 @@ if ($can_delete) {
 				<th width="20%">PEGAWAI</th>
 				<th >UNITKERJA</th>
 				<th  width="30%">ATASAN</th>
-				<th width="30px" align="center">#</th></tr>
+				<th width="50px" align="center">#</th></tr>
 			</thead>
 		</table>
 		<?php
@@ -140,7 +148,7 @@ $("#unit_id_key").select2({
 	}
 });
 $("#pegawai_key").select2({
-        placeholder: 'Pilih Pegawai...',
+        placeholder: 'Silahkan Pilih Pegawai (bisa lebih dari satu)',
         width: '100%',
         minimumInputLength: 3,
         allowClear: true,

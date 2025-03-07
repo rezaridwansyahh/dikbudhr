@@ -151,7 +151,7 @@
             </div>
 			</fieldset>
 			<fieldset>
-			<legend>Jika tidak ada</legend>
+			<legend></br> Isi  jika unit kerja atau jabatan <b>tidak ada</b> pada pilihan pada form di atas(opsional)</legend>
 			<div class="callout callout-warning">
 			   <p>Silahkan diisi jika tidak ada pilihan pada Pilihan Satuan Kerja dan Unit Organisasi atau NAMA JABATAN</p>
 			 </div>

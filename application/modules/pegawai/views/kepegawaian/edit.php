@@ -31,8 +31,8 @@ $id = isset($pegawai->ID) ? $pegawai->ID : '';
 			 <div class="control-group<?php echo form_error('PNS_ID') ? ' error' : ''; ?> col-sm-12">
                 <?php echo form_label('PNS ID', 'PNS_ID', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='ID' type='hidden' class="form-control" name='ID' maxlength='32' value="<?php echo set_value('ID', isset($pegawai->ID) ? $pegawai->ID : ''); ?>" />
-                    <input id='PNS_ID' type='text' class="form-control" name='PNS_ID' maxlength='32' value="<?php echo set_value('PNS_ID', isset($pegawai->PNS_ID) ? $pegawai->PNS_ID : ''); ?>" />
+                    <input id='ID' type='hidden' class="form-control" name='ID' value="<?php echo set_value('ID', isset($pegawai->ID) ? $pegawai->ID : ''); ?>" />
+                    <input id='PNS_ID' type='text' class="form-control" name='PNS_ID' maxlength='36' value="<?php echo set_value('PNS_ID', isset($pegawai->PNS_ID) ? $pegawai->PNS_ID : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('PNS_ID'); ?></span>
                 </div>
             </div>
@@ -231,8 +231,16 @@ $id = isset($pegawai->ID) ? $pegawai->ID : '';
             <div class="control-group<?php echo form_error('KARTU_PEGAWAI') ? ' error' : ''; ?> col-sm-12">
                 <?php echo form_label(lang('pegawai_field_KARTU_PEGAWAI'), 'KARTU_PEGAWAI', array('class' => 'control-label')); ?>
                 <div class='controls'>
-                    <input id='KARTU_PEGAWAI' type='text' class="form-control" name='KARTU_PEGAWAI' maxlength='11' value="<?php echo set_value('KARTU_PEGAWAI', isset($pegawai->KARTU_PEGAWAI) ? $pegawai->KARTU_PEGAWAI : ''); ?>" />
+                    <input id='KARTU_PEGAWAI' type='text' class="form-control" name='KARTU_PEGAWAI' maxlength='30' value="<?php echo set_value('KARTU_PEGAWAI', isset($pegawai->KARTU_PEGAWAI) ? $pegawai->KARTU_PEGAWAI : ''); ?>" />
                     <span class='help-inline'><?php echo form_error('KARTU_PEGAWAI'); ?></span>
+                </div>
+            </div>
+
+            <div class="control-group<?php echo form_error('KARTU_ASN') ? ' error' : ''; ?> col-sm-12">
+                <?php echo form_label(lang('pegawai_field_KARTU_ASN'), 'KARTU_ASN', array('class' => 'control-label')); ?>
+                <div class='controls'>
+                    <input id='KARTU_ASN' type='text' class="form-control" name='KARTU_ASN' maxlength='255' value="<?php echo set_value('KARTU_ASN', isset($pegawai->KARTU_ASN) ? $pegawai->KARTU_ASN : ''); ?>" />
+                    <span class='help-inline'><?php echo form_error('KARTU_ASN'); ?></span>
                 </div>
             </div>
 
@@ -676,7 +684,8 @@ $id = isset($pegawai->ID) ? $pegawai->ID : '';
                     <select class="validate[required] text-input form-control" name="status_pegawai" id="status_pegawai" class="chosen-select-deselect">
                         <option value="">-- Pilih  --</option>
                         <option value="1" <?php if(isset($pegawai->status_pegawai))  echo  ("1"==$pegawai->status_pegawai) ? "selected" : ""; ?>> PNS</option>
-                        <option value="2" <?php if(isset($pegawai->status_pegawai))  echo  ("2"==$pegawai->status_pegawai) ? "selected" : ""; ?>> Bukan PNS</option>
+                        <option value="2" <?php if(isset($pegawai->status_pegawai))  echo  ("2"==$pegawai->status_pegawai) ? "selected" : ""; ?>> P3K</option>
+                        <option value="3" <?php if(isset($pegawai->status_pegawai))  echo  ("3"==$pegawai->status_pegawai) ? "selected" : ""; ?>> Bukan PNS</option>
                     </select>
                     <span class='help-inline'><?php echo form_error('status_pegawai'); ?></span>
                 </div>
