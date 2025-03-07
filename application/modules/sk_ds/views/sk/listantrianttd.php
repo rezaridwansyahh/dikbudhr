@@ -1,0 +1,40 @@
+
+<div class="admin-box box box-warning">
+	
+	<div class="box-body">
+		<table class="table table-bordered table-striped table-responsive dt-responsive table-hover table-antriankoreksi">
+			<thead>
+			<tr>
+				<th style="width:10px">No</th>
+				<th>Kategori</th>
+				<th width="100px">Jumlah</th>
+			</thead>
+		</table>
+	</div>
+</div>
+
+<script type="text/javascript">
+  
+$tabledata = $(".table-antriankoreksi").DataTable({
+	
+	dom : "<'row'<'col-sm-6'><'col-sm-6'>>" +
+	"<'row'<'col-sm-12'tr>>" +
+	"<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>",
+	processing: true,
+	serverSide: true,
+	stateSave: true,
+	"columnDefs": [
+					{"className": "text-center", "targets": [0,2]},
+					{ "targets": [0,1], "orderable": false }
+				],
+	ajax: {
+	  url: "<?php echo base_url() ?>admin/sk/sk_ds/getdata_antrian_detil",
+	  type:'POST',
+	  "data": function ( d ) {
+			d.penandatangan=  "<?php echo $PNS_ID; ?>";
+		}
+	}
+});
+ 
+ 
+</script>

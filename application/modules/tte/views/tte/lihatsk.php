@@ -1,0 +1,1 @@
+<embed src="data:application/pdf;base64,<?php echo $base64pdf_hasil; ?>" width="100%" height="700" alt="pdf">

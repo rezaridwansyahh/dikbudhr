@@ -1,0 +1,64 @@
+<?php 
+    $id = isset($detail_riwayat->id) ? $detail_riwayat->id : '';
+?>
+<div class='box box-warning' id="form-diklat-struktural-add">
+    <?php echo form_open_multipart($this->uri->uri_string(), 'id="frm-usulan-kpo"'); ?> 
+	<div class="box-body">
+        <div class="messages">
+        </div>
+            <input id='id' type='hidden' class="form-control" name='id' maxlength='32' value="<?php echo set_value('id', isset($selectedData) ? trim($selectedData->id) : ''); ?>" />
+            <div class="control-group<?php echo form_error('name') ? ' error' : ''; ?> col-sm-12">
+                <?php echo form_label("Nama Dokumen", 'name', array('class' => 'col-md-3 control-label')); ?>
+                <?php echo form_input(array('name' => 'nama_dokumen','class'=>'form-control col-md-8', 'id' => 'no_surat_pengantar')); ?>
+            </div>
+            <div class="control-group<?php echo form_error('name') ? ' error' : ''; ?> col-sm-12">
+                <?php echo form_label(" Dokumen", 'name', array('class' => 'col-md-3 control-label')); ?>
+                <input type="file" class='col-md-8' name="userfile" size="20" />
+            </div>
+        </div>
+  		<div class="box-footer">
+            <fieldset class='form-actions'>
+                <input type='submit' name='save' id="btnsave" class='btn btn-primary' value="Simpan Data" /> 
+                or
+                <a class='btn btn-warning' onclick="hideCustomModal();">Cancel</a> 
+            </fieldset>    
+        </div>
+    <?php echo form_close(); ?>
+</div>
+<script src="<?php echo base_url(); ?>themes/admin/plugins/datepicker/bootstrap-datepicker.js"></script>
+
+
+<script>
+    function hideCustomModal(){
+        $("#modal-custom-global").modal("hide");
+    }
+	$(document).ready(function(){
+        $("#frm-usulan-kpo").submit(function(){
+            $.post("<?php echo $module_url?>/save_usulan",$(this).serialize(),function(o){
+                  if(o.success){
+                    swal("Pemberitahuan!", "Transaksi berhasil", "success");
+                    $("#modal-custom-global").trigger("sukses-update-usulan");
+					$("#modal-custom-global").modal("hide");
+                  }
+            },'json');
+            return false;
+        });
+		$("#pegawai_id").select2({
+			placeholder: 'Pilih pegawai',
+			width: '100%',
+			minimumInputLength: 3,
+			allowClear: true,
+			ajax: {
+				url: '<?php echo $module_url;?>/select2_list_pegawai',
+				dataType: 'json',
+				data: function(params) {
+					return {
+						term: params.term || '',
+						page: params.page || 1
+					}
+				},
+				cache: true
+			}
+		});
+	});
+</script>

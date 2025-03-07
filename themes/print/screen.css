@@ -1,0 +1,326 @@
+/*
+	Bonfire default CSS styles.
+
+	These styles are meant to be built on top of
+	the latest release of Twitter's Bootstrap library.
+*/
+body {
+	background: #D9DDE8;
+}
+
+
+.body {
+	background-color: #fff;
+	border: 1px solid #DDD;
+	border-top: none;
+
+	-webkit-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+	box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+
+	padding: 60px 20px 20px 20px;
+	z-index: 1;
+	min-height: 300px;
+
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+footer.footer {
+	padding-top: 10px;
+	color: #858585;
+}
+.footer p {
+	font-size: 11px;
+}
+.narrow-body .container {
+	max-width: 800px;
+	min-height: 440px;
+	border-radius: 10px;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content:"";
+    display:table;
+}
+
+.clearfix:after {
+    clear:both;
+}
+.clearfix {
+    zoom:1;
+}
+
+.navbar-fixed-top { margin-bottom: 0; }
+
+/*
+	Modals
+*/
+.modal {
+	background: #f9f9f9;
+	border: 0;
+	-webkit-box-shadow: 0 5px 27px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 5px 27px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 5px 27px rgba(0, 0, 0, 0.3);
+}
+.modal-backdrop {
+	background: -webkit-radial-gradient(50% 50%, ellipse closest-side, rgba(0, 0, 0, 0.3) 1%, rgba(0, 0, 0, 0.75) 80%);
+	background: -moz-radial-gradient(50% 50%, ellipse closest-corner, rgba(0, 0, 0, 0.3) 1%, rgba(0, 0, 0, 0.75) 80%);
+}
+.modal-header {
+	background: #cecece;
+	border-bottom: 1px solid #b2beca;
+	-webkit-box-shadow: inset 0 1px 0 white;
+	-moz-box-shadow: inset 0 1px 0 white;
+	box-shadow: inset 0 1px 0 white;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#EFF1F5), to(#C9D2DC));
+	background-image: -moz-linear-gradient(top, #EFF1F5, #C9D2DC);
+	background-image: -o-linear-gradient(top, #EFF1F5, #C9D2DC);
+	o-border-top-left-radius: 6px;
+	-moz-border-top-left-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
+	border-top-left-radius: 6px;
+	-o-border-top-right-radius: 6px;
+	-moz-border-top-right-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	border-top-right-radius: 6px;
+}
+.modal-header h3 {
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 1.0);
+	color: #475b6f;
+}
+.modal-footer {
+	padding: 15px 20px;
+	background: #f0f0f0;
+	border-top: 1px solid #ddd;
+	text-align: right;
+}
+
+label.required{font-weight: bold}
+
+/*
+Forms
+ */
+.form-horizontal .control-group {
+	border-bottom: 1px solid #e5e5e5;
+	padding-bottom: 18px;
+	padding-top: 18px;
+	margin-bottom: 0;
+}
+
+.form-horizontal .control-group > label {
+	font-weight: bold;
+	width: 180px;
+}
+
+.form-horizontal .control-group .controls {
+	margin-left: 200px;
+}
+
+.form-horizontal .form-actions {
+	padding-left: 200px;
+}
+
+.form-horizontal fieldset .control-group:last-child {
+	margin-bottom: 0;
+	border-bottom: 0;
+	padding-bottom: 36px;
+}
+
+#login_panel{
+	background:url(../images/bg_login_panel.png) no-repeat;
+	width:686px;
+	height:346px;
+	margin:0 auto;
+	margin-top:10px;
+	padding:40px;
+	position:relative;
+}
+
+#content_panel{
+	color:#71a7c0;
+	margin-top:40px;
+	float:left;
+}
+
+#login_box{
+	border:red 0px solid;
+	float:center;
+	width:90%;
+}
+
+.message{
+	font-size:16px;
+	width:400px;
+	height:30px;
+	border:red 0px solid;
+	font-weight:normal;
+	color:red;
+	margin-bottom:10px;
+}
+
+#login_panel h1{
+	font-size:16px;
+	width:300px;
+	height:17px;
+	font-weight:normal;
+	position:absolute;
+	top:-14px;
+	background:url(../images/bg_labelpanel.gif) no-repeat;
+	border:none;
+	color:#fff;
+	padding:15px;
+}
+
+
+#under{
+	margin-left:123px;
+	width:277px;
+	font-size:11px;
+	margin-top:20px;
+}
+
+#bt_login{
+	margin-top:10px;
+	height:51px;
+	width:154px;
+}
+
+#bt_login a {
+	height:51px;
+	background:url(../images/bt_login.gif) no-repeat;
+	display:block;
+	width:154px;
+	text-indent:-2000px;
+}
+
+#bt_login a:hover {
+	background-position:0 -51px;
+}
+
+#right{
+	float:right;
+	text-align:right;
+}
+
+#shadow_panel{
+	background:url(../images/shadow_panel.gif) no-repeat;
+	width:745px;
+	height:9px;
+	margin:0 auto;
+}
+
+#footer{
+	margin-top:20px;
+	height:40px;
+	text-align:center;
+	color:#71a7c0;
+	clear: left;
+	width: 100%;
+}
+
+.radius {
+    -moz-border-radius: 0 3px 3px 0;
+    -webkit-border-radius: 0 3px 3px 0;
+    border-radius: 0 3px 3px 0;
+}
+
+.label-input{
+	width:150px;
+	height:12px;
+	padding:10px;
+	-moz-border-radius: 3px 0 0 3px;
+    -webkit-border-radius: 3px 0 0 3px;
+    border-radius: 3px 0 0 3px;
+	color:#FFF;
+	background: #333;
+	float:left;
+	font-size:12px;
+	font-weight:bold;
+	text-shadow: 1px 1px #000;
+}
+
+.txt-input{
+ 	border: 1px solid #ccc;
+    height: 28px;
+    margin: 0 0 0 0;
+    padding-left: 10px;
+    width: 255px;
+    background-color: #eee;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px #fff;
+    color: #666;
+	
+}
+
+.txt-input-captcha{
+ 	border: 1px solid #ccc;
+    height: 28px;
+    margin: 0 0 0 0;
+    padding-left: 10px;
+    width: 200px;
+    background-color: #eee;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px #fff;
+    color: #666;
+	
+}
+
+#left{
+	width:200px;
+	float:left;
+	padding-right:10px;
+	padding-left:20px;
+	margin-left:-100%;
+}
+
+#left_panel{
+	background-color:#fff;
+	width:181px;
+	height:330px;
+	-moz-border-radius: 0 0 5px 5px;
+    -webkit-border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;
+}
+
+#left_panel h1{
+	margin:0;padding:0;
+	padding-top:10px;
+	text-align:center;
+}
+
+#user_info{
+	width:155px;
+	margin:0 auto;
+	margin-top:20px;
+	color:#5b869a;
+}
+
+#bt_logout{
+	margin-top:10px;
+	height:51px;
+	width:154px;
+}
+
+#bt_logout a {
+	height:51px;
+	background:url(../images/bt_logout.gif) no-repeat;
+	display:block;
+	width:154px;
+	text-indent:-2000px;
+}
+
+#bt_logout a:hover {
+	background-position:0 -51px;
+}
+
+#bt_setting{
+	margin-top:10px;
+	height:51px;
+	width:154px;
+	text-align:center;
+}
