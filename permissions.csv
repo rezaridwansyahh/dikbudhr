@@ -1,0 +1,425 @@
+"permission_id","name","description","status"
+1,Permissions.Pegawai.Manage,Permissions.Pegawai.Manage,active
+2,Site.Content.View,Allow users to view the Content Context,active
+3,Site.Reports.View,Allow users to view the Reports Context,active
+4,Site.Settings.View,Allow users to view the Settings Context,active
+5,Site.Developer.View,Allow users to view the Developer Context,active
+6,Bonfire.Roles.Manage,Allow users to manage the user Roles,active
+7,Bonfire.Users.Manage,Allow users to manage the site Users,active
+8,Bonfire.Users.View,Allow users access to the User Settings,active
+9,Bonfire.Users.Add,Allow users to add new Users,active
+10,Bonfire.Database.Manage,Allow users to manage the Database settings,active
+11,Bonfire.Emailer.Manage,Allow users to manage the Emailer settings,active
+12,Bonfire.Logs.View,Allow users access to the Log details,active
+13,Bonfire.Logs.Manage,Allow users to manage the Log files,active
+14,Bonfire.Emailer.View,Allow users access to the Emailer settings,active
+15,Site.Signin.Offline,Allow users to login to the site when the site is offline,active
+16,Bonfire.Permissions.View,Allow access to view the Permissions menu unders Settings Context,active
+17,Bonfire.Permissions.Manage,Allow access to manage the Permissions in the system,active
+18,Bonfire.Roles.Delete,Allow users to delete user Roles,active
+19,Bonfire.Modules.Add,Allow creation of modules with the builder.,active
+20,Bonfire.Modules.Delete,Allow deletion of modules.,active
+21,Permissions.Administrator.Manage,To manage the access control permissions for the Administrator role.,active
+22,Pegawai.Kepegawaian.Addpendidikan,Pegawai.Kepegawaian.Addpendidikan,active
+23,DiklatStruktural.Kepegawaian.Create,"",active
+24,Permissions.User.Manage,To manage the access control permissions for the User role.,active
+25,Permissions.Developer.Manage,To manage the access control permissions for the Developer role.,active
+26,DiklatStruktural.Kepegawaian.Delete,"",active
+27,Activities.Own.View,To view the users own activity logs,active
+28,Activities.Own.Delete,To delete the users own activity logs,active
+29,Activities.User.View,To view the user activity logs,active
+30,Activities.User.Delete,"To delete the user activity logs, except own",active
+31,Activities.Module.View,To view the module activity logs,active
+32,Activities.Module.Delete,To delete the module activity logs,active
+33,Activities.Date.View,To view the users own activity logs,active
+34,Activities.Date.Delete,To delete the dated activity logs,active
+35,Bonfire.UI.Manage,Manage the Bonfire UI settings,active
+36,Bonfire.Settings.View,To view the site settings page.,active
+37,Bonfire.Settings.Manage,To manage the site settings.,active
+38,Bonfire.Activities.View,To view the Activities menu.,active
+39,Bonfire.Database.View,To view the Database menu.,active
+40,Bonfire.Migrations.View,To view the Migrations menu.,active
+41,Bonfire.Builder.View,To view the Modulebuilder menu.,active
+42,Bonfire.Roles.View,To view the Roles menu.,active
+43,Bonfire.Sysinfo.View,To view the System Information page.,active
+44,Bonfire.Translate.Manage,To manage the Language Translation.,active
+45,Bonfire.Translate.View,To view the Language Translate menu.,active
+46,Bonfire.UI.View,To view the UI/Keyboard Shortcut menu.,active
+48,Unitkerja.Masters.Create,Create Unitkerja Masters,active
+49,Bonfire.Profiler.View,To view the Console Profiler Bar.,active
+50,Bonfire.Roles.Add,To add New Roles,active
+51,Unitkerja.Masters.View,View Unitkerja Masters,active
+53,Unitkerja.Masters.Edit,Edit Unitkerja Masters,active
+54,Unitkerja.Masters.Delete,Delete Unitkerja Masters,active
+55,Agama.Masters.View,View Agama Masters,active
+56,Agama.Masters.Create,Create Agama Masters,active
+57,Agama.Masters.Edit,Edit Agama Masters,active
+58,Agama.Masters.Delete,Delete Agama Masters,active
+59,Petajabatan.Reports.View,View Petajabatan Reports,active
+60,Dashboard.Reports.View,"",active
+61,DiklatStruktural.Kepegawaian.Edit,"",active
+62,DiklatStruktural.Kepegawaian.View,"",active
+146,RiwayatPendidikan.Kepegawaian.Create,,active
+147,RiwayatPendidikan.Kepegawaian.View,,active
+148,RiwayatPendidikan.Kepegawaian.Delete,,active
+149,RiwayatPendidikan.Kepegawaian.Edit,,active
+150,DiklatFungsional.Kepegawaian.Create,,active
+151,DiklatFungsional.Kepegawaian.Edit,,active
+152,DiklatFungsional.Kepegawaian.Delete,,active
+153,DiklatFungsional.Kepegawaian.View,,active
+154,RiwayatKepangkatan.Kepegawaian.Create,,active
+155,RiwayatKepangkatan.Kepegawaian.Edit,,active
+156,RiwayatKepangkatan.Kepegawaian.View,,active
+157,RiwayatKepangkatan.Kepegawaian.Delete,,active
+158,Site.Masters.View,,active
+159,RiwayatPindahUnitKerja.Kepegawaian.View,,active
+160,RiwayatPindahUnitKerja.Kepegawaian.Create,,active
+161,RiwayatPindahUnitKerja.Kepegawaian.Delete,,active
+162,RiwayatPindahUnitKerja.Kepegawaian.Edit,,active
+163,RiwayatPrestasiKerja.Kepegawaian.Create,,active
+164,RiwayatPrestasiKerja.Kepegawaian.Edit,,active
+165,RiwayatPrestasiKerja.Kepegawaian.View,,active
+166,RiwayatPrestasiKerja.Kepegawaian.Delete,,active
+167,Dashboard.Reports.View,"",active
+168,Golongan.Masters.View,View Golongan Masters,active
+169,Golongan.Masters.Create,Create Golongan Masters,active
+170,Golongan.Masters.Edit,Edit Golongan Masters,active
+171,Golongan.Masters.Delete,Delete Golongan Masters,active
+172,Pegawai.Kepegawaian.View,View Pegawai Kepegawaian,active
+173,Pegawai.Kepegawaian.Create,Create Pegawai Kepegawaian,active
+174,Pegawai.Kepegawaian.Edit,Edit Pegawai Kepegawaian,active
+175,Pegawai.Kepegawaian.Delete,Delete Pegawai Kepegawaian,active
+176,Petajabatan.Reports.View,View Petajabatan Reports,active
+177,Ref_jabatan.Masters.View,View Ref_jabatan Masters,active
+178,Ref_jabatan.Masters.Create,Create Ref_jabatan Masters,active
+179,Site.Kepegawaian.View,Allow user to view the Kepegawaian Context.,active
+180,Pegawai.Kepegawaian.View,View Pegawai Kepegawaian,active
+181,Pegawai.Kepegawaian.Create,Pegawai.Kepegawaian.Create,active
+182,Pegawai.Kepegawaian.Edit,Pegawai.Kepegawaian.Edit,active
+183,Pegawai.Kepegawaian.Delete,Pegawai.Kepegawaian.Delete,active
+184,Ref_jabatan.Masters.View,View Ref_jabatan Masters,active
+185,Ref_jabatan.Masters.Create,Create Ref_jabatan Masters,active
+186,Ref_jabatan.Masters.Edit,Edit Ref_jabatan Masters,active
+187,Ref_jabatan.Masters.Delete,Delete Ref_jabatan Masters,active
+188,MasterPendidikan.Masters.View,View Tkpendidikan Masters,active
+189,MasterPendidikan.Masters.Create,Create Tkpendidikan Masters,active
+190,MasterPendidikan.Masters.Edit,Edit Tkpendidikan Masters,active
+191,MasterPendidikan.Masters.Delete,Delete Tkpendidikan Masters,active
+192,Unitkerja.Masters.View,View Unitkerja Masters,active
+193,Unitkerja.Masters.Create,Create Unitkerja Masters,active
+194,Unitkerja.Masters.Edit,Edit Unitkerja Masters,active
+195,Unitkerja.Masters.Delete,Delete Unitkerja Masters,active
+196,Agama.Masters.View,View Agama Masters,active
+197,Agama.Masters.Create,Create Agama Masters,active
+198,Agama.Masters.Edit,Edit Agama Masters,active
+199,Agama.Masters.Delete,Delete Agama Masters,active
+200,Petajabatan.Reports.Create,Petajabatan.Reports.Create,active
+201,Petajabatan.Reports.Edit,Petajabatan.Reports.Edit,active
+202,Petajabatan.Reports.Delete,Petajabatan.Reports.Delete,active
+203,Pegawai.Kepegawaian.Ubahfoto,Pegawai.Kepegawaian.Ubahfoto,active
+204,Pegawai.Kepegawaian.Updatemandiri,Pegawai.Kepegawaian.Updatemandiri,active
+205,riwayatjabatan.Kepegawaian.Create,riwayatjabatan.Kepegawaian.Create,active
+206,riwayatjabatan.Kepegawaian.Edit,riwayatjabatan.Kepegawaian.Edit,active
+207,riwayatjabatan.Kepegawaian.Delete,riwayatjabatan.Kepegawaian.Delete,active
+209,Permissions.Executive.Manage,To manage the access control permissions for the executive role.,active
+210,Rekap.Reports.View,"",active
+211,Permissions.Admin_satker.Manage,To manage the access control permissions for the admin_satker role.,active
+212,Tkpendidikan.Masters.View,Tkpendidikan.Masters.View,active
+213,Tkpendidikan.Masters.Create,Tkpendidikan.Masters.Create,active
+214,Tkpendidikan.Masters.Edit,Tkpendidikan.Masters.Edit,active
+215,Tkpendidikan.Masters.Delete,Tkpendidikan.Masters.Delete,active
+216,riwayatpekerjaan.Kepegawaian.Create,riwayatpekerjaan.Kepegawaian.Create,active
+217,riwayatpekerjaan.Kepegawaian.Edit,riwayatpekerjaan.Kepegawaian.Edit,active
+218,riwayatpekerjaan.Kepegawaian.Delete,riwayatpekerjaan.Kepegawaian.Delete,active
+219,riwayatpekerjaan.Kepegawaian.View,riwayatpekerjaan.Kepegawaian.View,active
+220,Permissions.Pegawai_update.Manage,To manage the access control permissions for the pegawai_update role.,active
+221,Pegawai.Kepegawaian.Filtersatker,Permission Untuk filter data pegawai sesuai dengan satkernya,active
+780,RiwayatKepangkatan.Kepegawaian.VerifikasiB,RiwayatKepangkatan.Kepegawaian.VerifikasiB,active
+781,Pegawai.Kepegawaian.LihatProfileLain,Pegawai.Kepegawaian.LihatProfileLain,active
+771,Permissions.Admin_bagian.Manage,Permissions.Admin_bagian.Manage,active
+772,riwayatjabatan.Kepegawaian.Updmandiri,riwayatjabatan.Kepegawaian.Updmandiri,active
+773,riwayatjabatan.Kepegawaian.VerifikasiS,riwayatjabatan.Kepegawaian.VerifikasiS,active
+774,riwayatjabatan.Kepegawaian.VerifikasiB,riwayatjabatan.Kepegawaian.VerifikasiB,active
+775,RiwayatPendidikan.Kepegawaian.Updmandiri,RiwayatPendidikan.Kepegawaian.Updmandiri,active
+776,RiwayatPendidikan.Kepegawaian.VerifikasiS,RiwayatPendidikan.Kepegawaian.VerifikasiS,active
+777,RiwayatPendidikan.Kepegawaian.VerifikasiB,RiwayatPendidikan.Kepegawaian.VerifikasiB,active
+778,RiwayatKepangkatan.Kepegawaian.Updmandiri,RiwayatKepangkatan.Kepegawaian.Updmandiri,active
+779,RiwayatKepangkatan.Kepegawaian.VerifikasiS,RiwayatKepangkatan.Kepegawaian.VerifikasiS,active
+783,Pindah_unit.Layanan.View,Pindah_unit.Layanan.View,active
+784,Pindah_unit.Layanan.Create,Pindah_unit.Layanan.Create,active
+785,Pindah_unit.Layanan.Edit,Pindah_unit.Layanan.Edit,active
+786,Pindah_unit.Layanan.Delete,Pindah_unit.Layanan.Delete,active
+791,Pindah_unit.Layanan.UnitAsal,Pindah_unit.Layanan.UnitAsal,active
+792,Site.Layanan.View,Site.Layanan.View,active
+793,Pegawai.Kepegawaian.VerifikasiUpdate3,Pegawai.Kepegawaian.VerifikasiUpdate3,active
+794,Pegawai.Kepegawaian.VerifikasiUpdate,Pegawai.Kepegawaian.VerifikasiUpdate,active
+795,Bezzeting.Reports.View,Bezzeting.Reports.View,active
+840,Pindah_unit.Layanan.UnitTujuan,Pindah_unit.Layanan.UnitTujuan,active
+841,Pindah_unit.Layanan.Biro,Pindah_unit.Layanan.Biro,active
+842,Pindah_unit.Layanan.Sestama,Pindah_unit.Layanan.Sestama,active
+843,Pindah_unit.Layanan.Dashboard,Pindah_unit.Layanan.Dashboard,active
+844,Pindah_unit.Layanan.DashboardSes,Pindah_unit.Layanan.DashboardSes,active
+796,riwayatkgb.Kepegawaian.Create,riwayatkgb.Kepegawaian.Create,active
+797,riwayatkgb.Kepegawaian.Delete,riwayatkgb.Kepegawaian.Delete,active
+798,riwayatkgb.Kepegawaian.Edit,riwayatkgb.Kepegawaian.Edit,active
+799,Permissions.Pengelola KPO Satker.Manage,To manage the access control permissions for the Pengelola KPO Satker role.,active
+800,Permissions.Pengelola PPO Sekretariat.Manage,To manage the access control permissions for the Pengelola PPO Sekretariat role.,active
+801,Permissions.Pengelola KPO Instansi.Manage,To manage the access control permissions for the Pengelola KPO Instansi role.,active
+802,LayananKpo.View.PengelolaKPOSatker,"",active
+803,LayananKpo.View.PengelolaKPOSekretariat,"",active
+845,Permissions.Pemroses_mutasi.Manage,To manage the access control permissions for the pemroses_mutasi role.,active
+804,LayananKpo.View.PengelolaKPOInstansi,,active
+846,Rekap.Reports.Eis,Rekap.Reports.Eis,active
+847,Rekap.Reports.Eise,Rekap.Reports.Eise,active
+848,Rekap.Reports.Golongan_usia,Rekap.Reports.Golongan_usia,active
+849,Rekap.Reports.BupUsia,Rekap.Reports.BupUsia,active
+850,Rekap.Reports.Genderusia,Rekap.Reports.Genderusia,active
+851,Riwayathukdis.Kepegawaian.View,Riwayathukdis.Kepegawaian.View,active
+852,Riwayathukdis.Kepegawaian.Create,Riwayathukdis.Kepegawaian.Create,active
+853,Riwayathukdis.Kepegawaian.Edit,Riwayathukdis.Kepegawaian.Edit,active
+805,LayananKpo.UploadDataBKN,,active
+806,LayananKpo.FinalisasiUsulan,,active
+807,LayananKpo.Cetak,,active
+808,LayananKpo.TambahUsulan,,active
+854,Riwayathukdis.Kepegawaian.Delete,Riwayathukdis.Kepegawaian.Delete,active
+855,Riwayatassesmen.Kepegawaian.Create,Riwayatassesmen.Kepegawaian.Create,active
+811,LayananKpo.KirimInboxInstansi,,active
+809,LayananKpo.KirimInboxSekretariat,,active
+812,LayananKpo.VerifikasiUsulan,,active
+813,Permissions.Pengelola KPO Sekretariat.Manage,To manage the access control permissions for the Pengelola KPO Sekretariat role.,active
+810,LayananKpo.UploadDokumenPendukung,,active
+856,Riwayatassesmen.Kepegawaian.View,Riwayatassesmen.Kepegawaian.View,active
+814,LayananKpo.ViewDokumenPendukung,,active
+815,Permissions.Pengelola KGB Satker.Manage,To manage the access control permissions for the Pengelola KGB Satker role.,active
+816,Permissions.Pengelola KGB Instansi.Manage,To manage the access control permissions for the Pengelola KGB Instansi role.,active
+857,Riwayatassesmen.Kepegawaian.Edit,Riwayatassesmen.Kepegawaian.Edit,active
+858,Riwayatassesmen.Kepegawaian.Delete,Riwayatassesmen.Kepegawaian.Delete,active
+859,Rekap.Reports.Pendidikan_usia,Rekap.Reports.Pendidikan_usia,active
+860,Rekap.Reports.Golongan_gender,Rekap.Reports.Golongan_gender,active
+861,Rekap.Reports.Golongan_pendidikan,Rekap.Reports.Golongan_pendidikan,active
+862,Rekap.Reports.Pendidikan_gender,Rekap.Reports.Pendidikan_gender,active
+863,Rekap.Reports.Agama_gender,Rekap.Reports.Agama_gender,active
+819,LayananKGB.ProsesKGB,,active
+820,LayananKGB.CetakSKPersonal,,active
+821,LayananKGB.CetakSKKolektif,,active
+864,Rekap.Reports.Status_pegawai,Rekap.Reports.Status_pegawai,active
+865,Pegawai.Kepegawaian.permissionEselon1,Pegawai.Kepegawaian.permissionEselon1,active
+866,Riwayatkursus.Kepegawaian.Create,Riwayatkursus.Kepegawaian.Create,active
+817,LayananKGB.View.PengelolaKGBSatker,,active
+818,LayananKGB.View.PengelolaKGBInstansi,,active
+822,LayananKGB.SettingsSatker,,active
+823,Permissions.Pengelola PPO Satker.Manage,To manage the access control permissions for the Pengelola PPO Satker role.,active
+824,Permissions.Pengelola PPO Sekretariat.Manage,To manage the access control permissions for the Pengelola PPO Sekretariat role.,active
+825,Permissions.Pengelola PPO Instansi.Manage,To manage the access control permissions for the Pengelola PPO Instansi role.,active
+826,LayananPPO.View.PengelolaPPOSatker,,active
+827,LayananPPO.View.PengelolaPPOSekretariat,,active
+828,LayananPPO.View.PengelolaPPOInstansi,,active
+829,LayananPPO.UploadDataBKN,,active
+830,LayananPPO.FinalisasiUsulan,,active
+831,LayananPPO.Cetak,,active
+832,LayananPPO.TambahUsulan,,active
+833,LayananPPO.KirimInboxInstansi,,active
+834,LayananPPO.KirimInboxSekretariat,,active
+835,LayananPPO.VerifikasiUsulan,,active
+836,LayananPPO.UploadDokumenPendukung,,active
+837,LayananPPO.ViewDokumenPendukung,,active
+838,ManageTemplates.Masters.View,,active
+839,ManageTemplates.Masters.Create,ManageTemplates.Masters.Create,active
+867,Riwayatkursus.Kepegawaian.Delete,Riwayatkursus.Kepegawaian.Delete,active
+868,Riwayatkursus.Kepegawaian.Edit,Riwayatkursus.Kepegawaian.Edit,active
+869,Riwayatkursus.Kepegawaian.View,Riwayatkursus.Kepegawaian.View,active
+870,Permissions.PKL.Manage,To manage the access control permissions for the PKL role.,active
+871,Permissions.Admin Kementerian.Manage,To manage the access control permissions for the admin kementerian role.,active
+872,Permissions.Admin_sekretariat.Manage,To manage the access control permissions for the admin_sekretariat role.,active
+873,riwayatkgb.Kepegawaian.View,riwayatkgb.Kepegawaian.View,active
+874,riwayatjabatan.Kepegawaian.View,riwayatjabatan.Kepegawaian.View,active
+875,riwayatjabatan.Kepegawaian.View,riwayatjabatan.Kepegawaian.View,active
+876,Permissions.Pengelola_pindah_satker.Manage,To manage the access control permissions for the pengelola_pindah_satker role.,active
+877,Permissions.Pengelola_pindah_sestama.Manage,To manage the access control permissions for the pengelola_pindah_sestama role.,active
+878,Pegawai.Kepegawaian.CreatePpnpn,Pegawai.Kepegawaian.CreatePpnpn,active
+879,Pegawai.Kepegawaian.Viewppnpn,Pegawai.Kepegawaian.Viewppnpn,active
+880,Pegawai.Kepegawaian.Editppnpn,Pegawai.Kepegawaian.Editppnpn,active
+881,Pegawai.Kepegawaian.Deleteppnpn,Pegawai.Kepegawaian.Deleteppnpn,active
+882,Rekap.Reports.DUK,Rekap.Reports.DUK,active
+883,Rekap.Reports.Kuota,Rekap.Reports.Kuota,active
+884,Rekap.Reports.JabatanKosong,Rekap.Reports.JabatanKosong,active
+885,Rekap.Reports.Struktur,Rekap.Reports.Struktur,active
+886,Riwayatassesmen.Kepegawaian.ViewAdmin,Riwayatassesmen.Kepegawaian.ViewAdmin,active
+887,Data_keluarga.Kepegawaian.View,Data_keluarga.Kepegawaian.View,active
+888,Data_keluarga.Kepegawaian.Create,Data_keluarga.Kepegawaian.Create,active
+889,Data_keluarga.Kepegawaian.Edit,Data_keluarga.Kepegawaian.Edit,active
+890,Data_keluarga.Kepegawaian.Delete,Data_keluarga.Kepegawaian.Delete,active
+891,LayananKpo.ViewAll.PengelolaKPOSekretariat,LayananKpo.ViewAll.PengelolaKPOSekretariat,active
+892,Kondisi_pegawai.Reports.View,View Kondisi_pegawai Reports,active
+893,Proyeksi_pensiun.Reports.View,View Proyeksi_pensiun Reports,active
+894,Jabatan.Masters.View,View Jabatan Masters,active
+895,Jabatan.Masters.Create,Create Jabatan Masters,active
+896,Jabatan.Masters.Edit,Edit Jabatan Masters,active
+897,Jabatan.Masters.Delete,Delete Jabatan Masters,active
+898,Petajabatan.Masters.View,View Master Petajabatan,active
+899,Petajabatan.Masters.Create,Create Master Petajabatan,active
+900,Petajabatan.Masters.Edit,Edit Master Petajabatan,active
+901,Petajabatan.Masters.Delete,Delete Master Petajabatan,active
+902,Baperjakat.Kepegawaian.View,View Baperjakat Kepegawaian,active
+903,Baperjakat.Kepegawaian.Create,Create Baperjakat Kepegawaian,active
+904,Baperjakat.Kepegawaian.Edit,Edit Baperjakat Kepegawaian,active
+905,Baperjakat.Kepegawaian.Delete,Delete Baperjakat Kepegawaian,active
+906,Daftar_rohaniawan.Masters.View,View Daftar_rohaniawan Masters,active
+907,Daftar_rohaniawan.Masters.Create,Create Daftar_rohaniawan Masters,active
+908,Daftar_rohaniawan.Masters.Edit,Edit Daftar_rohaniawan Masters,active
+909,Daftar_rohaniawan.Masters.Delete,Delete Daftar_rohaniawan Masters,active
+910,Pengajuan_tubel.Layanan.View,View Pengajuan_tubel Layanan,active
+911,Pengajuan_tubel.Layanan.Create,Create Pengajuan_tubel Layanan,active
+912,Pengajuan_tubel.Layanan.Edit,Edit Pengajuan_tubel Layanan,active
+913,Pengajuan_tubel.Layanan.Delete,Delete Pengajuan_tubel Layanan,active
+914,Pengajuan_tubel.Layanan.ViewAdm,Pengajuan_tubel.Layanan.ViewAdm,active
+915,Pengajuan_tubel.Layanan.Verifikasi,Pengajuan_tubel.Layanan.Verifikasi,active
+917,Permissions.Pimpinansatker.Manage,To manage the access control permissions for the pimpinansatker role.,active
+918,Sk_ds.Sk.View,View Sk_ds Sk,active
+919,Sk_ds.Sk.Edit,Edit Sk_ds Sk,active
+920,Sk_ds.Sk.Tandatangan,Akses Untuk Menandatangani SK secara digital,active
+921,Sk_ds.Sk.Validasi,Akses Untuk mengoreksi SK,active
+922,Riwayatassesmen.Kepegawaian.P_feedback,Lihat Laporan A potensi Feedback,active
+923,Riwayatassesmen.Kepegawaian.P_lengkap,Lihat Laporan A potensi Lengkap,active
+924,Riwayatassesmen.Kepegawaian.L_feedback,Lihat Laporan A Lanjutan Feedback,active
+925,Riwayatassesmen.Kepegawaian.L_Lengkap,Lihat Laporan A Lanjutan Lengkap,active
+926,Permissions.KorektorSk.Manage,To manage the access control permissions for the KorektorSk role.,active
+927,Sk_ds.Sk.Skkoreksi,Sk_ds.Sk.Skkoreksi,active
+928,Sk_ds.Sk.ReqBarier,Sk_ds.Sk.ReqBarier,active
+929,Sk_ds.Sk.ReqToken,Sk_ds.Sk.ReqToken,active
+930,Riwayatassesmen.Kepegawaian.Nine_box,Riwayatassesmen.Kepegawaian.Nine_box,active
+932,Unitkerja.Kepegawaian.Terbatas,Unitkerja.Kepegawaian.Terbatas,active
+933,Permissions.SatkerTerbatas.Manage,To manage the access control permissions for the SatkerTerbatas role.,active
+934,Pegawai.Kepegawaian.ViewPensiun,Pegawai.Kepegawaian.ViewPensiun,active
+935,Pegawai.Kepegawaian.Review,Pegawai.Kepegawaian.Review,active
+936,Pegawai.Kepegawaian.Pribadi,Pegawai.Kepegawaian.Pribadi,active
+938,Sk_ds.Sk.Viewall,Sk_ds.Sk.Viewall,active
+939,Sk_ds.Sk.ViewLog,Lihat Log tangatangan digital,active
+937,Riwayatassesmen.Kepegawaian.ViewNilai,Riwayatassesmen.Kepegawaian.ViewNilai,active
+940,Rekap.Reports.Satker,Rekap.Reports.Satker,active
+941,Riwayatpns.Kepegawaian.View,Riwayat Prajabatan PNS View,active
+942,Riwayatpns.Kepegawaian.Edit,Riwayatpns.Kepegawaian.edit,active
+943,Izin_pegawai.Izin.View,View Izin_pegawai Izin,active
+944,Izin_pegawai.Izin.Create,Create Izin_pegawai Izin,active
+945,Izin_pegawai.Izin.Edit,Edit Izin_pegawai Izin,active
+946,Izin_pegawai.Izin.Delete,Delete Izin_pegawai Izin,active
+947,Setting_atasan.Izin.View,Setting_atasan.Izin.View,active
+948,Setting_atasan.Izin.Add,Setting_atasan.Izin.Add,active
+949,Setting_atasan.Izin.Delete,Setting_atasan.Izin.Delete,active
+951,Jenis_izin.Masters.Create,Create Jenis_izin Masters,active
+952,Jenis_izin.Masters.Edit,Edit Jenis_izin Masters,active
+953,Jenis_izin.Masters.Delete,Delete Jenis_izin Masters,active
+954,Permissions.Admincutipusat.Manage,To manage the access control permissions for the admincutipusat role.,active
+955,Site.Izin.View,Site.Izin.View,active
+950,Jenis_izin.Masters.View,Jenis_izin.Masters.View,active
+956,Sisa_cuti.Izin.View,View Sisa_cuti Izin,active
+957,Sisa_cuti.Izin.Create,Create Sisa_cuti Izin,active
+958,Sisa_cuti.Izin.Edit,Edit Sisa_cuti Izin,active
+959,Sisa_cuti.Izin.Delete,Delete Sisa_cuti Izin,active
+960,Izin_pegawai.Izin.Verifikasi,Izin_pegawai.Izin.Verifikasi,active
+961,Izin_pegawai.Izin.Persetujuan,Izin_pegawai.Izin.Persetujuan,active
+962,Site.Arsip.View,Main Menu Arsip,active
+963,Sk_ds.Arsip.ViewSatker,LIhat SK DS dengan FIlter kode satker,active
+964,Sk_ds.Arsip.Pegawai,Lihat SK DS dengan FIlter NIP Pegawai yang login,active
+966,Izin_pegawai.Izin.ViewSatker,Akses untuk Melihat seluruh izin pegawai level satker (filter Satker),active
+965,Izin_pegawai.Izin.ViewAll,Akses untuk melihat izin seluruh pegawai kementerian (tanpa filter),active
+967,Permissions.Admincutisatker.Manage,To manage the access control permissions for the admincutisatker role.,active
+969,Arsip_digital.Arsip.View,View Arsip_digital Arsip,active
+970,Arsip_digital.Arsip.Create,Create Arsip_digital Arsip,active
+971,Arsip_digital.Arsip.Edit,Edit Arsip_digital Arsip,active
+972,Arsip_digital.Arsip.Delete,Delete Arsip_digital Arsip,active
+973,Jenis_arsip.Masters.View,View Jenis_arsip Masters,active
+974,Jenis_arsip.Masters.Create,Create Jenis_arsip Masters,active
+975,Jenis_arsip.Masters.Edit,Edit Jenis_arsip Masters,active
+976,Jenis_arsip.Masters.Delete,Delete Jenis_arsip Masters,active
+977,Arsip_digital.Arsip.ViewAll,Melihat Semua dokumen digital,active
+979,Arsip_digital.Reports.DashboardAdmin,Arsip_digital.Reports.DashboardAdmin,active
+980,Tte.Tte.View,View Tte Tte,active
+981,Tte.Tte.Create,Create Tte Tte,active
+982,Tte.Tte.Edit,Edit Tte Tte,active
+983,Tte.Tte.Delete,Delete Tte Tte,active
+984,Tte.Masters.View,View Tte Masters,active
+985,Tte.Masters.Create,Create Tte Masters,active
+986,Tte.Masters.Edit,Edit Tte Masters,active
+987,Tte.Masters.Delete,Delete Tte Masters,active
+988,Pegawai.Downloadxls.View,Pegawai.Downloadxls.View,active
+989,Pegawai.DownloadNominatif.View,Pegawai.DownloadNominatif.View,active
+990,Pegawai.DownloadFoto.View,Pegawai.DownloadFoto.View,active
+991,Pegawai.Importxls.View,Pegawai.Importxls.View,active
+992,Pegawai.Importhcdp.View,Pegawai.Importhcdp.View,active
+993,Pegawai.ImportBkn.View,Pegawai.ImportBkn.View,active
+994,Izin_pegawai.KirimAbsen.View,Izin_pegawai.KirimAbsen.View,active
+995,Sk_ds.Arsip.ViewEs1,Sk_ds.Arsip.ViewEs1,active
+996,Permissions.PenandatanganPAKPTP.Manage,To manage the access control permissions for the penandatanganPAKPTP role.,active
+997,Sk_ds.DupakPtp.Tandatangan,Sk_ds.DupakPtp.Tandatangan,active
+998,Izin_pegawai.Izin.LaporanPegawai,Izin_pegawai.Izin.LaporanPegawai,active
+999,Rekap.DukSatker.View,Rekap.DukSatker.View,active
+1000,Permissions.Mendikbud.Manage,To manage the access control permissions for the mendikbud role.,active
+1001,Site.Transaksi.View,Site.Transaksi.View,active
+1002,Site.Tte.View,Site.Tte.View,active
+1003,Permissions.PenandatanganSK.Manage,To manage the access control permissions for the PenandatanganSK role.,active
+1004,Permissions.Pegawai-KDR.Manage,To manage the access control permissions for the Pegawai-KDR role.,active
+1005,Permissions.Dashboard_only.Manage,To manage the access control permissions for the dashboard_only role.,active
+1006,Permissions.Pemroses_CPNS.Manage,To manage the access control permissions for the pemroses_CPNS role.,active
+1007,Permissions.Tata_usaha.Manage,To manage the access control permissions for the tata_usaha role.,active
+1008,Permissions.Auditor.Manage,To manage the access control permissions for the Auditor role.,active
+1009,Pegawai.SinkronBkn.View,Pegawai.SinkronBkn.View,active
+1010,Pegawai.CreateUser.View,Pegawai.CreateUser.View,active
+1011,Permissions.AdminstratorKW.Manage,To manage the access control permissions for the adminstratorKW role.,active
+1012,Permissions.Tes_role_cuti.Manage,To manage the access control permissions for the tes_role_cuti role.,active
+1013,Sk_ds.DashboardDs.View,Sk_ds.DashboardDs.View,active
+1014,Pegawai.ViewDataBkn.View,Pegawai.ViewDataBkn.View,active
+1015,Sk_ds.Downloadttd.View,Sk_ds.Downloadttd.View,active
+1016,Dashboard.Pribadi.View,Dashboard.Pribadi.View,active
+1017,Pegawai.Sinkronisasi.View,Pegawai.Sinkronisasi.View,active
+1018,Pegawai.Sinkronisasi.View,Pegawai.Sinkronisasi.View,active
+1019,Petajabatan.Reports.Request,Petajabatan.Reports.Request,active
+1021,Bezzeting.Pilihsatker.View,Bezzeting.Pilihsatker.View,active
+978,Arsip_digital.Arsip.Validasi,Validasi Arsip Digital Pegawai,active
+1022,Aktivitas.Reports.View,Untuk melihat aktifitas use secara detil,active
+1023,Aktivitas.Reports.Download,Aktivitas.Reports.Download,active
+1024,Aktivitas.Reports.FullAccess,Aktivitas.Reports.FullAccess,active
+1025,Bonfire.Users.AllAkses,"",active
+1026,Pegawai.ResetPass.View,Pegawai.ResetPass.View,active
+1027,Permissions.Admin_data.Manage,To manage the access control permissions for the admin_data role.,active
+968,Bonfire.Users.LoginAs,Login sebagai user lain dalam satu waktu..,active
+1029,Izin_pegawai.KirimKeEkehadiran.View,Izin_pegawai.KirimKeEkehadiran.View,active
+1028,Sk_ds.UpdateStatus.View,Update status kirim file ds yang sudah di tandatangan,active
+1030,Bdr.Pengajuan.View,Bdr.Pengajuan.View,active
+1031,Pegawai.ViewDataMutasi.View,Pegawai.ViewDataMutasi.View,active
+1032,Pegawai.Rekapippns.View,Pegawai.Rekapippns.View,active
+1033,Pegawai.Kepegawaian.Pensiunupdate,Allow userts to set pensiun / meninggal pegawai,active
+1034,Sk_ds.Sk.Resume,Sk_ds.Sk.Resume,active
+1035,Kehadiran.RequestImei.View,Kehadiran.RequestImei.View,active
+1036,Kehadiran.RequestImei.Delete,Kehadiran.RequestImei.Delete,active
+1037,Kehadiran.RequestImei.Verifikasi,Kehadiran.RequestImei.Verifikasi,active
+1038,Jumlah.Reports.View,Jumlah.Reports.View,active
+1039,Site.Nominatif.View,Site.Nominatif.View,active
+1040,Nominatif.Pegawai.View,Nominatif.Pegawai.View,active
+1041,Permissions.PimpinanSatker.Manage,To manage the access control permissions for the PimpinanSatker role.,active
+1042,Riwayatassesmen.Kepegawaian.ViewPegawai,View untuk pegawai,active
+1043,Permissions.Miniadmin.Manage,To manage the access control permissions for the miniadmin role.,active
+1044,Kehadiran.Setting.Area,Setting Area Kehadiran,active
+1045,Kehadiran.Setting.View,Kehadiran.Setting.View,active
+1046,Kehadiran.Monitoring.View,Kehadiran.Monitoring.View,active
+1047,Kehadiran.Input.View,Kehadiran.Input.View,active
+1048,Kehadiran.Dashboard.View,Kehadiran.Dashboard.View,active
+1049,Permissions.AdminKehadiranPusat.Manage,To manage the access control permissions for the AdminKehadiranPusat role.,active
+1050,Kehadiran.Login.View,Kehadiran.Login.View,active
+1051,Permissions.BPK.Manage,To manage the access control permissions for the BPK role.,active
+1052,Riwayatjabatan.SyncBkn.View,Riwayatjabatan.SyncBkn.View,active
+1053,RiwayatKepangkatan.SyncBkn.View,RiwayatKepangkatan.SyncBkn.View,active
+1054,RiwayatPendidikan.SyncBkn.View,RiwayatPendidikan.SyncBkn.View,active
+1055,RiwayatPrestasiKerja.Kepegawaian.Sinkron,RiwayatPrestasiKerja.Kepegawaian.Sinkron,active
+1056,RiwayatKinerja.Kepegawaian.View,"",active
+1057,RiwayatKinerja.Kepegawaian.Create,"",active
+1058,RiwayatKinerja.Kepegawaian.Edit,"",active
+1059,RiwayatKinerja.Kepegawaian.Delete,"",active
+1060,RiwayatKinerja.Kepegawaian.Sinkron,RiwayatKinerja.Kepegawaian.Sinkron,active
+1061,RiwayatPrestasiKerja.Kepegawaian.Rekap,RiwayatPrestasiKerja.Kepegawaian.Rekap,active
+1062,RiwayatKinerja.Kepegawaian.Sync,RiwayatKinerja.Kepegawaian.Sync,active
+1063,Pegawai.SinkronPersonal.View,Pegawai.SinkronPersonal.View,active
+1064,Izin_pegawai.Upload.View,Izin_pegawai.Upload.View,active
+1065,Setting_atasan.Izin.Edit,Setting_atasan.Izin.Edit,active
+1066,AdminSatker.Asigo.View,AdminSatker.Asigo.View,active
+1067,Permissions.Admin_asigo.Manage,To manage the access control permissions for the admin_asigo role.,active
