@@ -1142,10 +1142,12 @@ class Kepegawaian extends Admin_Controller
         }
        	$recpns_aktif = $this->Pns_aktif_model->find($id);
  		Template::set('recpns_aktif', $recpns_aktif);
- 		// die($id."ini");
+ 		
         $pegawai = $this->pegawai_model->find_detil($id);
+		// die($id."ini");
+		
         $foto_pegawai = trim($this->settings_lib->item('site.urlphoto'))."noimage.jpg";
-		if(file_exists(trim($this->settings_lib->item('site.urlphoto')).$pegawai->PHOTO)){
+		if(!empty($pegawai->PHOTO) && file_exists(trim($this->settings_lib->item('site.urlphoto')).$pegawai->PHOTO)){
 			$foto_pegawai =  trim($this->settings_lib->item('site.urlphoto')).$pegawai->PHOTO;
 		}
 		Template::set('foto_pegawai', $foto_pegawai);

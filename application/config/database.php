@@ -95,10 +95,10 @@ if (defined('CI_VERSION') && substr(CI_VERSION, 0, 1) != '2') {
     //
     $query_builder = true;
     $db['default'] = array(
-        'hostname'     => '********',
-        'username'     => '*******',
-        'password'     => '*******',
-        'database'     => 'db_dikbudhr',
+        'hostname'     => getenv('DB_HOST'),
+        'username'     => getenv('DB_NAME'),
+        'password'     => getenv('DB_USER'),
+        'database'     => getenv('DB_PASS'),
         'dbdriver'     => 'postgre',
         'schema'       => 'hris',
 	    'port'	       => '6432',
