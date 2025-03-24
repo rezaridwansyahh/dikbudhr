@@ -1,3 +1,7 @@
 # ignore all of env and env. related files
 .env
 .env.*
+
+
+# ignore cache
+/application/cache/*
