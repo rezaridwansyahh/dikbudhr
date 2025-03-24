@@ -28,7 +28,7 @@
 				 </div>
 			 </div>
 			 <?php endif; ?>
-              <h3 class="first-child">Login Pegawai</h3>
+              <h3 class="first-child">Login DiktisaintekHR</h3>
               <hr>
               <form role="form">
                 <label class="sr-only" for="email">Username/NIP</label>
